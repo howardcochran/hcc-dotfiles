@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Disconnect from the VPN
+
+pid=$(cat /var/run/vpnc/pid)
+
+if [ -z "$pid"] ; then
+    echo VPN does not appear to be running.
+    ps h -f -C vpnc
+    exit 1
+fi
+
+kill $pid
