@@ -1,0 +1,6 @@
+#/bin/bash
+
+export DISPLAY=:0 && \
+export XAUTHORITY=~/.Xauthority && \
+notify-send -u critical -i ~/.icons/notify.png --expire-time=300 \
+"$(date +'%H:%M:%S') - $*"

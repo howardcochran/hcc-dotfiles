@@ -1,0 +1,104 @@
+MAGIC_EQUAL_SUBST
+    All unquoted arguments of the form `anything=expression' appearing after the command name have filename expansion (that is, where expression has a leading `~' or `=') performed on expression as if it were a parameter assignment. The argument is not otherwise treated specially; it is passed to the command as a single argument, and not used as an actual parameter assignment. For example, in echo foo=~/bar:~/rod, both occurrences of ~ would be replaced. Note that this happens anyway with typeset and similar statements.
+
+    This option respects the setting of the KSH_TYPESET option. In other words, if both options are in effect, arguments looking like assignments will not undergo wordsplitting. 
+
+
+MARK_DIRS (-8, ksh: -X)
+    Append a trailing `/' to all directory names resulting from filename generation (globbing).
+
+MULTIOS <Z>
+    Perform implicit tees or cats when multiple redirections are attempted (see 6. Redirection).
+
+ROMPT_BANG <K>
+    If set, `!' is treated specially in prompt expansion. See 12. Prompt Expansion.
+
+PROMPT_CR (+V) <D>
+    Print a carriage return just before printing a prompt in the line editor. This is on by default as multi-line editing is only possible if the editor knows where the start of the line appears.
+
+PROMPT_PERCENT <C> <Z>
+    If set, `%' is treated specially in prompt expansion. See 12. Prompt Expansion.
+
+PROMPT_SUBST <K>
+    If set, parameter expansion, command substitution and arithmetic expansion are performed in prompts.
+
+PUSHD_IGNORE_DUPS
+    Don't push multiple copies of the same directory onto the directory stack.
+
+TRANSIENT_RPROMPT
+    Remove any right prompt from display when accepting a command line. This may be useful with terminals with other cut/paste methods.
+
+
+---------------
+Hints:
+
+To repeat the last arg of a command - get it into the edit buffer - type this:
+!#:$<enter>
+
+Recursive globbing:
+***/filename  will find filename in pwd or any subdirs, following symlinks.
+- filename itself may contain further wildcards.
+
+------
+
+Interesting built-in vars:
+cdpath <S> <Z> (CDPATH <S>)
+    An array (colon-separated list) of directories specifying the search path for the cd command.
+
+fignore <S> <Z> (FIGNORE <S>)
+    An array (colon separated list) containing the suffixes of files to be ignored during filename completion. However, if completion only generates files with suffixes in this list, then these files are completed anyway.
+
+fpath <S> <Z> (FPATH <S>)
+    An array (colon separated list) of directories specifying the search path for function definitions. This path is searched when a function with the -u attribute is referenced. If an executable file is found, then it is read and executed in the current environment.
+
+module_path <S> <Z> (MODULE_PATH <S>)
+    An array (colon-separated list) of directories that zmodload searches for dynamically loadable modules. This is initialized to a standard pathname, usually `/usr/local/lib/zsh/$ZSH_VERSION'. (The `/usr/local/lib' part varies from installation to installation.) For security reasons, any value set in the environment when the shell is started will be ignored.
+
+REPORTTIME
+    If nonnegative, commands whose combined user and system execution times (measured in seconds) are greater than this value have timing statistics printed for them.
+
+TIMEFMT
+    The format of process time reports with the time keyword. The default is `%E real %U user %S system %P %J'. Recognizes the following escape sequences:
+
+
+$ emacs -nw =(ps aux)
+
+This will create a temporary file with the output of ps aux and let you edit it in Emacs. Or:
+
+$ diff =(ls) =(ls -F)
+
+Will run diff on the output of the two commands.
+
+Some really good tips here:
+http://blog.printf.net/articles/page/2
+
+    * Hostname completion based on the contents of your ~/.ssh/known_hosts file. This requires you to turn off HashKnownHosts (see below), and add the following to your ~/.zshrc:
+
+       hosts=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\*}%%,*})
+       zstyle ':completion:*:hosts' hosts $hosts
+#
+
+Remote filename completion over ssh, which works wonderfully with public key auth, remote host completion, and the ssh ControlMaster tip below. This is enabled by default; an example use is below, with the bold characters written by tab presses rather than by my keyboard directly:
+
+% scp foo.html printf.net:public_html/index.html
+#
+
+By default, modern ssh hashes the known_hosts file so that someone who hacks access to your account doesn't have a list of where they might be able to go next. This is sensible, but breaks the hostname completion above, so I turn it off in ~/.ssh/config:
+
+HashKnownHosts no
+    *
+
+      New (4.0+) versions of OpenSSH have support for multiplexing several shells over a single ssh connection; this means that the second time you type ssh host, the first (already established) connection is used and told to spawn a new shell, making your new shell appear immediately instead of in a few seconds. This cuts login time for a new shell from 1.891s to 0.267s on my work machine. It also speeds up anything that uses a single ssh session per file such as bash/zsh remote filename completion (see above), or rsync/darcs/svn/etc over ssh. To enable, in ~/.ssh/config:
+
+      ControlMaster auto
+      ControlPath /tmp/%r@%h:%p
+
+    I have a few annoyances with ControlMaster %G—%@ let me know if you know of a clean way to have the first connection for each host be created as a background process without a tty so that it can't easily be killed by accident.
+
+#
+
+I use tramp to edit files remotely %G—%@ this has the same host and filename completion as zsh, and is insanely useful for me; some of the machines I use at work are an ssh tunnel away (meaning high latency) and don't have emacs or vim installed (only vi, meaning no syntax highlighting). Setting up tramp is easy:
+
+(require 'tramp)
+C-x C-f /somehost:some/dir/and/file RET
+

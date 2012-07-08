@@ -1,0 +1,16 @@
+# .zshrc
+
+# This is the "main host" that I use.  When running on any host other than this
+# one, the prompt will announce the host name.  Otherwise host name is suppressed.
+# Set this before source rc-common.
+prompt_main_host=digit
+prompt_color_main=hyellow
+prompt_color_host=hyellow
+
+source ~/.zsh/rc-common
+
+# Note the typeset -U keeps the cumulative PATH & MANPATH assignments
+# here safe for "source .zshrc" case.
+# export PATH=$PATH:/home/hcochran/android-sdk/tools
+
+

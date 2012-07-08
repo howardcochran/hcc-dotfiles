@@ -1,0 +1,26 @@
+#!/bin/sh
+
+synclient LockedDrags=1
+synclient CornerCoasting=0     # 0 = Conventional, finger-up coasting
+
+# 20 is the max, but it's not really high enough. May disable this.
+synclient CoastingSpeed=20 
+
+synclient CircularScrolling=1
+synclient CircScrollTrigger=3  # Right Edge
+synclient CircScrollDelta=0.05
+synclient RTCornerButton=0  # None; default was 2
+synclient RBCornerButton=0  # None; default was 3
+
+synclient FingerLow=2 FingerHigh=2 # default was 18, 23
+synclient MaxTapMove=100  # Not sure what this does?
+synclient RightEdge=920   # Was 830, too big
+
+# Don't really love this, but this is best I can do for now.
+# How to really eliminate the "null zone"?
+##synclient MinSpeed=0.3 MaxSpeed=200 AccelFactor=0.02
+#synclient MinSpeed=0.3 MaxSpeed=0.3 AccelFactor=0
+synclient MinSpeed=0.6 MaxSpeed=1 AccelFactor=0.2
+xinput set-ptr-feedback "AlpsPS/2 ALPS DualPoint TouchPad" 2 2 1
+
+echo Finished Touchpad Setup `date`

@@ -1,0 +1,136 @@
+" Use vim settings, not vi (yuck!)
+set nocompatible
+
+set wrap           " wrap long lines in the window
+set nolinebreak    " wrap exactly at window edge, not between words
+set sw=8           " Shift width - how much to indent with tab key
+set ts=8           " Tab stop - how far a tab char indents
+set smarttab
+set autoindent
+set history=500    " This is the : cmd history. Use up arrorw for prev commands
+set ruler          " Always show a window status line, even when only 1 win
+set showcmd        " Show partially typed commands in status area
+set incsearch      " Incremental search
+set ignorecase     " the case of normal letters is ignored
+set smartcase      " upper case letters in search turn off ignorecase
+set wrapscan       " wrap to top of file on search
+set cinoptions=(0l1
+set showmatch      " When a bracket is inserted, briefly jump to the matching.
+set whichwrap=,,<,>,[,],b,s
+set hlsearch       " Highlight search results as
+set shell=/bin/zsh
+set modeline       " read modelines
+set modelines=5    " number of lines from top and bottom of file
+filetype on        " Detect file types
+set showfulltag    " Insert mode completion of tag shows whole funct prototype!
+set hidden         " Allow a modified buffer to be not displayed in a window
+
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+
+" make the completion mode behave more like bash -- complete the longest
+" string, then list the alternatives.  as an added bonus, revert to the
+" normal cycle-through behavior for later tabbing.
+set wildmode=longest,list,full
+set wildmenu
+" I think this is the default: set wildchar=<Tab>
+
+" hardware tabs are special in makefiles, don't expand them
+autocmd FileType make set noexpandtab shiftwidth=8
+
+
+" Make PgUp and PgDn keep the cursor on the same line of the screen
+" http://vimrc-dissection.blogspot.com/2009/02/fixing-pageup-and-pagedown.html
+map <silent> <PageUp> 1000<C-U>
+map <silent> <PageDown> 1000<C-D>
+imap <silent> <PageUp> <C-b>1000<C-U>
+imap <silent> <PageDown> <C-b>1000<C-D>
+
+
+set tags=tags,../tags,../../tags,../../../tags,../../../../tags
+
+
+" **** Be a little bit more Common User Interface-like ****
+set virtualedit=onemore
+set selectmode=key,mouse
+set keymodel=startsel,stopsel
+set selection=exclusive
+nmap <End> $l
+
+" Temp disable some cpoptions that might affect the following bindings
+" I'm not really sure this matters
+let s:save_cpo = &cpoptions
+set cpo&vim
+
+" backspace in Visual mode deletes selection
+" vnoremap <BS> d
+
+" SHIFT-Del is Cut
+vnoremap <S-Del> "+x
+
+" CTRL-Insert is Copy
+vnoremap <C-Insert> "+y
+
+" SHIFT-Insert is Paste (normal/visual, insert, and command-edit modes)
+map <S-Insert>		"+gP
+imap <S-Insert>		<C-o>"+gP
+cmap <S-Insert>		<C-R>+
+
+" CTRL-Z is Undo; not in cmdline though
+noremap <C-Z> u
+inoremap <C-Z> <C-O>u
+
+" CTRL-A is Select all
+noremap <C-A> gggH<C-O>G
+inoremap <C-A> <C-O>gg<C-O>gH<C-O>G
+cnoremap <C-A> <C-C>gggH<C-O>G
+onoremap <C-A> <C-C>gggH<C-O>G
+snoremap <C-A> <C-C>gggH<C-O>G
+xnoremap <C-A> <C-C>ggVG
+
+" restore 'cpoptions'
+set cpo&
+let &cpoptions = s:save_cpo
+unlet s:save_cpo
+
+
+map <C-F5> :source ~/.vimrc<CR>:source ~/.gvimrc<CR>
+
+" Abandon changes in current buffer, reloading from disk
+map <S-F5> :e!<CR>
+
+" Kill current buffer without closing the window that it occupies.
+map <F5> :bp<CR>:bd#<CR>   
+
+" Quickly move up & down between split windows using ^j and ^k
+map <C-J> <C-W>j<C-W>_
+map <C-K> <C-W>k<C-W>_
+" NOTE: To not have to see one line from the minimized windows, do :set mwh=0
+
+" Hotkeys for using quicklists:
+map <S-F4>   :copen<CR>
+map <S-F3>   :cclose<CR>
+map <F4>     :cnext<CR>
+map <F3>     :cprevious<CR>
+map <C-F4>   :cnewer<CR>
+map <C-F3>   :colder<CR>
+
+" Make ^L behave like emacs (also cuz zz can be dangerous if capslock on!!)
+" i.e. Scroll window so current line is at center, preserving cursor pos in buf
+map ^L :norm zz<CR>:redraw!<CR>
+
+" Scroll window up or down a bit, preserving cursor pos in buffer:
+map <C-Down> <C-E>
+map <C-Up> <C-Y>
+
+" Make CTRL-] show tab select list iff more than one match
+map <C-]> g<C-]>
+
+" Filter current buffer to a new temporary buffer (i.e current buffer grep)
+command! -nargs=0 Filter let @f='' | execute 'g//y F' | new | setlocal bt=nofile | put! f
+" Supposedly better/faster method using redir, but I couldn't get it to work:
+" It would only copy first match into the buffer for reasons I don't fathom.
+""command! -nargs=0 Filter redir @f> | g// | redir END | new | put! f
+
+
+

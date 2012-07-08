@@ -1,0 +1,48 @@
+#!/usr/bin/python
+# vim: set et sw=4 ts=4
+
+# This script is written in python because the shell environment lacks
+# a realpath command. A shell function could be written to do it, but
+# it's pretty convoluted.
+#
+# By default, this script is non-destructive, in that it will not replace
+# any file or symlink that already exists (but will silently skip them).
+#
+# To do: Add -f option to overwrite existing links and files
+# To do: Add -v option to complain about existing links & files that don't
+#        match what we were trying to set them to.
+
+import sys
+import os
+import os.path
+import shutil
+
+scriptdir = os.path.realpath(os.path.dirname(sys.argv[0]))
+
+def mklink(src, dest):
+    realsrc = os.path.join(scriptdir, src)
+    realdest = os.path.expanduser(dest)
+    try:
+        os.symlink(realsrc, realdest)
+    except:
+        pass
+
+def copy_if_not_exist(src, dest):
+    realsrc = os.path.join(scriptdir, src)
+    realdest = os.path.expanduser(dest)
+    if not os.path.exists(realdest):
+        shutil.copy(realsrc, realdest)
+    
+# I make .zshrc and .vimrc contain only machine-specifical customizations,
+# so instead of symlinking it into the source, we'll just copy a template
+# if not exist.
+copy_if_not_exist("config/zshrc-template", "~/.zshrc")
+copy_if_not_exist("config/vimrc-template", "~/.vimrc")
+
+mklink("config/.zsh", "~/.zsh")
+mklink("bin", "~/bin")
+mklink("config/.gvimrc", "~/.gvimrc")
+mklink("config/.vim", "~/.vim")
+
+
+

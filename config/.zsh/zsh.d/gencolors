@@ -1,0 +1,17 @@
+#
+# Call this once to define all of the ansi colors, then call it again to undef
+# them
+#
+
+# generate ye olde ANSI colors
+colors=(black red green yellow blue magenta cyan white)
+norm="[0;0m"
+numb=29
+for x in $colors ; do
+        numb=$[$numb+1]
+        # echo $numb
+        eval $(echo $x)="[0\;${numb}m"
+        eval h$(echo $x)="[1\;${numb}m"
+        eval bg$(echo $x)="[$[${numb}+10]m"
+done    
+unset numb

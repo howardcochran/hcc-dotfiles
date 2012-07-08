@@ -1,0 +1,13 @@
+#!/bin/sh
+
+host=$1
+
+prev=`date +%s`
+
+while true; do
+      ping -c 4 $host
+      now=`date +%s`
+      elapsed=`expr $now - $prev`
+      prev=$now
+      echo `date` "    $elapsed"
+done

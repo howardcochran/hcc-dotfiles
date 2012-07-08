@@ -1,0 +1,4 @@
+#!/bin/sh
+
+vncviewer AutoSelect=0 PreferredEncoding=ZRLE LowColourLevel=1 $* 2>/dev/null >/dev/null &
+

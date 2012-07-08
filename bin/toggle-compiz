@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# If not associated with an X server, apply to the console one, so can
+# use this command from an ssh login
+[ -z "$DISPLAY" ] && DISPLAY=:0
+
+# Returns success (status 0) if compiz is runing
+is_compiz_running() {
+    ps -C compiz --no-headers -o user |grep -q hcochran
+}
+
+start_compiz() {
+    echo Starting Compiz
+    compiz --replace &
+}
+
+stop_compiz() {
+    echo Stopping Compiz
+    metacity --replace &
+}
+
+show_status() {
+    echo -n "Compiz is "
+    if ! is_compiz_running; then
+	echo -n "NOT "
+    fi
+    echo "Running."
+}
+
+action="$1"
+[ -z "$action" ] && action="toggle"
+
+case $action in
+    on|--on)
+        start_compiz
+	;;
+    off|--off)
+	stop_compiz
+	;;
+    toggle|--toggle)
+	if is_compiz_running; then
+	    stop_compiz
+	else
+	    start_compiz
+	fi
+	;;
+    status|--status)
+	show_status
+	;;
+    *)
+	echo "Usage: $0 toggle|on|off|status"
+	echo "Default is toggle if no option specified."
+	show_status
+	;;
+esac
+
+

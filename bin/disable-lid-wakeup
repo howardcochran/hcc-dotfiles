@@ -1,0 +1,37 @@
+#!/bin/sh
+RETVAL=0
+
+# Find out if wakup-on-lid-switch is currently enabled. May toggle it.
+is_enabled=0
+grep -q 'LID.*enabled' /proc/acpi/wakeup && is_enabled=1
+
+case $1 in
+  start)
+	if [ "$is_enabled" = 1 ] ; then
+	    echo "Disabling wakeup on Lid switch"
+	    echo "LID" > /proc/acpi/wakeup
+	else
+	    echo "Wakeup on Lid switch already disabled"
+	fi
+    ;;
+  stop)
+	if [ "$is_enabled" = 1 ] ; then
+	    echo "Wakeup on Lid switch already enabled"
+	else
+	    echo "Enabling Wakeup on Lid switch"
+	    echo "LID" > /proc/acpi/wakeup
+	fi
+    ;;
+  status)
+    echo "Displaying lid wakeup status..."
+    grep LID /proc/acpi/wakeup
+    ;;
+  *)
+    echo "Usage: lid {start|stop|status}"
+    echo "Start will configure Lid switch to be ignored during sleep."
+    echo "Stop will configure Lid switch to cause wake from sleep."
+    echo "Status displays the status of Wakeup on Lid switch."
+    RETVAL=1
+esac
+
+exit

@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Setup hcochran's prompt.
+# We expect that ~/.zsh/gencolors has already been sourced by this shell, so
+# that all the color strings therein are already defined.
+
+setopt PROMPT_SUBST
+
+
+function hccprompt {
+    # This is magic for drawing extended character art. I got this stuff
+    # from: http://www.aperiodic.net/phil/prompt/
+    typeset -A altchar
+    set -A altchar ${(s..)terminfo[acsc]}
+    PR_SET_CHARSET="%{$terminfo[enacs]%}"
+    PR_SHIFT_IN="%{$terminfo[smacs]%}"
+    PR_SHIFT_OUT="%{$terminfo[rmacs]%}"
+    PR_HBAR=${altchar[q]:--}
+    PR_ULCORNER=${altchar[l]:--}
+    PR_LLCORNER=${altchar[m]:--}
+    PR_LRCORNER=${altchar[j]:--}
+    PR_URCORNER=${altchar[k]:--}
+
+    local maincolor="%{$hyellow%}"
+    local hostcolor="%{$hyellow%}"
+    [ ! -z "$prompt_color_main" ] && maincolor="%{${(P)prompt_color_main}%}"
+    [ ! -z "$prompt_color_host" ] && hostcolor="%{${(P)prompt_color_host}%}"
+
+    # I want to see what host I am on, but only if it is anything other than
+    # my "main" host.
+    local conditional_host=
+    local host=`hostname`
+    [ "$host" != "$prompt_main_host" ] && conditional_host=" $host"
+
+
+    PS1="${maincolor}===${maincolor}\
+[%T${hostcolor}${conditional_host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? %{$norm%}${maincolor})"\
+'$(_git_ps1)'" %~/
+${maincolor}==>%{$norm%} "
+
+}
+hccprompt
+
+alias sp='source ~/.zsh/setprompt'

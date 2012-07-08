@@ -1,0 +1,251 @@
+
+# Fix $SHELL, since we often inherited csh's idea of $SHELL
+export SHELL=/bin/zsh
+
+export EDITOR=vim
+
+# Make completions case-insensitive
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+
+# Be very verbose with completions
+zstyle ':completion:*' verbose yes 
+zstyle ':completion:*:descriptions' format '%B%d%b' 
+zstyle ':completion:*:messages' format '%d' 
+zstyle ':completion:*:warnings' format 'No matches for: %d' 
+zstyle ':completion:*' group-name ''
+
+autoload -U compinit
+compinit -C # -C means just use cached .zcompdump unconditionally
+
+setopt PROMPT_SUBST # Allow parameter substitution in prompt
+
+for file in ~/.zsh/zsh.d/*; do
+    source $file
+done
+
+# Actually set my prompt.  Depends on already sourcing gencolors above
+source ~/.zsh/setprompt
+
+# Put this in front of a command to execute it only if prev command succeeded
+# Allows easy piece-meal authoring of lines like cmd1 && cmd2 && cmd3
+alias ok='[ $? -eq 0 ] && '
+
+# Automatically list choices on an ambiguous completion.
+setopt AUTO_LIST
+
+# Make cd push the old directory onto the directory stack.
+setopt AUTO_PUSHD PUSHD_MINUS
+
+setopt NO_BG_NICE
+
+setopt NO_CLOBBER
+
+setopt NO_HUP
+
+# If a pattern for filename generation has no matches, delete the pattern from the argument list; do not report an error unless all the patterns in a command have no matches. Overrides NOMATCH.
+setopt CSH_NULL_GLOB
+
+setopt EXTENDED_GLOB
+
+setopt HIST_NO_STORE
+
+# Whenever the user enters a line with history expansion, don't execute the line directly; instead, perform history expansion and reload the line into the editing buffer.
+setopt HIST_VERIFY
+
+# Do not exit on end-of-file.
+setopt IGNORE_EOF
+
+# (No) Beep on an ambiguous completion.
+setopt NO_LIST_BEEP
+
+# When listing files that are possible completions, show the type of each file with a trailing identifying mark.
+setopt LIST_TYPES
+
+# Don't print exit status when non-zero. My prompt does that already
+unsetopt PRINT_EXIT_VALUE
+
+# Perform implicit tees or cats when multiple redirections are attempted (see 6. Redirection).
+setopt MULTIOS
+
+# Report the status of background jobs immediately, rather than waiting until just before printing a prompt.
+setopt NOTIFY
+
+# Perform a path search even on command names with slashes in them.
+setopt PATH_DIRS
+
+# Perform foo=/path/to/filename expansion
+setopt EQUALS
+
+# long jobs listing
+setopt long_list_jobs
+
+# set ignore case for ls etc
+setopt no_case_glob
+
+# Recognize the # character in interactive command line
+setopt INTERACTIVE_COMMENTS
+
+# Split var references into words when values have spaces (like bash & tcsh)
+setopt SH_WORD_SPLIT
+
+# Disable ^S / ^Q flow control so can use ^Q for push-line
+unsetopt FLOW_CONTROL
+
+# automatically remove duplicates from these arrays
+typeset -U path PATH cdpath fpath manpath MANPATH
+
+# Prevent the prompt from overwriting the last line of output of a command
+# if it does not end in a newline.
+unsetopt promptcr
+
+limit coredumpsize 0
+
+# Give me "time" usage for any non-bg cmd that takes more than 2s sys & usr time
+REPORTTIME=2
+TIMEFMT="Time: %*E real %U usr %S sys %P %J"
+
+# I like ls -s to tell me the number of blocks in 1K blocks.
+BLOCKSIZE=K ; export BLOCKSIZE
+
+# color-ls This sets LS_COLORS for my dark background
+eval `dircolors --sh`
+
+# LS aliases
+alias ls='ls --color=auto -Fs'
+alias ll='ls --color=auto -lF'
+alias la='ls --color=auto -aF'
+alias lla='ls --color=auto -latrF'
+alias lls='ls --color=auto -ltrF'
+
+# List only directories and symbolic links that point to directories.
+# Takes an optional directory name as argument and searches relative to it.
+# Parens make whole thing happen in subshell so cd not permanent
+function lsd() { 
+   ( if [ $1 ]; then 
+         \cd $1;
+     fi
+     ls -ld *(-/DN)
+   )
+}
+
+function namedir () {
+	if [ ! ! "$2" ]
+	then
+		dir="$2"
+	else
+		dir="$PWD"
+	fi
+
+	eval "$1=$dir"
+	echo ~$1 >& /dev/null
+}
+
+function up () {
+	count=$1
+	local ups
+	while [ "$count" -gt 0 ] ; do
+	    ups="../$ups"
+	    ((count--))
+	done
+	if [ ! -z "$ups" ] ; then
+	    cd "$ups"
+	fi
+}
+
+
+
+# These vars only make sense for an interactive shell, so they're in zshrc
+export HISTIGNORE=ls:ll:lls:la:c
+export HISTSIZE=16384
+export SAVEHIST=$HISTSIZE
+export HISTFILE=$HOME/.zsh_history
+
+export GREP_OPTIONS='--exclude=*.svn* --directories=recurse --color=auto'
+export GREP_COLOR='1;32'
+
+function ..() { cd .. }
+## alias cd='cd -L' # This interferes with tab completion on the cd command
+alias rm='rm -i'
+alias cp='cp -i'
+alias c=clear
+alias m=less
+alias h=history
+alias hi='history | tail -25'
+alias dh='dirs -v'
+alias j='jobs -l'
+alias eat='cat > /dev/null'
+alias mv="mv -i"
+alias a=alias
+alias u=unalias
+alias mroe=more
+function ga { a | egrep $* }
+
+# A few global aliases of interest
+alias -g NF='$(\ls -a *(.om[1]))'    # newest file
+alias -g ND='$(\ls -a -d *(/om[1]))' # newest directory
+alias -g G='| grep'
+alias -g L='| less'
+
+
+alias psg='ps -Af | grep '
+
+# Lexmark LPDEV Setup
+#alias mlsinit='eval `/m/mls/tools/bin/mlsinit`'
+#mlsinit
+export MLS_EXPERT=1
+export HWSIM_DATA_DIR=~/hwsim_data_dir
+alias mstatreal 'mstatus | grep -v "^[?]"'
+alias mstatusreal mstatreal
+
+alias sdis='export DISPLAY=$(cat ~/.DISPLAY)'
+
+# Previous globbing-method to do bldtarget completions based on globbing:
+#function complete-mls-target () {
+#	if [ ! -e bconfig ] ; then
+#	    return
+#	fi
+#
+#	targets=( bconfig/*.target )
+#	for i in "${targets[@]}" ; do
+#	    compadd -- $(echo $i | sed -e 's/bconfig\/\(.*\).target/\1/')
+#	done
+#}
+
+# Shortened output of the mls 'builds' command.  This works by filtering
+# out headers and other undesireable rows, then cutting out only the
+# actual build name from the result. For use in bldtarget completion.
+function short-build-list () {
+    builds | egrep -v '^[>)]|^ *[-A-Z]|^[*]|^$' | cut --delimiter=' ' -f 2
+}
+
+function complete-mls-target2 () {
+    compadd -- $(short-build-list)
+}
+compdef complete-mls-target2 bldtarget
+
+
+# Swalter's method. I dislike because it doesn't list possible completions:
+#zle -C dumb-complete complete-word _path_files
+#bindkey '^N' dumb-complete
+
+# Make ^N always do regular non-smart filename completion
+complete-files () { compadd - * }
+zle -C dumb-complete complete-word complete-files
+bindkey '^N' complete
+
+
+# Setup key bindings.  For some stupid reason, Home and End keys don't work
+# out of the box!
+bindkey -e # Emacs bindings
+bindkey "\eOH" beginning-of-line
+bindkey "\eOF" end-of-line
+bindkey "^F" forward-word   # Was forward-char
+bindkey "^B" backward-word  # Was backward-char
+bindkey "^P" push-input     # Was push-line
+bindkey "^G" get-line       # Was send-break
+bindkey "^[[3~" delete-char # DEL key - delete char from right
+bindkey "^Z"    undo        # Undo effect of last keystroke. Useful after tab.
+bindkey "^[[Z"  dumb-complete # Shift-Tab: Do regular file completion
+
+export PATH=~/bin:$PATH
+
