@@ -43,6 +43,8 @@ mklink("config/.zsh", "~/.zsh")
 mklink("bin", "~/bin")
 mklink("config/.gvimrc", "~/.gvimrc")
 mklink("config/.vim", "~/.vim")
+mklink("config/.tmux.conf", "~/.tmux.conf")
+mklink("config/.tmux", "~/.tmux")
 
 
 
