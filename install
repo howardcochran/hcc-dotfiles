@@ -45,6 +45,7 @@ mklink("config/.gvimrc", "~/.gvimrc")
 mklink("config/.vim", "~/.vim")
 mklink("config/.tmux.conf", "~/.tmux.conf")
 mklink("config/.tmux", "~/.tmux")
+mklink(".fonts", "~/.fonts")
 
 
 
