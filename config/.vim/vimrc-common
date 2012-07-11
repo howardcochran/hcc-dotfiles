@@ -24,6 +24,9 @@ set modelines=5    " number of lines from top and bottom of file
 filetype on        " Detect file types
 set showfulltag    " Insert mode completion of tag shows whole funct prototype!
 set hidden         " Allow a modified buffer to be not displayed in a window
+colorscheme hcc
+syntax on
+set laststatus=2  " Always show a status line, even when only 1 window
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
