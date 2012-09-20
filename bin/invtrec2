@@ -1,0 +1,1 @@
+ffmpeg  -f alsa -ac 1 -ab 64k -i pulse -f x11grab -s 1350x900 -r 5 -i $DISPLAY+8,96 -acodec libmp3lame -vcodec libx264 -vpre lossless_ultrafast -threads 0 "$@"
