@@ -1,0 +1,12 @@
+#!/bin/bash
+
+[ $# -eq 1 ] || ( echo Required filename missing ; exit 1 )
+
+while [ ! -z "$1" ] ; do
+    infile="$1"
+    shift
+    ffmpeg -i "$infile" -acodec copy "${infile%.mp4}.mp3"
+done
+
+
+
