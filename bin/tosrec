@@ -1,6 +1,49 @@
-#!/bin/sh
+#!/bin/bash
+# Usage: $0 [-t h:mm:ss] output.mp4
+# Record the screen and accompanying sound, then make a copy of just the sound
+# as an mp3 file in the same directory as the video.
+# If given a time limit in the form -t h:mm:ss, will stop the recording
+# at that time. Otherwise, must manually stop it using Ctrl-C.
+# Use 5 FPS rate, with region recorded optimized for archived videos
+# on TDA's Think or Swim platform.
 
-ffmpeg -f alsa -ac 1 -ab 64k -i pulse -f x11grab -s 1024x740 -r 5 -i $DISPLAY+8,30 -acodec libmp3lame -vcodec libx264 -vpre lossless_ultrafast -threads 0 "$@"
+# NOTE: We do not use avconv's -t option because it has a bug which causes
+# it to not actually record sound when that option is given
 
+# OLD, DEPRECATED: ffmpeg -f alsa -ac 1 -ab 64k -i pulse -f x11grab -s 1024x740 -r 5 -i $DISPLAY+8,30 -acodec libmp3lame -vcodec libx264 -vpre lossless_ultrafast -threads 0 "$@"
 
+# Process -t hh:mm:ss, if given. Convert to seconds.
+if [ x"$1" = x"-t" ] ; then
+    shift
+    time_hms="$1"
+    shift
+
+    # The following line does not work in dash. So we shbang bash!
+    # Note also, that the following version doesn't work in bash:
+    # echo $time_hms | tr ':'   ' ' | read time_h time_m time_s
+    # because the read occurs in a subshell (although it does work in zsh!).
+    # So, we use this redirect from a command syntax:
+    read time_h time_m time_s < <(echo $time_hms | tr ':'   ' ')
+    time_secs=$(( $time_h * 3600 + $time_m * 60 + $time_s ))
+else
+    time_secs=''
+fi
+
+if [ "$time_secs" -le 1 ] ; then
+    echo "Error parsing time limit $time_hms"
+    exit 1
+fi
+
+echo Will stop in $time_secs seconds.
+
+avconv -f alsa -i pulse -f x11grab -s 1024x740 -r 5 -i :0.0+8,30 \
+    -vcodec libx264 -preset ultrafast -threads 0 \
+    -codec:a libmp3lame -ac 1 -b:a 64k -ar:a 44100 "$@" &
+if [ ! -z "$time_secs" ] ; then
+    pid=$!
+    sleep $time_secs
+    kill $pid
+    wait $pid
+    tomp3 "${!#}"  # means script's "last argument"
+fi
 
