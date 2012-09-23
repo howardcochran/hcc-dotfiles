@@ -5,7 +5,11 @@
 while [ ! -z "$1" ] ; do
     infile="$1"
     shift
-    ffmpeg -i "$infile" -acodec copy "${infile%.mp4}.mp3"
+    # avconv apparently has a bug if I let it write directly to an
+    # mp3 file such that the result plays double-speed in DoggCatcher on
+    # Android (but sounds OK on vlc in Linux!?).
+    # Odd workaround... Make it write to stdout & redirect it to a file!
+    avconv -i "$infile" -codec:a copy -f mp3 - > "${infile%.mp4}.mp3"
 done
 
 
