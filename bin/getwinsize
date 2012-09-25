@@ -1,0 +1,13 @@
+#!/bin/sh
+# Return the size and position of the next window the user clicks on
+# in a form appropriate for passing as arguments to tosrec script.
+
+xwininfo | awk '
+/ Absolute upper-left X:/  { pos_x = $4 }
+/ Absolute upper-left Y:/  { pos_y = $4 }
+/ Width:/  { width = $2 }
+/ Height:/ { height = $2 }
+END { print "--size " width "x" height " --pos " pos_x "," pos_y }
+'
+
+
