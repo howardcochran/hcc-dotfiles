@@ -1,0 +1,3 @@
+#!/bin/sh
+netstat -n --tcp --listen --program -4 "$@"  # a.k.a: netstat -ntlp4
+
