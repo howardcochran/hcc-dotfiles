@@ -16,6 +16,7 @@ extensions.tabmix.openTabNextInverse=true
 extensions.tabmix.openDuplicateNext=true
 extensions.tabmix.lockallTabs=false
 extensions.tabmix.lockAppTabs=false
+extensions.tabmix.updateOpenedTabsLockState=true
 extensions.tabmix.opentabfor.bookmarks=false
 extensions.tabmix.loadFolderAndReplace=true
 extensions.tabmix.opentabfor.history=false
