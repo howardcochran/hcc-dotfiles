@@ -5,11 +5,11 @@ NOTE: M-  is Alt+
 
 Mine   |Default|Screen | What
 a      |       |a(?)   | send-keys ^a  ; To send command to nested tmux or screen
--n M-PgDown|n  |n," "  | (vim C-PgDown) Switch to Next window
--n M-PgUp |p   |p,<BS> | (vim C-PgUp)   Switch to Prev window
+l,-n M-PgDown|n  |n," "  | (vim C-PgDown) Switch to Next window
+h,-n M-PgUp |p   |p,<BS> | (vim C-PgUp)   Switch to Prev window
 ^a     |l      |^a     | Toggle to last-focused window
 def    |0-9    |0-9    | Jump focus to specific window (so above toggle is useful!)
-w      |w      |"      | List windows & interactively pick one
+w      |w      |"      | List windows & interactively pick one to switch to
 M-PgUp |<none> |<none> | Move current window Left
 M-PgDn |<none> |<none> | Move current window Reft
 c      |c      |c,^c   | Create a new window
@@ -20,15 +20,15 @@ k,K    |&      |k,K    | Kill window
        |$      |<none> | Rename current session
 def    |(      |       | switch-client -p ; Switch current client to previous session
 def    |)      |       | switch-client -n ; Switch current client to next session
-^A     |L      |       | switch-client -l ; Toggle current client to last session
+def    |L      |       | switch-client -l ; Toggle current client to last session
        |       |       | 
 
 s      |"      | ???   | (vim ^W s) Create horizontal split
 v      |%      | |     | (vim ^W v) Create vertical split
--n M-Left, h,Left |Left   |       | Move focus Up pane (vim: hjkl, Ctrl+hjkl, Left/Down/Up/Right)
--n M-Down, j,Down |Down   |       |     Down
--n M-Up,   k,Up   |Up     |       |     Up
--n M-Right,l,Right|Right  |       |     Right
+h, -n M-Left, Left |Left   |       | Move focus Up pane (vim: hjkl, Ctrl+hjkl, Left/Down/Up/Right)
+j, -n M-Down, Down |Down   |       |     Down
+k, -n M-Up,   Up   |Up     |       |     Up
+l, -n M-Right,Right|Right  |       |     Right
 def    |C-Left |       | (vim ^W <) Resize pane Left
 def    |C-Down |       | (vim ^W -)    Down
 def    |C-Up   |       | (vim ^W +)    Up
@@ -47,12 +47,22 @@ def    |=      |       | choose-buffer
 def    |q      |       | display-panes   ; Show number in each pane briefly
 def    |~      |       | Show messages
 
+To Do:
+ * Port >, <, break-pane and join-pane implementations from hope's current session
+ * list buffers, select one to copy to X clip board & to default buffer, so can paste with ] (?)
+ * list buffers, select one to save to file (prompt for filename)
+ * Figure out propagation of DISPLAY variable
+ * Get ssh agent working on remote session?
+ * What is terminal-overrides option?
+ * What is prefix2? Can I use it to easily address windows > 9?
+   * A: Sadly, No. It's just an alias for prefix, so can't behave differently :(
+ * Why does X clipboard not work across ssh when DISPLAY is right? Seems DISPLAY Not propagate into run-shell?
+ * 
 
 
 break-pane
 join-pane
-list buffers, select one to paste
-list buffers, select one to save to file (prompt for filename)
+
 
 
 
