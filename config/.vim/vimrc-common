@@ -80,16 +80,18 @@ imap <S-Insert>		<C-o>"+gP
 cmap <S-Insert>		<C-R>+
 
 " CTRL-Z is Undo; not in cmdline though
-noremap <C-Z> u
-inoremap <C-Z> <C-O>u
+" Disable this one. Prevents backgrounding it in a terminal
+"noremap <C-Z> u
+"inoremap <C-Z> <C-O>u
 
 " CTRL-A is Select all
-noremap <C-A> gggH<C-O>G
-inoremap <C-A> <C-O>gg<C-O>gH<C-O>G
-cnoremap <C-A> <C-C>gggH<C-O>G
-onoremap <C-A> <C-C>gggH<C-O>G
-snoremap <C-A> <C-C>gggH<C-O>G
-xnoremap <C-A> <C-C>ggVG
+" Disable this. Too many accidental C-a's because it's often used in tmux!
+"noremap <C-A> gggH<C-O>G
+"inoremap <C-A> <C-O>gg<C-O>gH<C-O>G
+"cnoremap <C-A> <C-C>gggH<C-O>G
+"onoremap <C-A> <C-C>gggH<C-O>G
+"snoremap <C-A> <C-C>gggH<C-O>G
+"xnoremap <C-A> <C-C>ggVG
 
 " Disable ZZ = :x to prevent accidental write when using zz with capslock on
 map ZZ zz
