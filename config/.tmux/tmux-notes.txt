@@ -48,25 +48,37 @@ def    |q      |       | display-panes   ; Show number in each pane briefly
 def    |~      |       | Show messages
 
 To Do:
- * Port >, <, break-pane and join-pane implementations from hope's current session
+ * x Port >, <, break-pane and join-pane implementations from hope's current session
    * http://superuser.com/questions/470130/tmux-prompt-to-select-window-for-join-pane-while-still-seeing-window-numbers-an
- * list buffers, select one to copy to X clip board & to default buffer, so can paste with ] (?)
- * list buffers, select one to save to file (prompt for filename)
- * Figure out propagation of DISPLAY variable
- * Get ssh agent working on remote session?
+ * choose-buffer
+   * list buffers, select one to copy to X clip board & to default buffer, so can paste with ] (?)
+   * list buffers, select one to save to file (prompt for filename)
+   * list buffers, select one to paste immediately
+ * environment
+   * Propagate DISPLAY variable
+   * Get ssh agent working on remote session?
+   * zsh function to manually reload env
+   * zsh auto-reload periodic?
+ * Improve status window notifications/color
+   * Change active from red to bright white
+   * Make shell error prompt turn it red?
+   * Make normal shell prompt and/or inactivity do something, as clue command is done
+   * Clear the above two when select the window
+   * Status bar tips (?): http://stackoverflow.com/questions/9628435/tmux-status-bar-configuration
  * What is terminal-overrides option?
  * What is prefix2? Can I use it to easily address windows > 9?
    * A: Sadly, No. It's just an alias for prefix, so can't behave differently :(
  * Why does X clipboard not work across ssh when DISPLAY is right? Seems DISPLAY Not propagate into run-shell?
  * Quick mouse-mode toggle (not needed?): http://tangledhelix.com/blog/2012/07/16/tmux-and-mouse-mode/
- * join-pane interactive: http://superuser.com/questions/470130/tmux-prompt-to-select-window-for-join-pane-while-still-seeing-window-numbers-an
  * vim + tmux integration: http://thedrearlight.com/blog/tmux-vim.html
  * vim: folding via grep
- * Status bar tips (?): http://stackoverflow.com/questions/9628435/tmux-status-bar-configuration
+ * vim: Get rid of ^a.  Maybe make it equiv to ^w, for pane switching similar to tmux?
+ * vim: Get mouse to work within terminal
+   * In tmux
+   * Through ssh?
 
 
-break-pane
-join-pane
+
 
 
 
