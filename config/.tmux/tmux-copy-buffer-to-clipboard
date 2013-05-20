@@ -1,0 +1,19 @@
+#!/bin/sh
+# Copy buffer #N (given as sole command line arg) to
+# X selection and clipboard. Designed to be run from within tmux
+# via a key binding. I could not get this sequence of commands to work
+# directly via a keay binding, so put it in this script instead.
+# Because tmux's run-shell doesn't propagate $DISPLAY properly, we
+# query it from tmux here, so that xclip will work.
+set -x
+
+bufnum=$1
+[ -z "$bufnum" ] && bufnum=0
+
+eval $(tmux show-env | grep DISPLAY) 
+export DISPLAY
+
+tmux save-buffer -b $bufnum - | xclip -i -sel clipboard
+tmux save-buffer -b $bufnum - | xclip -i -sel primary
+
+
