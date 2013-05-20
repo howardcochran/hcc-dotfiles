@@ -1,5 +1,22 @@
 Tmux Notes
 
+Stuff to memorize:
+C-a w  Select window interactively, and switch to it
+C-a M  All mouse functions ON
+C-a m  All mouse functions OFF
+C-a =  Choose buffer, paste immediately
+C-a C  (shift-c) Choose-buffer, copy to X sel & clip
+C-a +  Choose buffer, write it to /tmp/tmux-exchange
+C-a !  break-pane
+C-a @  join-pane interactively
+C-a >  Choose buffer, write it to /tmp/tmux-exchange
+C-a <  Paste contents of /tmp/tmux-exchange
+    M-[0-9]  Select window 10-19
+C-a M-[0-9]  Select window 20-29
+
+
+
+
 Desired Functions:
 NOTE: M-  is Alt+
 
@@ -46,18 +63,24 @@ def    |=      |       | choose-buffer
 ^L     |???    | ^L    | refresh-client
 def    |q      |       | display-panes   ; Show number in each pane briefly
 def    |~      |       | Show messages
+D      |D      |??     | choose-client, and detach selected one
 
 To Do:
- * x Port >, <, break-pane and join-pane implementations from hope's current session
-   * http://superuser.com/questions/470130/tmux-prompt-to-select-window-for-join-pane-while-still-seeing-window-numbers-an
+ * x ^a @  Interactive joine-pane
+   * x http://superuser.com/questions/470130/tmux-prompt-to-select-window-for-join-pane-while-still-seeing-window-numbers-an
  * choose-buffer
-   * list buffers, select one to copy to X clip board & to default buffer, so can paste with ] (?)
-   * list buffers, select one to save to file (prompt for filename)
-   * list buffers, select one to paste immediately
+   * x ^a C list buffers, select one to copy to X clip board
+     * and to default buffer, so can paste with ]
+       No. Can't find a way to push the buffer stack other than copy mode, boo!
+   * x ^a =  list buffers, select one to paste immediately (This is a default binding, heh)
+   * x ^a >  list buffers, select one to save to file
+     * (prompt for filename) - No. Since all commands of a key binding are run in
+       parallel, I couldn't make it first select a buffer, then prompt for filename :(
+   * x ^a <  Load buffer #0 with contents of /tmp/tmux-exchange, and paste it immediately
  * environment
-   * Propagate DISPLAY variable
+   * x Propagate DISPLAY variable
    * Get ssh agent working on remote session?
-   * zsh function to manually reload env
+   * x tmuxenv: zsh function to manually reload env
    * zsh auto-reload periodic?
  * Improve status window notifications/color
    * Change active from red to bright white
@@ -66,10 +89,11 @@ To Do:
    * Clear the above two when select the window
    * Status bar tips (?): http://stackoverflow.com/questions/9628435/tmux-status-bar-configuration
  * What is terminal-overrides option?
- * What is prefix2? Can I use it to easily address windows > 9?
-   * A: Sadly, No. It's just an alias for prefix, so can't behave differently :(
- * Why does X clipboard not work across ssh when DISPLAY is right? Seems DISPLAY Not propagate into run-shell?
- * Quick mouse-mode toggle (not needed?): http://tangledhelix.com/blog/2012/07/16/tmux-and-mouse-mode/
+ * x What is prefix2? Can I use it to easily address windows > 9?
+   * x A: Sadly, No. It's just an alias for prefix, so can't behave differently :(
+ * x Why does X clipboard not work across ssh when DISPLAY is right?
+   * x Used eval to set DISPLAY within the run-shell.
+ * x ^a m, ^a M Quick mouse-mode toggle (not needed?): http://tangledhelix.com/blog/2012/07/16/tmux-and-mouse-mode/
  * vim + tmux integration: http://thedrearlight.com/blog/tmux-vim.html
  * vim: folding via grep
  * vim: Get rid of ^a.  Maybe make it equiv to ^w, for pane switching similar to tmux?
