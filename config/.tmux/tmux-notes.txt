@@ -82,11 +82,11 @@ To Do:
    * Get ssh agent working on remote session?
    * x tmuxenv: zsh function to manually reload env
    * zsh auto-reload periodic?
- * Improve status window notifications/color
-   * Change active from red to bright white
-   * Make shell error prompt turn it red?
-   * Make normal shell prompt and/or inactivity do something, as clue command is done
-   * Clear the above two when select the window
+ * x Improve status window notifications/color
+   * x change active from red to bright white
+   * x Make shell error prompt turn it red?
+   * x Make normal shell prompt and/or inactivity do something, as clue command is done (turn yellow)
+   * x Clear the above two when select the window
    * Status bar tips (?): http://stackoverflow.com/questions/9628435/tmux-status-bar-configuration
  * What is terminal-overrides option?
  * x What is prefix2? Can I use it to easily address windows > 9?

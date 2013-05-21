@@ -31,10 +31,10 @@ function hccprompt {
     local conditional_host=
     local host=`hostname`
     [ "$host" != "$prompt_main_host" ] && conditional_host=" $host"
-
+    local beep=$(echo -e \\007)
 
     PS1="${maincolor}===${maincolor}\
-[%T${hostcolor}${conditional_host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? %{$norm%}${maincolor})"\
+[%T${hostcolor}${conditional_host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? %{$beep%}%{$norm%}${maincolor})"\
 '$(_git_ps1)'" %~/
 ${maincolor}==>%{$norm%} "
 
