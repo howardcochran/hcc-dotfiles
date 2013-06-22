@@ -87,7 +87,7 @@ echo Will stop in $time_secs seconds.
 avconv -f alsa -i pulse -f x11grab -r 30 -s "$region_size" \
     -i "$DISPLAY+$region_pos" \
     -vcodec libx264 -preset ultrafast -threads 0 \
-    -codec:a libmp3lame -ac 2 -b:a 128k -ar:a 44100 "$@" &
+    -codec:a libmp3lame -ac 2 -b:a 128k -ar:a 44100 -async 500 "$@" &
 if [ ! -z "$time_secs" ] ; then
     pid=$!
     sleep $time_secs
