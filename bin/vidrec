@@ -1,0 +1,101 @@
+#!/bin/bash
+# Usage: $0 options output.mp4
+# Record the screen and accompanying sound, then make a copy of just the sound
+# as an mp3 file in the same directory as the video.
+# If given a time limit in the form -t h:mm:ss, will stop the recording
+# at that time. Otherwise, must manually stop it using Ctrl-C.
+# Specify upper left corner of recording region with --pos X,Y
+# Specify size of region to record with --size WIDTHxHEIGHT
+# Use 5 FPS rate, with region recorded optimized for archived videos
+# on TDA's Think or Swim platform.
+
+# NOTE: We do not use avconv's -t option because it has a bug which causes
+# it to not actually record sound when that option is given
+
+# OLD, DEPRECATED: ffmpeg -f alsa -ac 1 -ab 64k -i pulse -f x11grab -s 1024x740 -r 5 -i $DISPLAY+8,30 -acodec libmp3lame -vcodec libx264 -vpre lossless_ultrafast -threads 0 "$@"
+
+
+# ---- Defaults ----
+time_secs=99999999        # Effectively no time limit. Run till killed
+region_size="1024x740"    # For normal Swim Lession recording on TOS
+region_pos="8,30"         # For normal Swim Lession recording on TOS
+convert_to_mp3=0          # Don't save audio to mp3 by default
+
+
+# ---- Helper functions ----
+# Convert "hh:mm:ss" into seconds
+parse_hhmmss() {
+    local time_hms="$1"
+    local time_h
+    local time_m
+    local time_s
+
+    # The following line does not work in dash. So we shbang bash!
+    # Note also, that the following version doesn't work in bash:
+    # echo $time_hms | tr ':'   ' ' | read time_h time_m time_s
+    # because the read occurs in a subshell (although it does work in zsh!).
+    # So, we use this redirect from a command syntax:
+    read time_h time_m time_s < <(echo $time_hms | tr ':'   ' ')
+    echo "$(( $time_h * 3600 + $time_m * 60 + $time_s ))"
+}
+
+# ---- Argument Parsing ----
+TEMP=$(getopt -o s:p:t: --long size:,pos:,time:,mp3 -n "$0" -- "$@")
+
+if [ $? != 0 ] ; then echo "Terminating..." >&2; exit 1; fi
+
+eval set -- "$TEMP"
+
+while true; do
+    case "$1" in
+	-s|--size)
+	    region_size="$2"
+	    shift 2
+	    ;;
+	-p|--pos)
+	    region_pos="$2"
+	    shift 2
+	    ;;
+	-t|--time)
+	    time_secs=$(parse_hhmmss "$2")
+	    shift 2
+	    ;;
+	--mp3)
+	    convert_to_mp3=1
+	    shift
+	    ;;
+	--)
+	    shift
+	    break
+	    ;;
+	*)
+	    echo "Error parsing parameters near $1 $2"
+	    exit 1
+	    ;;
+    esac
+done
+
+
+# ---- Sanity Checks ----
+if [ "$time_secs" -le 1 ] ; then
+    echo "Error parsing time limit $time_hms"
+    exit 1
+fi
+
+echo Will stop in $time_secs seconds.
+
+avconv -f alsa -i pulse -f x11grab -r 30 -s "$region_size" \
+    -i "$DISPLAY+$region_pos" \
+    -vcodec libx264 -preset ultrafast -threads 0 \
+    -codec:a libmp3lame -ac 2 -b:a 128k -ar:a 44100 "$@" &
+if [ ! -z "$time_secs" ] ; then
+    pid=$!
+    sleep $time_secs
+    kill $pid
+    wait $pid
+fi
+
+if [ $convert_to_mp3 != 0 ] ; then
+    tomp3 "${!#}"  # means script's "last argument"
+fi
+

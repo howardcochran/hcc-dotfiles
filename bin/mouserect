@@ -1,0 +1,38 @@
+#!/bin/sh
+# Let the user specify the size and position of a rectangle using two mouse clicks
+# (sorry, no click & drag, and no helpful box drawn!)
+# The result is output on stdout in a form suitable to pass to avconv
+# or ffmpeg as --size and --pos options.
+
+wait_for_mouse_click() {
+	# This is a cheesy, but effective way to wait for a mouse click
+	xwininfo > /dev/null
+}
+
+wait_for_mouse_click
+eval $(xdotool getmouselocation --shell 2>/dev/null)
+upper_x=$X
+upper_y=$Y
+
+wait_for_mouse_click
+eval $(xdotool getmouselocation --shell 2>/dev/null)
+lower_x=$X
+lower_y=$Y
+
+# Deal with rectangle being clicked out of order.
+# We need both corrdinates for the upperleft corner
+# to be strictly less than those of the lowerright corner
+if [ $upper_x -gt $lower_x ] ; then
+	temp=$upper_x
+	upper_x=$lower_x
+	lower_x=$temp
+fi
+
+if [ $upper_y -gt $lower_y ] ; then
+	temp=$upper_y
+	upper_y=$lower_y
+	lower_y=$temp
+fi
+
+echo --size $(( $lower_x - $upper_x ))x$(( $lower_y - $upper_y )) --pos ${upper_x},${upper_y}
+
