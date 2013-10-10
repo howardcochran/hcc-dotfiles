@@ -2,8 +2,6 @@
 # Fix $SHELL, since we often inherited csh's idea of $SHELL
 export SHELL=/bin/zsh
 
-export EDITOR=vim
-
 # Make completions case-insensitive
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 
@@ -15,7 +13,7 @@ zstyle ':completion:*:warnings' format 'No matches for: %d'
 zstyle ':completion:*' group-name ''
 
 autoload -U compinit
-compinit -C # -C means just use cached .zcompdump unconditionally
+compinit  # -C means just use cached .zcompdump unconditionally - CAUSED ERRORS
 
 setopt PROMPT_SUBST # Allow parameter substitution in prompt
 
@@ -142,6 +140,7 @@ function namedir () {
 
 function up () {
 	count=$1
+	[ -z "$count" ] && count=1
 	local ups
 	while [ "$count" -gt 0 ] ; do
 	    ups="../$ups"
@@ -152,6 +151,16 @@ function up () {
 	fi
 }
 
+alias upp='up 2'
+alias uppp='up 3'
+alias upppp='up 4'
+alias uppppp='up 5'
+alias upppppp='up 6'
+
+# Set the gnome-terminal tab title to given string
+function settitle() {
+	echo -ne "\033]0;$*\007"
+}
 
 
 # These vars only make sense for an interactive shell, so they're in zshrc
@@ -179,12 +188,21 @@ alias a=alias
 alias u=unalias
 alias mroe=more
 function ga { a | egrep $* }
+alias sz="source ~/.zshrc"
+alias gitags='git ls-files | ctags -L - --sort=foldcase'
+alias mktags='find . -name \*.\[ch\] | ctags -L - --sort=foldcase'
+alias gba='git branch -a'
+alias gbl='git branch -l'
+alias gr='git rebase'
 
 # A few global aliases of interest
 alias -g NF='$(\ls -a *(.om[1]))'    # newest file
 alias -g ND='$(\ls -a -d *(/om[1]))' # newest directory
 alias -g G='| grep'
 alias -g L='| less'
+alias -g LL="2>&1 | less"
+alias -g NE='2> /dev/null'
+alias -g DN=/dev/null
 
 
 alias psg='ps -Af | grep '
@@ -237,8 +255,10 @@ bindkey '^N' complete
 # Setup key bindings.  For some stupid reason, Home and End keys don't work
 # out of the box!
 bindkey -e # Emacs bindings
-bindkey "\eOH" beginning-of-line
+bindkey "\eOH" beginning-of-line # Normal Home & end
 bindkey "\eOF" end-of-line
+bindkey "\e[1~" beginning-of-line # Home & end in screen + ssh
+bindkey "\e[4~" end-of-line
 bindkey "^F" forward-word   # Was forward-char
 bindkey "^B" backward-word  # Was backward-char
 bindkey "^P" push-input     # Was push-line
@@ -247,10 +267,29 @@ bindkey "^[[3~" delete-char # DEL key - delete char from right
 bindkey "^Z"    undo        # Undo effect of last keystroke. Useful after tab.
 bindkey "^[[Z"  dumb-complete # Shift-Tab: Do regular file completion
 
+## Abortive attempt to get zsh to auto-load config changes. Problem is that
 export PATH=~/bin:$PATH
 
 # 256-color support with Tmux compatibility:
 # We need $TERM to be xterm-256color outside of Tmux but don't override
 # Tmux's setting of screen-256color inside Tmux
 [[ "$TERM" =~ "screen*" ]] || TERM=xterm-256color
+## the vars I set do not persist (treated as local no matter what I do). Grr!
+# function periodic() {
+#     #typeset -g periodic_cur periodic_prev
+#     #export periodic_cur
+#     #export periodic_prev
+#     echo debug: c $periodic_cur  p $periodic_prev
+#     periodic_cur="$(stat --format=%Y ~/.zshrc) $(stat --format=%Y ~/.zsh/rc-common)"
+#     echo debug: c $periodic_cur  p $periodic_prev
+#     if [ "$periodic_prev" != "$periodic_cur" ] ; then
+#         if [ ! -z "$periodic_prev" ] ; then
+#             echo Re-reading .zshrc...
+#             source ~/.zshrc
+#         fi
+#         periodic_cur="$periodic_prev"
+#     fi
+#     return 0
+# }
+# PERIOD=60
 
