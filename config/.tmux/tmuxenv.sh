@@ -7,6 +7,10 @@
 # Options:
 # -f    Force this, even if we don't appear to be inside a TMUX session
 # -v    Be verbose. Normally, no output is shown
+
+# We require a modern shell. Silently bail if it doesn't understand =~
+zsh -c '[[ "foo" =~ "foo" ]]' 2> /dev/null || return 0
+
 function tmuxenv() {
     local ARGS
     ARGS=$(getopt -o fv -- "$@")
