@@ -1,16 +1,23 @@
 # .zshrc
 
-# This is the "main host" that I use.  When running on any host other than this
-# one, the prompt will announce the host name.  Otherwise host name is suppressed.
-# Set this before source rc-common.
-prompt_main_host=digit
-prompt_color_main=hyellow
-prompt_color_host=hyellow
-
 source ~/.zsh/rc-common
 
-# Note the typeset -U keeps the cumulative PATH & MANPATH assignments
-# here safe for "source .zshrc" case.
-# export PATH=$PATH:/home/hcochran/android-sdk/tools
+function running_on_centos5() {
+    lsb_release --id --release | tr '\n' ' ' |egrep -q 'CentOS.*:[[:space:]]5[.]'
+}
 
+function running_on_fedora() {
+    lsb_release --id |egrep -q 'Fedora'
+}
 
+function running_on_lpdev() {
+    hostname | grep -q 'lpdev.prtdev.lexmark.com'
+}
+
+if running_on_centos5; then
+    source ~/.zsh/rc-centos5
+elif ( running_on_fedora && running_on_lpdev ); then
+    source ~/.zsh/rc-fedora17
+fi
+
+source ~/.zshrc-local

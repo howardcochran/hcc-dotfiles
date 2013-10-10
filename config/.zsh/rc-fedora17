@@ -1,0 +1,25 @@
+# zsh Configuration specific for Fedora 17+ (newer LPDEV boxen as of 2013)
+# vim: set et sw=4:
+
+# TODO: Some of the following should be moved into rc-common they are useful
+# on any non-LPDEV machine also.
+function svnurl() { svn info "$@" | awk '/^URL:/ { print $2 }' }
+
+
+# Note: Don't call the following $VIM or $GVIM. It actually breaks
+# vim on lpdev for unclear reasons.
+export VIM_EXE=vim
+export GVIM_EXE=gvim
+alias newvim='$GVIM_EXE --servername hcochran'
+alias gvim='$GVIM_EXE --servername hcochran --remote'  # Late binding $GVIM_EXE
+alias vi='gvim'
+alias vim='$VIM_EXE'
+alias viwait='$GVIM_EXE --servername hcochran --remote-wait'
+export VISUAL=vim
+
+# Note the typeset -U keeps the cumulative PATH & MANPATH assignments
+# here safe for "source .zshrc" case.
+export PATH=$HOME/bin:$HOME/local/bin:$PATH
+
+alias t='cd ~/t'
+
