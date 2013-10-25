@@ -20,7 +20,7 @@ time_secs=99999999        # Effectively no time limit. Run till killed
 region_size="1024x740"    # For normal Swim Lession recording on TOS
 region_pos="8,30"         # For normal Swim Lession recording on TOS
 convert_to_mp3=0          # Don't save audio to mp3 by default
-
+rate=30                   # Frame rate to record, FPS. Overide with --rate
 
 # ---- Helper functions ----
 # Convert "hh:mm:ss" into seconds
@@ -40,7 +40,7 @@ parse_hhmmss() {
 }
 
 # ---- Argument Parsing ----
-TEMP=$(getopt -o s:p:t: --long size:,pos:,time:,mp3 -n "$0" -- "$@")
+TEMP=$(getopt -o s:p:t: --long size:,pos:,time:,rate:,mp3 -n "$0" -- "$@")
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2; exit 1; fi
 
@@ -64,6 +64,10 @@ while true; do
 	    convert_to_mp3=1
 	    shift
 	    ;;
+	--rate)
+	    rate="$2"
+	    shift 2
+	    ;;
 	--)
 	    shift
 	    break
@@ -84,7 +88,7 @@ fi
 
 echo Will stop in $time_secs seconds.
 
-avconv -f alsa -i pulse -f x11grab -r 30 -s "$region_size" \
+avconv -f alsa -i pulse -f x11grab -r "$rate" -s "$region_size" \
     -i "$DISPLAY+$region_pos" \
     -vcodec libx264 -preset ultrafast -threads 0 \
     -codec:a libmp3lame -ac 2 -b:a 128k -ar:a 44100 -async 500 "$@" &
