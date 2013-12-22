@@ -1,0 +1,47 @@
+[user]
+	name = Howard Cochran
+	email = cochran@lexmark.com
+[color]
+	diff = true
+	status = auto
+[alias]
+	ba = branch -a
+	bl = branch -l
+
+	dns = diff --name-status
+
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit
+	logns = log --name-status --decorate
+
+        # "Linear Log" for use in making integration requests. Ignores merge
+        # commits, but shows the commits from both sides of the merges:
+        loglin = log --max-parents=1 --pretty=format:'%h %an, %ar : %s'
+
+	local = log HEAD --not --remotes
+
+	co = checkout
+	mktags = !git ls-files | egrep '[.](c|h)$' | etags -
+
+	# git grep that recurses submodules
+	sgrep = "!f() { git grep \"$1\"; git submodule foreach \"git grep '$1'; true\" | grep -B 1 \"$1\"; }; f"
+	# FIXME: Trying to print the submodule name on each line, but the quoting is just too hard!
+	#sgrep2 = "!f() { git grep \"$1\"; git submodule foreach 'git grep SRCREV_m $foo | awk -v name=$name '\''{ print name, ":",$0; }'\''; echo '$path' ----------- ; true' }; f"
+
+[gitmls]
+	aliases = 2
+[log]
+	date = local
+[gui]
+	fontui = -family FreeSans -size 10 -weight bold -slant roman -underline 0 -overstrike 0
+	fontdiff = -family FreeMono -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+[rerere]
+	enable = 1
+	enabled = 1
+[merge]
+	too = meld
+	tool = meld
+	conflictstyle = diff3
+[http]
+	proxy = 
+[push]
+	default = tracking
