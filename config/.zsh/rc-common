@@ -194,6 +194,7 @@ alias mktags='find . -name \*.\[ch\] | ctags -L - --sort=foldcase'
 alias gba='git branch -a'
 alias gbl='git branch -l'
 alias gr='git rebase'
+alias bb='bitbake'
 
 # A few global aliases of interest
 alias -g NF='$(\ls -a *(.om[1]))'    # newest file
