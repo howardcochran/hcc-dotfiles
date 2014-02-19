@@ -75,7 +75,9 @@ setopt PATH_DIRS
 setopt EQUALS
 
 # long jobs listing
-setopt long_list_jobs
+setopt long_list_jobs  # NOTE: Doesn't work...?? Workaround with alias:
+alias jobs='jobs -l'
+alias j='jobs -l'
 
 # set ignore case for ls etc
 setopt no_case_glob
