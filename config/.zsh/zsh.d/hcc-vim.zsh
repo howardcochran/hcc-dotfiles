@@ -56,14 +56,19 @@ function __vim_build_new_vim_cmd() {
 function __vim_build_launch_cmd() {
     local tmpfile="$1"
     shift
+    local force_new=0
+    [ "$1" = '--new' ] && { force_new=1 ; shift }
+
     local serverjobs
-    local row # full text of chose row of "jobs" output
+    local row # full text of chosen row of "jobs" output
     local job_and_server
 
     serverjobs=''
 
     __vim_get_serverjobs  # Function populates serverjobs array
-    if [ $(print "${serverjobs}" | wc -w) -eq 0 ]; then #if no stopped vims
+
+    # If there are no server jobs (or caller said --new), launch new vim
+    if [ $force_new -eq 1 ] || [ $(print "${serverjobs}" | wc -w) -eq 0 ]; then
         __vim_build_new_vim_cmd "$tmpfile" "$@"
         __vim_job='n'
         return 0
@@ -121,4 +126,8 @@ function v() {
         __vim_job="$(jobs -l | sed -n -e 's/^\[\([0-9]*\)\][ +-]*'$pid'\s.*/\1/p')"
     fi
     fg %$__vim_job
+}
+
+function vnew() {
+    v --new "$@"
 }
