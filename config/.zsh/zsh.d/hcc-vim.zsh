@@ -53,11 +53,14 @@ function __vim_build_new_vim_cmd() {
 #    given $tmpfile. Our caller must actually launch it.
 # integer: We sent the command to the given vim instance. We did not create
 #          $tmpfile. Our caller is to forground $__vim_job
+# Optional --new must come before --split because I'm lazy.
 function __vim_build_launch_cmd() {
     local tmpfile="$1"
     shift
     local force_new=0
     [ "$1" = '--new' ] && { force_new=1 ; shift }
+    local opt_split=''
+    [ "$1" = '--split' ] && { opt_split='-o' ; shift }
 
     local serverjobs
     local row # full text of chosen row of "jobs" output
@@ -69,7 +72,7 @@ function __vim_build_launch_cmd() {
 
     # If there are no server jobs (or caller said --new), launch new vim
     if [ $force_new -eq 1 ] || [ $(print "${serverjobs}" | wc -w) -eq 0 ]; then
-        __vim_build_new_vim_cmd "$tmpfile" "$@"
+        __vim_build_new_vim_cmd "$tmpfile" $opt_split "$@"
         __vim_job='n'
         return 0
     fi
@@ -79,7 +82,7 @@ function __vim_build_launch_cmd() {
        select row in ${serverjobs[@]} ; do
            __vim_job=0  # Default=quit
            [[ $REPLY = 'q' ]] && { return 0 }
-           [[ $REPLY = 'n' ]] && { __vim_build_new_vim_cmd "$tmpfile" "$@"; __vim_job='n' ; return 0 }
+           [[ $REPLY = 'n' ]] && { __vim_build_new_vim_cmd "$tmpfile" $opt_split "$@"; __vim_job='n' ; return 0 }
            [[ -z "$row" ]] && { print "Unknown selection." ; return 0 }
            break
        done
@@ -93,7 +96,19 @@ function __vim_build_launch_cmd() {
     job_and_server=( $(__vim_parse_job_and_server "$row") )
     __vim_job="${job_and_server[1]}"
 
-    vim --servername ${job_and_server[2]} --remote "$@"
+    if [ -z "$opt_split" ] ; then
+        vim --servername ${job_and_server[2]} --remote "$@"
+    else
+        # Want to open each file in a new split window. Because there
+        # is no --remote-split command, use +cmd syntax, which executes
+        # the command only once for the whole command line, we must
+        # open each file separately in this loop.
+        local filename
+        for filename in "$@"; do
+            vim --servername ${job_and_server[2]} --remote +split "$1"
+            shift
+        done
+    fi
 }
 
 
@@ -128,6 +143,6 @@ function v() {
     fg %$__vim_job
 }
 
-function vnew() {
-    v --new "$@"
-}
+alias vnew='v --new'
+alias vs='v --split'
+alias vnews='v --new --split'
