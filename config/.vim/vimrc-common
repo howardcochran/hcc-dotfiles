@@ -41,6 +41,8 @@ set wildmenu
 " hardware tabs are special in makefiles, don't expand them
 autocmd FileType make set noexpandtab shiftwidth=8
 
+" Semi-colons are a much more convenient way to start a colon-command!
+nnoremap ; :
 
 " Make PgUp and PgDn keep the cursor on the same line of the screen
 " http://vimrc-dissection.blogspot.com/2009/02/fixing-pageup-and-pagedown.html
