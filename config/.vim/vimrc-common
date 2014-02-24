@@ -143,4 +143,6 @@ command! -nargs=0 Filter let @f='' | execute 'g//y F' | new | setlocal bt=nofile
 ""command! -nargs=0 Filter redir @f> | g// | redir END | new | put! f
 
 
+source ~/.vim/hcc-vundle-conf.vim
+
 
