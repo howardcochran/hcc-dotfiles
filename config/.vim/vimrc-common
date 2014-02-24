@@ -142,6 +142,12 @@ command! -nargs=0 Filter let @f='' | execute 'g//y F' | new | setlocal bt=nofile
 " It would only copy first match into the buffer for reasons I don't fathom.
 ""command! -nargs=0 Filter redir @f> | g// | redir END | new | put! f
 
+" Toggle whether to use git grep vs. standard grep. The lhs of these mappings
+" follows the conventions for toggle mappings in vim-unimpaired plugin.:w
+:nmap ]og   :set grepprg=git\ grep\ -n\ $*<CR>
+:nmap [og   :set grepprg=grep\ -n\ $*\ /dev/null<CR>
+:nmap cog   :normal <C-R>=match(&grepprg, "^git") > -1 ? "[og" : "]og"<CR><CR>
+
 
 source ~/.vim/hcc-vundle-conf.vim
 
