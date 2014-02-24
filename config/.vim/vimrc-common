@@ -136,6 +136,13 @@ map <C-Up> <C-Y>
 " Make CTRL-] show tab select list iff more than one match
 map <C-]> g<C-]>
 
+" Better than typing Esc:
+:inoremap  jk <Esc>
+:cnoremap  jk <Esc>
+:onoremap  jk <Esc>
+:snoremap  jk <Esc>
+
+
 " Filter current buffer to a new temporary buffer (i.e current buffer grep)
 command! -nargs=0 Filter let @f='' | execute 'g//y F' | new | setlocal bt=nofile | put! f
 " Supposedly better/faster method using redir, but I couldn't get it to work:
