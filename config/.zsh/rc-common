@@ -2,6 +2,10 @@
 # Fix $SHELL, since we often inherited csh's idea of $SHELL
 export SHELL=/bin/zsh
 
+# Turn off Xon/Xoff in this termal so that can use <CTRL-Q> in progs like vim
+stty start undef   # normally ^Q
+stty stop undef    # normally ^S
+
 # Make completions case-insensitive
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 
