@@ -118,12 +118,17 @@ map <C-K> <C-W>k<C-W>_
 " NOTE: To not have to see one line from the minimized windows, do :set mwh=0
 
 " Hotkeys for using quicklists:
-map <S-F4>   :copen<CR>
-map <S-F3>   :cclose<CR>
 map <F4>     :cnext<CR>
 map <F3>     :cprevious<CR>
+" NOTE: These don't work in vim (only gvim). Not sure what's blocking these.
+map <S-F4>   :copen<CR>:res 12<CR>
+map <S-F3>   :cclose<CR>
 map <C-F4>   :cnewer<CR>
 map <C-F3>   :colder<CR>
+nmap ]}      :copen<CR>:res 12<CR>
+nmap ]{      :cclose<CR>
+nmap [}      :lopen<CR>:res 12<CR>
+nmap [{      :lclose<CR>
 
 " Make ^L behave like emacs (also cuz zz can be dangerous if capslock on!!)
 " i.e. Scroll window so current line is at center, preserving cursor pos in buf
