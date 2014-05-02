@@ -11,7 +11,8 @@
 	dns = diff --name-status
 
 	lol = log --graph --decorate --pretty=oneline --abbrev-commit
-	logns = log --name-status --decorate
+	logns = log --name-status --decorate --abbrev-commit
+	lg = log --name-status --decorate --abbrev-commit
 
         # "Linear Log" for use in making integration requests. Ignores merge
         # commits, but shows the commits from both sides of the merges:
