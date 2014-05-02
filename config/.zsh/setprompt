@@ -25,15 +25,10 @@ function hccprompt {
     local maincolor="%{$hyellow%}"
     local hostcolor="%{$hgreen%}"
 
-    # I want to see what host I am on, but only if it is anything other than
-    # my "main" LPDEV host.
-    local conditional_host=
     local host=`hostname`
-    [ "$host" != "argenta" ] && conditional_host=" $host"
-
 
     PS1="${maincolor}===${maincolor}\
-[%T${hostcolor}${conditional_host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? ${PR_BELL}%{$norm%}${maincolor})"\
+[%T${hostcolor}${host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? ${PR_BELL}%{$norm%}${maincolor})"\
 '$(_git_ps1)'" %~/
 ${maincolor}==>%{$norm%} "
 
