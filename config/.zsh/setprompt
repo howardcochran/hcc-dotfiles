@@ -20,6 +20,7 @@ function hccprompt {
     PR_LLCORNER=${altchar[m]:--}
     PR_LRCORNER=${altchar[j]:--}
     PR_URCORNER=${altchar[k]:--}
+    PR_BELL=$(echo -n "\a")
 
     local maincolor="%{$hyellow%}"
     local hostcolor="%{$hgreen%}"
@@ -32,7 +33,7 @@ function hccprompt {
 
 
     PS1="${maincolor}===${maincolor}\
-[%T${hostcolor}${conditional_host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? %{$norm%}${maincolor})"\
+[%T${hostcolor}${conditional_host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? ${PR_BELL}%{$norm%}${maincolor})"\
 '$(_git_ps1)'" %~/
 ${maincolor}==>%{$norm%} "
 
