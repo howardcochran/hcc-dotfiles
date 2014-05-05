@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# There doesn't seem to be a flavor of redshift that queries its state,
+# so we'll use a flag file instead.
+
+if [ -e /tmp/.redshift-on ] ; then
+    redshift -x
+    rm /tmp/.redshift-on
+else
+    redshift -O 3700 -b 0.7
+    touch /tmp/.redshift-on
+fi
+
