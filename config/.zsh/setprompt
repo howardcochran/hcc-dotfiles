@@ -28,7 +28,7 @@ function hccprompt {
     local host=`hostname`
 
     PS1="${maincolor}===${maincolor}\
-[%T${hostcolor}${host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? ${PR_BELL}%{$norm%}${maincolor})"\
+[%T ${hostcolor}${host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? ${PR_BELL}%{$norm%}${maincolor})"\
 '$(_git_ps1)'" %~/
 ${maincolor}==>%{$norm%} "
 
