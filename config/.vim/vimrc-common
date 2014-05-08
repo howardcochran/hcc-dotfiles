@@ -174,8 +174,8 @@ autocmd filetype c iabbrev <buffer> for(     for (
 autocmd filetype c iabbrev <buffer> while(   while (
 autocmd filetype c iabbrev <buffer> switch(  switch (
 autocmd filetype c iabbrev <buffer> iff      if () {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left>
-autocmd filetype c iabbrev <buffer> forr     forr (;;) {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left><Left><Left>
-autocmd filetype c iabbrev <buffer> whilee   whilee () {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left>
+autocmd filetype c iabbrev <buffer> forr     for (;;) {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left><Left><Left>
+autocmd filetype c iabbrev <buffer> whilee   while () {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left>
 augroup END
 
 
