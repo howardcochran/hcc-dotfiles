@@ -167,16 +167,18 @@ command! -nargs=0 Filter let @f='' | execute 'g//y F' | new | setlocal bt=nofile
 
 " A few abbreviations for hcc:
 " Kernel likes spaces after control-flow keywords, which is not what I'm used to:
-augroup hcc_c
-autocmd!
-autocmd filetype c iabbrev <buffer> if(      if (
-autocmd filetype c iabbrev <buffer> for(     for (
-autocmd filetype c iabbrev <buffer> while(   while (
-autocmd filetype c iabbrev <buffer> switch(  switch (
-autocmd filetype c iabbrev <buffer> iff      if () {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left>
-autocmd filetype c iabbrev <buffer> forr     for (;;) {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left><Left><Left>
-autocmd filetype c iabbrev <buffer> whilee   while () {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left>
-augroup END
+" NOTE: Disable these for now. They don't work on LPDEV FC17 and RHEL5
+" machines, and they're not all that useful anyways.
+"" augroup hcc_c
+"" autocmd!
+"" autocmd filetype c iabbrev <buffer> if(      if (
+"" autocmd filetype c iabbrev <buffer> for(     for (
+"" autocmd filetype c iabbrev <buffer> while(   while (
+"" autocmd filetype c iabbrev <buffer> switch(  switch (
+"" autocmd filetype c iabbrev <buffer> iff      if () {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left>
+"" autocmd filetype c iabbrev <buffer> forr     for (;;) {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left><Left><Left>
+"" autocmd filetype c iabbrev <buffer> whilee   while () {<CR>;<CR><BS>}<Up><Up><End><Left><Left><Left>
+"" augroup END
 
 
 
