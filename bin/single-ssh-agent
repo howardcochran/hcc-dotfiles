@@ -1,0 +1,74 @@
+#!/bin/zsh
+# Wrapper for ssh-agent. If the agent is already running, find
+# the env vars for it and output it.
+# If not, start the agent with a consistent socket name, so that
+# the next invocation of this script can find it.
+# Purpose: To make it convenient to use the same ssh-agent in
+# different sessions on the same machine (e.g. console and ssh)
+
+SINGLE_SA_SOCK_CONF="$HOME/.config/.single-sa-sock"
+DEFAULT_SA_SOCK="/tmp/.jgeisj${USER}ijwkdjy/auaghgigijaua"
+
+# Read the name of the socket file from config file
+function read_ssh_agent_sock() {
+	[ -r $SINGLE_SA_SOCK_CONF ] || return 1
+	cat $SINGLE_SA_SOCK_CONF 
+}
+
+# Output the name of the sock file. Reads from config file,
+# but if it doesn't exist, create it with a default value.
+function get_ssh_agent_sock() {
+	read_ssh_agent_sock && return 0
+	print "$DEFAULT_SA_SOCK" > "$SINGLE_SA_SOCK_CONF"
+	print "$DEFAULT_SA_SOCK" 
+}
+
+# Wrapper function for starting the ssh-agent
+function start_agent() {
+	local agent_socket="$1"
+	ssh-agent -s -e "${agent_socket}"
+}
+
+function ensure_agent_running() {
+	local agent_socket="$1"
+	local command="ssh-agent -s -a ${agent_socket}"
+	
+	# Socket already exists. See if it's still running
+	if [ -e "${agent_socket}" ] ; then
+		# Can we find a plausible PID for the existing agent?
+		local existing_pid=$(cat ${agent_socket}.pid)
+		if [ "$existing_pid" -gt 0 ] ; then
+
+			# Does the process having that PID have the expected command line?
+			# NOTE: The space in "${command} " is because /proc/pid/cmdline
+			# always ends with a trailing NULL which tr changes to space
+			local existing_cmdline="$(tr '\000' ' ' < /proc/${existing_pid}/cmdline)"
+			if [ "$existing_cmdline" = "${command} " ] ; then
+				# Print the output that the caller should eval
+				echo "export SSH_AUTH_SOCK=${agent_socket};"
+				echo "export SSH_AGENT_PID=${existing_pid};"
+				return 0
+			fi
+		fi
+	fi
+
+	# Did not find an existing agent, so start one
+	mkdir -p $(dirname ${agent_socket})
+	local agent_vars="$(eval ${command})"
+
+	# Bail if we wre unable to start the agent
+	local rc=$?
+	[ $rc -eq 0 ] || return $rc
+
+	# Write a PID to help us find the agent next time
+	eval "${agent_vars}" > /dev/null
+	echo ${SSH_AGENT_PID} >! "${agent_socket}.pid"
+
+	# Print the output that the caller should eval
+	print ${agent_vars}
+	return 0
+}
+
+
+ensure_agent_running $(get_ssh_agent_sock)
+
