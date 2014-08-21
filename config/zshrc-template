@@ -20,4 +20,5 @@ elif ( running_on_fedora && running_on_lpdev ); then
     source ~/.zsh/rc-fedora17
 fi
 
-source ~/.zshrc-local
+[ -f ~/.zshrc-local ] && source ~/.zshrc-local
+true
