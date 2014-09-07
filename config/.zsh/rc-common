@@ -261,12 +261,12 @@ bindkey "\eOH" beginning-of-line # Normal Home & end
 bindkey "\eOF" end-of-line
 bindkey "\e[1~" beginning-of-line # Home & end in screen + ssh
 bindkey "\e[4~" end-of-line
-bindkey "^F" forward-word   # Was forward-char
-bindkey "^B" backward-word  # Was backward-char
+bindkey "^F" forward-word   # Was forward-char. Default binding is M-f
+bindkey "^B" backward-word  # Was backward-char. Default binding is M-b
 bindkey "^P" push-input     # Was push-line
 bindkey "^G" get-line       # Was send-break
 bindkey "^[[3~" delete-char # DEL key - delete char from right
-bindkey "^Z"    undo        # Undo effect of last keystroke. Useful after tab.
+bindkey "^Z"    undo        # Undo effect of last keystroke. Default biding is C-xC-u
 
 ## Abortive attempt to get zsh to auto-load config changes. Problem is that
 export PATH=~/bin:$PATH
