@@ -249,15 +249,10 @@ function complete-mls-target2 () {
 compdef complete-mls-target2 bldtarget
 
 
-# Swalter's method. I dislike because it doesn't list possible completions:
-#zle -C dumb-complete complete-word _path_files
-#bindkey '^N' dumb-complete
-
 # Make ^N always do regular non-smart filename completion
 complete-files () { compadd - * }
 zle -C dumb-complete complete-word complete-files
-bindkey '^N' complete
-
+bindkey "^[[Z"  dumb-complete # Shift-Tab: Do regular file completion
 
 # Setup key bindings.  For some stupid reason, Home and End keys don't work
 # out of the box!
@@ -272,7 +267,6 @@ bindkey "^P" push-input     # Was push-line
 bindkey "^G" get-line       # Was send-break
 bindkey "^[[3~" delete-char # DEL key - delete char from right
 bindkey "^Z"    undo        # Undo effect of last keystroke. Useful after tab.
-bindkey "^[[Z"  dumb-complete # Shift-Tab: Do regular file completion
 
 ## Abortive attempt to get zsh to auto-load config changes. Problem is that
 export PATH=~/bin:$PATH
