@@ -108,8 +108,8 @@ set cpo&
 let &cpoptions = s:save_cpo
 unlet s:save_cpo
 
-
 map <C-F5> :source ~/.vimrc<CR>:source ~/.gvimrc<CR>
+map <leader>rc :source ~/.vimrc<CR>:source ~/.gvimrc<CR>
 
 " Abandon changes in current buffer, reloading from disk
 map <S-F5> :e!<CR>
