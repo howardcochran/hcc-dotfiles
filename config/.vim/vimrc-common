@@ -192,15 +192,15 @@ command! -nargs=0 Filter let @f='' | execute 'g//y F' | new | setlocal bt=nofile
 " [1]: http://vim.wikia.com/wiki/Detect_window_creation_with_WinEnter
 " https://github.com/peterlundgren/.home/blob/master/_vim/.vimrc
 autocmd VimEnter,WinEnter * if !exists('w:created') | call NewWindow() | endif
-function NewWindow()
-let w:created=1
-" -1 priority so hlsearch (priority 0) will override the match
-" Alternate implementation of colorcolumn for older versions
-if !exists('+colorcolumn')
-call matchadd('CursorColumn', '\%>80v.\+', -1)
-endif
-" Highlight trailing whitespace and space before tab
-call matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
+function! NewWindow()
+	let w:created=1
+	" -1 priority so hlsearch (priority 0) will override the match
+	" Alternate implementation of colorcolumn for older versions
+	if !exists('+colorcolumn')
+		call matchadd('CursorColumn', '\%>80v.\+', -1)
+	endif
+	" Highlight trailing whitespace and space before tab
+	call matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
 endfunction
 
 
