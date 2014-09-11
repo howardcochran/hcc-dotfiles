@@ -203,6 +203,19 @@ function! NewWindow()
 	call matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
 endfunction
 
+function! HeaderGuard ()
+	" Include guard name is name of file, all upper case,
+	" with all non-symbol chars replaced with underscore,
+	" and with two leading underscores prepended
+	let l:name = toupper(fnamemodify(bufname("%"), ":t"))
+	let l:name = substitute(l:name, "[^A-Za-z0-9]", "_", "g")
+	let l:name = '__' . l:name
+
+	call append(0, '#ifndef ' . l:name)
+	call append(1, '#define ' . l:name)
+	call append(line('$'), '#endif  // ' . l:name)
+endfunction
+:command! HeaderGuard :call HeaderGuard()<CR>
 
 source ~/.vim/hcc-vundle-conf.vim
 
