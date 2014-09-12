@@ -38,6 +38,7 @@ set backspace=indent,eol,start
 set wildmode=longest,list,full
 set wildmenu
 " I think this is the default: set wildchar=<Tab>
+let mapleader = ","
 
 augroup hcc_indents
 autocmd!
