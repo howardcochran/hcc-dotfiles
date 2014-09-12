@@ -18,6 +18,7 @@ set cinoptions=(0l1
 set showmatch      " When a bracket is inserted, briefly jump to the matching.
 set whichwrap=,,<,>,[,],b,s
 set hlsearch       " Highlight search results as
+set gdefault       " assume the /g flag on :s substitutions to replace all matches in a line
 set shell=/bin/zsh
 set modeline       " read modelines
 set modelines=5    " number of lines from top and bottom of file
@@ -115,7 +116,13 @@ map <leader>rc :source ~/.vimrc<CR>:source ~/.gvimrc<CR>
 map <S-F5> :e!<CR>
 
 " Kill current buffer without closing the window that it occupies.
-map <F5> :bp<CR>:bd#<CR>   
+map <F5> :bp<CR>:bd#<CR>
+
+" Enable / Disable Mouse mode (for use when running in terminal)
+" Makes resizing splits mucc less painful
+map <F9> :set mouse=a
+map <S-F9> :set mouse=
+set mouse=a  " Let's default to mouse On
 
 " Quickly move up & down between split windows using ^j and ^k
 map <C-J> <C-W>j<C-W>_
