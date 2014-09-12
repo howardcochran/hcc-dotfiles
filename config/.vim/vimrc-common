@@ -124,11 +124,6 @@ map <F9> :set mouse=a
 map <S-F9> :set mouse=
 set mouse=a  " Let's default to mouse On
 
-" Quickly move up & down between split windows using ^j and ^k
-map <C-J> <C-W>j<C-W>_
-map <C-K> <C-W>k<C-W>_
-" NOTE: To not have to see one line from the minimized windows, do :set mwh=0
-
 " Hotkeys for using quicklists:
 map <F4>     :cnext<CR>
 map <F3>     :cprevious<CR>
@@ -226,4 +221,45 @@ endfunction
 
 source ~/.vim/hcc-vundle-conf.vim
 
+"====[ Toggle QuickFix Window ]====================
+" From: http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
+command! -bang -nargs=? QFix call QFixToggle(<bang>0)
+function! QFixToggle(forced)
+	if exists("g:qfix_win") && a:forced == 0
+		cclose
+	else
+		execute "copen | res " . g:Quickfix_Win_Height
+	endif
+endfunction
 
+" used to track the quickfix window
+augroup QFixToggle
+	autocmd!
+	autocmd BufWinEnter quickfix let g:qfix_win = bufnr("$")
+	autocmd BufWinLeave * if exists("g:qfix_win") && expand("<abuf>") == g:qfix_win | unlet! g:qfix_win | endif
+augroup END
+
+" Howard's Settings for QuickFix toggle:
+nmap Q :QFix<CR>
+let g:Quickfix_Win_Height = 12
+
+"====[ Preserve height of QuickFix when maximizing other windows ]====================
+" From: https://gist.github.com/dahu/3344530
+function! MaximizeWithoutResizingQuickfix()
+	let l:qfwnr = get(get(filter(map(range(1,winnr('$')), '[v:val, getwinvar(v:val, "&buftype")]'), 'v:val[1] =~ "quickfix"'), 0, []), 0, -1)
+	if (l:qfwnr !=# winnr())
+		let l:qfh = winheight(qfwnr)
+		wincmd _
+		if qfwnr != -1
+			exe qfwnr . "wincmd w"
+			exe "resize " . qfh
+			wincmd p
+		endif
+	endif
+endfunction
+
+" Howard's mappings for the above
+" Quickly move up & down between split windows using ^j and ^k
+map <silent> <C-J> <C-W>j:call MaximizeWithoutResizingQuickfix()<CR>
+map <silent> <C-K> <C-W>k:call MaximizeWithoutResizingQuickfix()<CR>
+" NOTE: To not have to see one line from the minimized windows, do :set mwh=0
