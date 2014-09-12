@@ -291,3 +291,12 @@ function! HLNext (blinktime)
     call matchdelete(ring)
     redraw
 endfunction
+
+"====[ Make the 81st column stand out ]====================
+
+" EITHER the entire 81st column, full-screen...
+set colorcolumn=81
+
+" OR just the 81st column of wide lines...
+" highlight ColorColumnViolation ctermbg=124
+" call matchadd('ColorColumnViolation', '\%81v', 100)

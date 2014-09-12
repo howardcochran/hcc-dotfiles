@@ -15,6 +15,7 @@ endif
 set t_Co=256
 let g:colors_name = "hcc"
 
+hi ColorColumn guibg=#303030 ctermbg=234
 "hi IncSearch -- no settings --
 "hi WildMenu -- no settings --
 "hi SignColumn -- no settings --
@@ -82,7 +83,8 @@ hi FoldColumn guifg=#d2b48c guibg=#800080 guisp=#800080 gui=NONE ctermfg=180 cte
 hi PreProc guifg=#d75fd7 guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
 "ORIG: hi PreProc guifg=#F9449A guibg=NONE guisp=NONE gui=NONE ctermfg=201 ctermbg=NONE cterm=NONE
 "hi EnumerationName -- no settings --
-hi Visual guifg=#000000 guibg=#C0FFC0 guisp=#C0FFC0 gui=bold ctermfg=NONE ctermbg=157 cterm=bold
+hi Visual guifg=black guibg=#C0FFC0 guisp=#C0FFC0 gui=bold ctermfg=black ctermbg=157 cterm=bold
+"ORIG: hi Visual guifg=#000000 guibg=#C0FFC0 guisp=#C0FFC0 gui=bold ctermfg=NONE ctermbg=157 cterm=bold
 hi MoreMsg guifg=#00ced1 guibg=#188F90 guisp=#188F90 gui=NONE ctermfg=44 ctermbg=30 cterm=NONE
 "hi SpellCap -- no settings --
 hi VertSplit guifg=#075554 guibg=#C0FFFF guisp=#C0FFFF gui=NONE ctermfg=23 ctermbg=159 cterm=NONE
