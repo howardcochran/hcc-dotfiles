@@ -269,6 +269,8 @@ bindkey "^[[3~" delete-char # DEL key - delete char from right
 bindkey "^Z"    undo        # Undo effect of last keystroke. Default biding is C-xC-u
 bindkey "^X^I"  redo        # Wanted to use ^X^R, but that is taken by _read_comp.
                             # Also wanted to use C-xC-S-u, but zle can't do Ctrl+Shift!
+bindkey "\ea" universal-argument # Original binding: accept-and-hold, which is useless
+                                 # Want to use ^U, like emacs, but that means kill input
 
 ## Abortive attempt to get zsh to auto-load config changes. Problem is that
 export PATH=~/bin:$PATH
