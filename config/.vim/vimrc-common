@@ -1,3 +1,5 @@
+" vim: set et sw=4:
+
 " Use vim settings, not vi (yuck!)
 set nocompatible
 
@@ -204,25 +206,25 @@ endfunction
 " for eaach new window. However, it's annoying to see the red as I'm typing
 " so we'll toggle it OFF whenever we are in Insert mode.
 augroup TrailingWhitespaceGroup
-	au!
-	au VimEnter,WinEnter,InsertLeave * call EnableTrailingWhitespaceMatch(1)
-	au InsertEnter * call EnableTrailingWhitespaceMatch(0)
+    au!
+    au VimEnter,WinEnter,InsertLeave * call EnableTrailingWhitespaceMatch(1)
+    au InsertEnter * call EnableTrailingWhitespaceMatch(0)
 augroup END
 
 
 "====[ Shortcut to create header file double-inclusion guards ]================
 
 function! HeaderGuard ()
-	" Include guard name is name of file, all upper case,
-	" with all non-symbol chars replaced with underscore,
-	" and with two leading underscores prepended
-	let l:name = toupper(fnamemodify(bufname("%"), ":t"))
-	let l:name = substitute(l:name, "[^A-Za-z0-9]", "_", "g")
-	let l:name = '__' . l:name
+    " Include guard name is name of file, all upper case,
+    " with all non-symbol chars replaced with underscore,
+    " and with two leading underscores prepended
+    let l:name = toupper(fnamemodify(bufname("%"), ":t"))
+    let l:name = substitute(l:name, "[^A-Za-z0-9]", "_", "g")
+    let l:name = '__' . l:name
 
-	call append(0, '#ifndef ' . l:name)
-	call append(1, '#define ' . l:name)
-	call append(line('$'), '#endif  // ' . l:name)
+    call append(0, '#ifndef ' . l:name)
+    call append(1, '#define ' . l:name)
+    call append(line('$'), '#endif  // ' . l:name)
 endfunction
 :command! HeaderGuard :call HeaderGuard()<CR>
 
@@ -232,18 +234,18 @@ source ~/.vim/hcc-vundle-conf.vim
 " From: http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
 command! -bang -nargs=? QFix call QFixToggle(<bang>0)
 function! QFixToggle(forced)
-	if exists("g:qfix_win") && a:forced == 0
-		cclose
-	else
-		execute "copen | res " . g:Quickfix_Win_Height
-	endif
+    if exists("g:qfix_win") && a:forced == 0
+        cclose
+    else
+        execute "copen | res " . g:Quickfix_Win_Height
+    endif
 endfunction
 
 " used to track the quickfix window
 augroup QFixToggle
-	autocmd!
-	autocmd BufWinEnter quickfix let g:qfix_win = bufnr("$")
-	autocmd BufWinLeave * if exists("g:qfix_win") && expand("<abuf>") == g:qfix_win | unlet! g:qfix_win | endif
+    autocmd!
+    autocmd BufWinEnter quickfix let g:qfix_win = bufnr("$")
+    autocmd BufWinLeave * if exists("g:qfix_win") && expand("<abuf>") == g:qfix_win | unlet! g:qfix_win | endif
 augroup END
 
 " Howard's Settings for QuickFix toggle:
@@ -253,16 +255,16 @@ let g:Quickfix_Win_Height = 12
 "====[ Preserve height of QuickFix when maximizing other windows ]====================
 " From: https://gist.github.com/dahu/3344530
 function! MaximizeWithoutResizingQuickfix()
-	let l:qfwnr = get(get(filter(map(range(1,winnr('$')), '[v:val, getwinvar(v:val, "&buftype")]'), 'v:val[1] =~ "quickfix"'), 0, []), 0, -1)
-	if (l:qfwnr !=# winnr())
-		let l:qfh = winheight(qfwnr)
-		wincmd _
-		if qfwnr != -1
-			exe qfwnr . "wincmd w"
-			exe "resize " . qfh
-			wincmd p
-		endif
-	endif
+    let l:qfwnr = get(get(filter(map(range(1,winnr('$')), '[v:val, getwinvar(v:val, "&buftype")]'), 'v:val[1] =~ "quickfix"'), 0, []), 0, -1)
+    if (l:qfwnr !=# winnr())
+        let l:qfh = winheight(qfwnr)
+        wincmd _
+        if qfwnr != -1
+            exe qfwnr . "wincmd w"
+            exe "resize " . qfh
+            wincmd p
+        endif
+    endif
 endfunction
 
 " Howard's mappings for the above
