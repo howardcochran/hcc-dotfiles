@@ -67,7 +67,6 @@ hi Number guifg=#ff0000 guibg=NONE guisp=NONE gui=bold ctermfg=196 ctermbg=NONE 
 "ORIG: hi Number guifg=#A9EE5A guibg=NONE guisp=NONE gui=bold,italic ctermfg=155 ctermbg=NONE cterm=bold
 hi Boolean guifg=#ff9742 guibg=NONE guisp=NONE gui=bold,italic ctermfg=215 ctermbg=NONE cterm=bold
 hi Operator guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
-"hi CursorLine -- no settings --
 "hi Union -- no settings --
 "hi TabLineFill -- no settings --
 hi Question guifg=#F4BB7E guibg=NONE guisp=NONE gui=NONE ctermfg=222 ctermbg=NONE cterm=NONE
@@ -75,7 +74,8 @@ hi WarningMsg guifg=#F60000 guibg=NONE guisp=NONE gui=underline ctermfg=196 cter
 "hi VisualNOS -- no settings --
 "hi DiffDelete -- no settings --
 hi ModeMsg guifg=#404040 guibg=#C0C0C0 guisp=#C0C0C0 gui=NONE ctermfg=238 ctermbg=7 cterm=NONE
-"hi CursorColumn -- no settings --
+hi CursorColumn guibg=#0000af gui=NONE ctermbg=18 cterm=NONE
+hi CursorLine guibg=#0000af gui=NONE ctermbg=18 cterm=NONE
 hi Define guifg=#d75fd7 guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
 "ORIG: hi Define guifg=#F9449A guibg=NONE guisp=NONE gui=NONE ctermfg=13 ctermbg=NONE cterm=NONE
 hi Function guifg=#555555 guibg=NONE guisp=NONE gui=NONE ctermfg=240 ctermbg=NONE cterm=NONE
