@@ -184,27 +184,33 @@ command! -nargs=0 Filter let @f='' | execute 'g//y F' | new | setlocal bt=nofile
 "" augroup END
 
 
-" Call matchadd for all new windows
-"
-" :match only defines a match in the current window. In order to match across
-" all windows, matchadd() needs to be called once in each new window. However,
-" none of the autocmd events do exactly that [1]. The combination of VimEnter
-" and WinEnter will work, but will also be triggered switching between open
-" windows. The window local variable w:created guards against this.
-"
-" [1]: http://vim.wikia.com/wiki/Detect_window_creation_with_WinEnter
+"====[ Highlight trailing whitespace brightly ]====================
+
+" Enable or disable highlighting trailing whitespace for the current window.
+" Used with the augroup below. Original match regex came from:
 " https://github.com/peterlundgren/.home/blob/master/_vim/.vimrc
-autocmd VimEnter,WinEnter * if !exists('w:created') | call NewWindow() | endif
-function! NewWindow()
-	let w:created=1
-	" -1 priority so hlsearch (priority 0) will override the match
-	" Alternate implementation of colorcolumn for older versions
-	if !exists('+colorcolumn')
-		call matchadd('CursorColumn', '\%>80v.\+', -1)
+function! EnableTrailingWhitespaceMatch(is_enable)
+    if a:is_enable && !exists('w:trailing_whitespace_match')
+	let w:trailing_whitespace_match = matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
+    else
+	if exists('w:trailing_whitespace_match')
+	    call matchdelete(w:trailing_whitespace_match)
+	    unlet w:trailing_whitespace_match
 	endif
-	" Highlight trailing whitespace and space before tab
-	call matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
+    endif
 endfunction
+
+" We have to use VimEnter & WinEnter to add the whitespace match separately
+" for eaach new window. However, it's annoying to see the red as I'm typing
+" so we'll toggle it OFF whenever we are in Insert mode.
+augroup TrailingWhitespaceGroup
+	au!
+	au VimEnter,WinEnter,InsertLeave * call EnableTrailingWhitespaceMatch(1)
+	au InsertEnter * call EnableTrailingWhitespaceMatch(0)
+augroup END
+
+
+"====[ Shortcut to create header file double-inclusion guards ]================
 
 function! HeaderGuard ()
 	" Include guard name is name of file, all upper case,
