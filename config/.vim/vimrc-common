@@ -156,6 +156,10 @@ map <C-]> g<C-]>
 :nmap [og   :set grepprg=grep\ -n\ $*\ /dev/null<CR>
 :nmap cog   :normal <C-R>=match(&grepprg, "^git") > -1 ? "[og" : "]og"<CR><CR>
 
+" Source line or visual selection
+nnoremap <leader>S ^"zy$:@z<cr>:echo 'sourced line.'<cr>
+vnoremap <leader>S "zy:@z<cr>:echo 'Sourced selection.'<cr>
+
 "====[ Abbreviations ]================================================== {{{1
 " A few abbreviations for hcc:
 " Kernel likes spaces after control-flow keywords, which is not what I'm used to:
