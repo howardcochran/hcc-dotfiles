@@ -29,6 +29,8 @@
 	#sgrep2 = "!f() { git grep \"$1\"; git submodule foreach 'git grep SRCREV_m $foo | awk -v name=$name '\''{ print name, ":",$0; }'\''; echo '$path' ----------- ; true' }; f"
 
 	sui = "submodule update --init"
+
+	cbb = "!git clone -o git ssh://git@git/build-bundle.git"
 [gitmls]
 	aliases = 2
 [log]
@@ -44,6 +46,6 @@
 	tool = meld
 	conflictstyle = diff3
 [http]
-	proxy = 
+	proxy =
 [push]
 	default = tracking
