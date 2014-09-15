@@ -304,6 +304,10 @@ augroup ToggleBackgroundInInsertMode
     au InsertLeave * :highlight Normal ctermbg=17 guibg=#00005f
 augroup END
 
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+            \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+            \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
 "====[ Experimental / Broken ]========================================== {{{1
 
 " Filter current buffer to a new temporary buffer (i.e current buffer grep)
