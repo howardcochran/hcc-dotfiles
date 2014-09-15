@@ -160,6 +160,19 @@ map <C-]> g<C-]>
 nnoremap <leader>S ^"zy$:@z<cr>:echo 'sourced line.'<cr>
 vnoremap <leader>S "zy:@z<cr>:echo 'Sourced selection.'<cr>
 
+" Tab Control. {{{2
+" nmemonic middle letter of word "tab". Like tmux, but with a instead of ^a
+:nnoremap ah :tabprev<CR>
+:nnoremap al :tabnext<CR>       " Overrides :al. Use :all instead
+:nnoremap aH :tabfirst<CR>
+:nnoremap aL :tablast<CR>
+:nnoremap an :tabnew<CR>        " Overrides a menu creating command
+:nnoremap ac :tabclose<CR>
+:nnoremap a<C-h> :tabmove -1<CR>
+:nnoremap a<C-l> :tabmove +1<CR>
+
+" }}}2
+
 "====[ Abbreviations ]================================================== {{{1
 " A few abbreviations for hcc:
 " Kernel likes spaces after control-flow keywords, which is not what I'm used to:
