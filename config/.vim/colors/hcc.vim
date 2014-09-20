@@ -38,7 +38,8 @@ hi NonText guifg=NONE guibg=#000000 guisp=#334C75 gui=NONE ctermfg=NONE ctermbg=
 "hi Ignore -- no settings --
 hi Debug guifg=#A9EE8A guibg=NONE guisp=NONE gui=NONE ctermfg=156 ctermbg=NONE cterm=NONE
 hi PMenuSbar guifg=NONE guibg=#848688 guisp=#848688 gui=NONE ctermfg=NONE ctermbg=102 cterm=NONE
-hi Identifier guifg=#555555 guibg=NONE guisp=NONE gui=NONE ctermfg=240 ctermbg=NONE cterm=NONE
+"ORIG (too dark): hi Identifier guifg=#555555 guibg=NONE guisp=NONE gui=NONE ctermfg=240 ctermbg=NONE cterm=NONE
+hi Identifier guifg=#ff87ff guibg=NONE guisp=NONE gui=NONE ctermfg=213 ctermbg=NONE cterm=NONE
 hi SpecialChar guifg=#ff5fff guibg=NONE guisp=NONE gui=bold ctermfg=207 ctermbg=NONE cterm=NONE
 "ORIG: hi SpecialChar guifg=#A9EE8A guibg=NONE guisp=NONE gui=NONE ctermfg=156 ctermbg=NONE cterm=NONE
 hi Conditional guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
@@ -77,7 +78,8 @@ hi CursorColumn guibg=#0000af gui=NONE ctermbg=18 cterm=NONE
 hi CursorLine guibg=#0000af gui=NONE ctermbg=18 cterm=NONE
 hi Define guifg=#d75fd7 guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
 "ORIG: hi Define guifg=#F9449A guibg=NONE guisp=NONE gui=NONE ctermfg=13 ctermbg=NONE cterm=NONE
-hi Function guifg=#555555 guibg=NONE guisp=NONE gui=NONE ctermfg=240 ctermbg=NONE cterm=NONE
+"ORIG: (too dark) hi Function guifg=#555555 guibg=NONE guisp=NONE gui=NONE ctermfg=240 ctermbg=NONE cterm=NONE
+hi Function guifg=#ff5fff guibg=NONE guisp=NONE gui=NONE ctermfg=213 ctermbg=NONE cterm=NONE
 hi FoldColumn guifg=#d2b48c guibg=#800080 guisp=#800080 gui=NONE ctermfg=180 ctermbg=90 cterm=NONE
 hi PreProc guifg=#d75fd7 guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
 "ORIG: hi PreProc guifg=#F9449A guibg=NONE guisp=NONE gui=NONE ctermfg=201 ctermbg=NONE cterm=NONE
@@ -153,7 +155,7 @@ hi htmlbold guifg=#000000 guibg=#efface guisp=#efface gui=NONE ctermfg=NONE cter
 hi htmlboldunderline guifg=#efface guibg=#000000 guisp=#000000 gui=NONE ctermfg=230 ctermbg=NONE cterm=NONE
 hi htmlunderline guifg=#d3d3d3 guibg=#000000 guisp=#000000 gui=NONE ctermfg=252 ctermbg=NONE cterm=NONE
 hi htmlstatement guifg=#af5f87 guibg=NONE guisp=NONE gui=NONE ctermfg=132 ctermbg=NONE cterm=NONE
-hi cterm guifg=#ff5fff guibg=NONE guisp=NONE gui=bold ctermfg=207 ctermbg=NONE cterm=NONE
+hi cterm guifg=#ff87ff guibg=NONE guisp=NONE gui=bold ctermfg=207 ctermbg=NONE cterm=NONE
 "ORIG: hi cterm guifg=#efface guibg=#linenr guisp=#linenr gui=NONE ctermfg=230 ctermbg=NONE cterm=NONE
 "DISABLE: Gives error because #linenr not defined:  hi gui guifg=#efface guibg=#linenr guisp=#linenr gui=NONE ctermfg=230 ctermbg=NONE cterm=NONE
 hi htmllink guifg=#add8e6 guibg=#000000 guisp=#000000 gui=NONE ctermfg=152 ctermbg=NONE cterm=NONE
