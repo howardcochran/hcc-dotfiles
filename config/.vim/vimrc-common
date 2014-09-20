@@ -32,6 +32,11 @@ colorscheme hcc
 syntax on
 set laststatus=2   " Always show a status line, even when only 1 window
 set colorcolumn=81 " Make the 81st column stand out (ColorColumn highlight)
+set noswapfile     " Swap files are so annoying!
+set number         " Mapping to toggle this: con (vim-unimpaired plugin)
+set relativenumber " cor  "   "    "     "
+set cursorcolumn   " cox
+set cursorline     " cox
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -70,7 +75,7 @@ set tags=tags,../tags,../../tags,../../../tags,../../../../tags
 
 
 " **** Be a little bit more Common User Interface-like ****
-set virtualedit=onemore
+set virtualedit=onemore,block
 set selectmode=key,mouse
 set keymodel=startsel,stopsel
 set selection=exclusive
