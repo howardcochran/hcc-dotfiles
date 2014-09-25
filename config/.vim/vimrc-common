@@ -157,14 +157,14 @@ vnoremap <leader>S "zy:@z<cr>:echo 'Sourced selection.'<cr>
 
 " Tab Control. {{{2
 " nmemonic middle letter of word "tab". Like tmux, but with a instead of ^a
-:nnoremap ah :tabprev<CR>
-:nnoremap al :tabnext<CR>       " Overrides :al. Use :all instead
-:nnoremap aH :tabfirst<CR>
-:nnoremap aL :tablast<CR>
-:nnoremap an :tabnew<CR>        " Overrides a menu creating command
-:nnoremap ac :tabclose<CR>
-:nnoremap a<C-h> :tabmove -1<CR>
-:nnoremap a<C-l> :tabmove +1<CR>
+:nnoremap gh :tabprev<CR>       " Overrides gh (start Select mode linewise)
+:nnoremap gl :tabnext<CR>
+:nnoremap gH :tabfirst<CR>
+:nnoremap gL :tablast<CR>
+:nnoremap g<Enter> :tabnew<CR>  " Don't want to override gn
+:nnoremap gc :tabclose<CR>
+:nnoremap g<C-H> :tabmove -1<CR> " Override start Select mode blockwise)
+:nnoremap g<C-L> :tabmove +1<CR>
 
 " }}}2
 
