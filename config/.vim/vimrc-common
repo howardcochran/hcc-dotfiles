@@ -158,7 +158,7 @@ vnoremap <leader>S "zy:@z<cr>:echo 'Sourced selection.'<cr>
 " Tab Control. {{{2
 " nmemonic middle letter of word "tab". Like tmux, but with a instead of ^a
 :nnoremap gh :tabprev<CR>       " Overrides gh (start Select mode linewise)
-:nnoremap gl :tabnext<CR>
+:nnoremap gl :tabnext<CR>       " Overrides :al. Use :all instead
 :nnoremap gH :tabfirst<CR>
 :nnoremap gL :tablast<CR>
 :nnoremap g<Enter> :tabnew<CR>  " Don't want to override gn
@@ -167,6 +167,84 @@ vnoremap <leader>S "zy:@z<cr>:echo 'Sourced selection.'<cr>
 :nnoremap g<C-L> :tabmove +1<CR>
 
 " }}}2
+
+" Window Control. Use <space> as alias for Ctrl-W {{{2
+" I hate typing Ctrl-W, especially since this means "close tab or window" in
+" other applications, which is bad if focus isn't where I think it is!
+" And <space> has no real function in Normal mode.
+
+" Not included: S
+" ToDo: Decide to not include some more of the below, then those mappings are
+" available for other things.
+:nnoremap <Space>+  <C-W>+
+:nnoremap <Space>-  <C-W>-
+:nnoremap <Space><  <C-W><
+:nnoremap <Space>=  <C-W>=
+:nnoremap <Space>>  <C-W>>
+:nnoremap <Space>H  <C-W>H
+:nnoremap <Space>J  <C-W>J
+:nnoremap <Space>K  <C-W>K
+:nnoremap <Space>L  <C-W>L
+:nnoremap <Space>P  <C-W>P
+:nnoremap <Space>R  <C-W>R
+:nnoremap <Space>T  <C-W>T
+:nnoremap <Space>W  <C-W>W
+:nnoremap <Space>]  <C-W>]
+:nnoremap <Space>^  <C-W>^
+:nnoremap <Space>_  <C-W>_
+:nnoremap <Space>b  <C-W>b
+:nnoremap <Space>c  <C-W>c
+:nnoremap <Space>d  <C-W>d
+:nnoremap <Space>f  <C-W>f
+:nnoremap <Space>F  <C-W>F
+:nnoremap <Space>W  <C-W>W
+:nnoremap <Space>g<C-]>  <C-W>g<C-]>
+:nnoremap <Space>g] <C-W>g]
+:nnoremap <Space>g} <C-W>g}
+:nnoremap <Space>gf <C-W>gf
+:nnoremap <Space>gF <C-W>gF
+:nnoremap <Space>h  <C-W>h
+:nnoremap <Space>i  <C-W>i
+:nnoremap <Space>j  <C-W>j
+:nnoremap <Space>k  <C-W>k
+:nnoremap <Space>l  <C-W>l
+:nnoremap <Space>n  <C-W>n
+:nnoremap <Space>o  <C-W>o
+:nnoremap <Space>p  <C-W>p
+:nnoremap <Space>q  <C-W>q
+:nnoremap <Space>r  <C-W>r
+:nnoremap <Space>s  <C-W>s
+:nnoremap <Space>t  <C-W>t
+:nnoremap <Space>v  <C-W>v
+:nnoremap <Space>w  <C-W>w
+:nnoremap <Space>x  <C-W>x
+:nnoremap <Space>z  <C-W>z
+:nnoremap <Space><Bar>  <C-W><Bar>
+:nnoremap <Space>}  <C-W>}
+:nnoremap <Space><Down>  <C-W><Down>
+:nnoremap <Space><Up>    <C-W><Up>
+:nnoremap <Space><Left>  <C-W><Left>
+:nnoremap <Space><Right> <C-W><Right>
+" }}}2
+" Window Control. Custom Mappings. {{{2
+
+" Move current window up or down, staying within it
+:nnoremap <Space><C-j>  <C-W>x<C-W>p
+:nnoremap <Space><C-k>  <C-W>k<C-W>x
+" ToDo: The above relies on "exchange", which works OK when there are only
+" horizontal splits.  How to make it work for both vertical and horizontal
+" splits?  Probably need to write a function that does something like this:
+" save current window number in local var. Move in the direction indicated.
+" Exchange the current window with the original one (arg to ^Wx, but is there
+" a :command equivalent?) Bail if window motion didn't change current window
+" number, which means we must have been at a limit.
+
+" ToDo: Need a mapping to move the current window into a split on the next or
+" previous tab page (or absolute tab page number).  If current tab has only
+" one window, this should implicitly close the current tab page.
+
+" }}}2
+
 
 "====[ Abbreviations ]================================================== {{{1
 " A few abbreviations for hcc:
