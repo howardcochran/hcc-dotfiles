@@ -217,3 +217,5 @@ hi literal guifg=#0000ff guibg=NONE guisp=NONE gui=NONE ctermfg=21 ctermbg=NONE 
 
 "ORIG: hi Folded guifg=#000000 guibg=#FFC0C0 guisp=#FFC0C0 gui=NONE ctermfg=NONE ctermbg=217 cterm=NONE
 hi Folded guifg=#000000 guibg=#00af5f guisp=#00af5f gui=NONE ctermfg=0 ctermbg=35 cterm=NONE
+hi OpenedFold guibg=#5f0000 ctermbg=52
+syn match OpenedFold "^.*{{{.*"
