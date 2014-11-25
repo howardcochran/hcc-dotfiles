@@ -280,7 +280,7 @@ function! EnableTrailingWhitespaceMatch(is_enable)
 endfunction
 
 " We have to use VimEnter & WinEnter to add the whitespace match separately
-" for eaach new window. However, it's annoying to see the red as I'm typing
+" for each new window. However, it's annoying to see the red as I'm typing
 " so we'll toggle it OFF whenever we are in Insert mode.
 augroup TrailingWhitespaceGroup
     au!
