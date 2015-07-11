@@ -10,7 +10,8 @@
 
 	dns = diff --name-status
 
-	lol = log --graph --decorate --pretty=oneline --abbrev-commit
+	lol = log --decorate --pretty=oneline --abbrev-commit
+	loll = log --graph --decorate --pretty=oneline --abbrev-commit
 	logns = log --name-status --decorate --abbrev-commit
 	lg = log --name-status --decorate --abbrev-commit
 
