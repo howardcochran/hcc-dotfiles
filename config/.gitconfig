@@ -1,6 +1,6 @@
 [user]
 	name = Howard Cochran
-	email = cochran@lexmark.com
+	email = hcochran@kernelspring.com
 [color]
 	diff = true
 	status = auto
@@ -50,3 +50,11 @@
 	proxy =
 [push]
 	default = tracking
+
+[sendemail]
+	from = Howard Cochran <hcochran@kernelspring.com>
+	smtpserver = smtp.gmail.com
+	smtpuser = hcochran@kernelspring.com
+	smtpencryption = tls
+	chainreplyto = false
+	smtpserverport = 587
