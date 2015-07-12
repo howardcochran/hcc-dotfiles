@@ -180,8 +180,21 @@ export HISTSIZE=16384
 export SAVEHIST=$HISTSIZE
 export HISTFILE=$HOME/.zsh_history
 
-export GREP_OPTIONS='--exclude=*.svn* --directories=recurse --color=auto'
+# GREP_OPTIONS was deprecated. My former setting for this was:
+# export GREP_OPTIONS='--exclude=*.svn* --directories=recurse --color=auto'
+# Note I really hate to drop recursion by default, but -r on the command line
+# did not act like --directories=recurse did in that it added an implied .
+# argument, so it always grepped everything under the current directory, even
+# when you are just piping something into its stdin :(
+# As far as I know, I have no recourse but to lose "recursive by default"
+alias grep='grep --color=auto'
 export GREP_COLOR='1;32'
+
+# These use to be default on Ubuntu, but apparently not on Fedora 22, so
+# let's set them explicitly. In particular, -R is needed to get color
+# output to look correctly (which was on by default, but became OFF if
+# $LESS was set to any string that did not include it!)
+export LESS='-R --ignore-case --quit-if-one-screen'
 
 function ..() { cd .. }
 ## alias cd='cd -L' # This interferes with tab completion on the cd command
