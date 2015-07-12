@@ -25,10 +25,18 @@ function hccprompt {
     local maincolor="%{$hyellow%}"
     local hostcolor="%{$hgreen%}"
 
-    local host=`hostname`
+    local dockercolor="%{$hblue%}"
+    local docker_label
+    if [[ -n $DOCKER_NAME ]] ; then
+        docker_label="${dockercolor}$DOCKER_NAME "
+    fi
+
+    local host=$(hostname)
+    # Strip domain portion of hostname, if present:
+    host=${host%.*}
 
     PS1="${maincolor}===${maincolor}\
-[%T ${hostcolor}${host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? ${PR_BELL}%{$norm%}${maincolor})"\
+[%T ${docker_label}${hostcolor}${host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? ${PR_BELL}%{$norm%}${maincolor})"\
 '$(_git_ps1)'" %~/
 ${maincolor}==>%{$norm%} "
 
