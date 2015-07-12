@@ -36,11 +36,19 @@ function hccprompt {
     host=${host%.*}
 
     PS1="${maincolor}===${maincolor}\
-[%T ${docker_label}${hostcolor}${host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? ${PR_BELL}%{$norm%}${maincolor})"\
+[%T ${docker_label}${hostcolor}${host}${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? %{$norm%}${maincolor})"\
 '$(_git_ps1)'" %~/
 ${maincolor}==>%{$norm%} "
 
 }
 hccprompt
+
+# Emit a terminal bell if last command exited with non-zero status. This makes
+# the tmux window label change to "alert" color. Used to do this in the prompt
+# but it would re-asert alert status every time the prompt was redrawn, causing
+# lots of false alerts. Doing it in precmd means it will happen only once.
+function precmd {
+    [[ $? != 0 ]] && echo -n ${PR_BELL}
+}
 
 alias sp='source ~/.zsh/setprompt'
