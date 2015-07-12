@@ -47,6 +47,8 @@ mklink("config/.tmux.conf", "~/.tmux.conf")
 mklink("config/.tmux", "~/.tmux")
 mklink("config/.config/htop/htoprc", "~/.config/htop/htoprc")
 mklink(".fonts", "~/.fonts")
+mklink("config/.terminfo", "~/.terminfo")
+
 
 
 

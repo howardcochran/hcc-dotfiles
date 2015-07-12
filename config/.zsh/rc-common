@@ -279,6 +279,17 @@ export PATH=~/bin:$PATH
 # We need $TERM to be xterm-256color outside of Tmux but don't override
 # Tmux's setting of screen-256color inside Tmux
 [[ "$TERM" =~ "screen*" ]] || TERM=xterm-256color
+
+# tmux 1.9 broke compatibility with screen-256color because it actually honors
+# the application's request for "standout" mode rather than translating that
+# into something that meant reverse video. And screen-256color had defined
+# standout to look italicized and had never define an italicized mode.
+# As a result search highlights in "less" appear italicized instead of reverse
+# video, which is hard to see!
+# So, define my own derivative terminfo that makes standout look like reverse
+# video, and adds a definition for italics that looks itaics.
+[[ "$TERM" = "screen-256color" ]] && TERM=screen-256color-it
+
 ## the vars I set do not persist (treated as local no matter what I do). Grr!
 # function periodic() {
 #     #typeset -g periodic_cur periodic_prev
