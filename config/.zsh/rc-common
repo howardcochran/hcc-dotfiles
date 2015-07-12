@@ -108,6 +108,11 @@ limit coredumpsize 0
 REPORTTIME=2
 TIMEFMT="Time: %*E real %U usr %S sys %P %J"
 
+# This makes forward/backward-word in zle behave like the zsh default, which
+# treats word boundaries only on space chars. I set it here explicitly because
+# oh-my-zsh hard-codes this to emty string, which makes it behave like bash (yuck!)
+WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
+
 # I like ls -s to tell me the number of blocks in 1K blocks.
 BLOCKSIZE=K ; export BLOCKSIZE
 
