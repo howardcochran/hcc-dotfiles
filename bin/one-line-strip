@@ -1,0 +1,21 @@
+#!/usr/bin/python
+# Copy all of stdin to stdout, except:
+# If stdin consists of only a single line of input, strip the newline
+# Otherwise, copy it all verbatim.
+#
+# Rationale: Convenient to send output of a command into a tmux buffer.
+# When you later want to paste the buffer, if it was only one line, you
+# typically don't want the newline included with it.
+# Example:
+#   git rev-parse HEAD | one-line-strip | tmux load-buffer -
+# Now, your srcrev is ready for pasting into a bitbake reciply without the
+# pesky newline!
+
+import sys
+
+all_stdin = sys.stdin.read()
+lines = all_stdin.splitlines()
+if (len(lines) == 1):
+    sys.stdout.write(lines[0])
+else:
+    sys.stdout.write(all_stdin)

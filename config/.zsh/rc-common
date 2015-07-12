@@ -216,6 +216,8 @@ alias -g LL="2>&1 | less"
 alias -g NE='2> /dev/null'
 alias -g DN=/dev/null
 
+# Pipe output of command to tmux's "clipboard"
+alias -g CL='| one-line-strip | tmux load-buffer -'
 
 alias psg='ps -Af | grep '
 
