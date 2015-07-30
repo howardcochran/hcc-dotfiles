@@ -104,6 +104,10 @@ unsetopt promptcr
 
 limit coredumpsize 0
 
+# Fedora's limit is 1 million by default, which really slows down fork() in
+# Python / bitbake, because it calls close() for every possible descriptor!
+limit descriptors 1024
+
 # Give me "time" usage for any non-bg cmd that takes more than 2s sys & usr time
 REPORTTIME=2
 TIMEFMT="Time: %*E real %U usr %S sys %P %J"
