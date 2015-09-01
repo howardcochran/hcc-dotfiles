@@ -53,12 +53,14 @@ function __vim_build_new_vim_cmd() {
 #    given $tmpfile. Our caller must actually launch it.
 # integer: We sent the command to the given vim instance. We did not create
 #          $tmpfile. Our caller is to forground $__vim_job
-# Optional --new must come before --split because I'm lazy.
+# Optional --new, --newtab, and --split must come in this order because I'm lazy.
 function __vim_build_launch_cmd() {
     local tmpfile="$1"
     shift
     local force_new=0
     [ "$1" = '--new' ] && { force_new=1 ; shift }
+    local newtab=0
+    [ "$1" = '--newtab' ] && { newtab=1 ; shift }
     local opt_split=''
     [ "$1" = '--split' ] && { opt_split='-o' ; shift }
 
@@ -72,29 +74,42 @@ function __vim_build_launch_cmd() {
 
     # If there are no server jobs (or caller said --new), launch new vim
     if [ $force_new -eq 1 ] || [ $(print "${serverjobs}" | wc -w) -eq 0 ]; then
-        __vim_build_new_vim_cmd "$tmpfile" $opt_split "$@"
         __vim_job='n'
-        return 0
-    fi
-
-    if [ ${#serverjobs} -gt 1 ] ; then
+    elif [[ ${#serverjobs} == 1 ]] ; then
+        # Only one server found, pick the obvious one
+        row="${serverjobs[1]}"
+    else
        print "Choose which vim.  (q: Quit  n: New vim)"
        select row in ${serverjobs[@]} ; do
            __vim_job=0  # Default=quit
-           [[ $REPLY = 'q' ]] && { return 0 }
-           [[ $REPLY = 'n' ]] && { __vim_build_new_vim_cmd "$tmpfile" $opt_split "$@"; __vim_job='n' ; return 0 }
-           [[ -z "$row" ]] && { print "Unknown selection." ; return 0 }
+           if [[ $REPLY == 'q' ]]; then
+               return 0
+           elif [[ $REPLY == 'n' ]]; then
+               __vim_job='n'
+           elif [[ -z "$row" ]]; then
+               print "Unknown selection."
+               return 0
+           fi
            break
        done
-    else
-        # Only one server found, pick the obvious one
-        row="${serverjobs[1]}"
+    fi
+
+    # The "Launch a new vim & return" case:
+    if [[ $__vim_job == 'n' ]]; then
+        __vim_build_new_vim_cmd "$tmpfile" $opt_split "$@"
+        return 0
     fi
 
     # job_and_server becomes an array: 1st element is shell job number,
     # and second element is the name of the corresponding vim server
     job_and_server=( $(__vim_parse_job_and_server "$row") )
     __vim_job="${job_and_server[1]}"
+
+    # If want new tab page, first create it.
+    if [[ $newtab == 1 ]]; then
+        vim --servername ${job_and_server[2]} --remote-send \
+            "<C-\><C-N>:tabnew<CR>"
+    fi
 
     if [ -z "$opt_split" ] ; then
         vim --servername ${job_and_server[2]} --remote "$@"
@@ -115,6 +130,19 @@ function __vim_build_launch_cmd() {
 
 # Open a file in an existing vim. If none exists, launch a new one.
 # If multiple exist, ask user which to open it in.
+# Options (must be specified in this order, because don't use getopt:
+# --new :   Force creation of new vim instance
+# --newtab: Open a new tab page before doing anything else (only applicable
+#           when dealing with an existing vim)
+# --split:  Open each specified file in a new split.
+#
+# NOTE: --newtab only creates one new tab. This does not support file in
+# its own tab, as I don't find that useful at all. It wouldn't be very hard
+# to add support for that, though using --remote-tab option to vim!
+# Example:
+#     v --newtab --split file1 file2 file3
+#     Creates a new tab with the three given files in splits within that tab.
+# BUG: The above example also creates an empty window in the new tab. Fix later.
 function v() {
     # Populated by inner function. 0=quit, n=new vim, integer=existing vim
     local __vim_job
@@ -146,4 +174,6 @@ function v() {
 
 alias vnew='v --new'
 alias vs='v --split'
+alias vts='v --newtab --split'
+alias vt='v --newtab'
 alias vnews='v --new --split'
