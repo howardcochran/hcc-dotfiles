@@ -100,12 +100,13 @@ function __vim_build_launch_cmd() {
         vim --servername ${job_and_server[2]} --remote "$@"
     else
         # Want to open each file in a new split window. Because there
-        # is no --remote-split command, use +cmd syntax, which executes
-        # the command only once for the whole command line, we must
-        # open each file separately in this loop.
+        # is no --remote-split command, we must open each file separately
+        # in this loop. Can't use +cmd because it doesn't execute that
+        # command until after opening the file into existing buffer.
         local filename
         for filename in "$@"; do
-            vim --servername ${job_and_server[2]} --remote +split "$1"
+            vim --servername ${job_and_server[2]} --remote-send \
+                "<C-\><C-N>:split ${filename}<CR><C-W>x<C-W>j"
             shift
         done
     fi
