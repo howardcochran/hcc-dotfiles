@@ -312,7 +312,7 @@ export PATH=~/bin:$PATH
 # video, which is hard to see!
 # So, define my own derivative terminfo that makes standout look like reverse
 # video, and adds a definition for italics that looks itaics.
-[[ "$TERM" = "screen-256color" ]] && TERM=screen-256color-it
+[[ "$TERM" = "screen-256color" && -e ~/.terminfo/s/screen-256color-it ]] && TERM=screen-256color-it
 
 ## the vars I set do not persist (treated as local no matter what I do). Grr!
 # function periodic() {
