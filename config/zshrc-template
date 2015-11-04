@@ -3,7 +3,7 @@
 source ~/.zsh/rc-common
 
 function running_on_centos5() {
-    lsb_release --id --release | tr '\n' ' ' |egrep -q 'CentOS.*:[[:space:]]5[.]'
+    lsb_release --id --release | tr '\n' ' ' |egrep -q '(RedHatEnterpriseClient)|(CentOS.*:[[:space:]]5[.])'
 }
 
 function running_on_fedora() {

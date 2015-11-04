@@ -2,6 +2,7 @@
 # vim: set et sw=4:
 
 # Old LPDEV boxen are too stupid to understand decent terms. Disable 256-color.
+TERM=${TERM%-256color-it}
 TERM=${TERM%-256color}
 
 export MLS_EXPERT=1
