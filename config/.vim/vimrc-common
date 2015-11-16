@@ -31,10 +31,11 @@ set hidden         " Allow a modified buffer to be not displayed in a window
 colorscheme hcc
 syntax on
 set laststatus=2   " Always show a status line, even when only 1 window
-set colorcolumn=81 " Make the 81st column stand out (ColorColumn highlight)
+" silent! suppresses error message for older Vim's that lack the option
+silent! set colorcolumn=81 " Make the 81st column stand out (ColorColumn highlight)
 set noswapfile     " Swap files are so annoying!
 set number         " Mapping to toggle this: con (vim-unimpaired plugin)
-set relativenumber " cor  "   "    "     "
+silent! set relativenumber " cor  "   "    "     "
 set cursorcolumn   " cox
 set cursorline     " cox
 behave xterm       " Mouse drag enters Visual mode instead of Select mode.
@@ -265,28 +266,31 @@ vnoremap <leader>S "zy:@z<cr>:echo 'Sourced selection.'<cr>
 
 "====[ Highlight trailing whitespace brightly ]========================= {{{1
 
-" Enable or disable highlighting trailing whitespace for the current window.
-" Used with the augroup below. Original match regex came from:
-" https://github.com/peterlundgren/.home/blob/master/_vim/.vimrc
-function! EnableTrailingWhitespaceMatch(is_enable)
-    if a:is_enable && !exists('w:trailing_whitespace_match')
-	let w:trailing_whitespace_match = matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
-    else
-	if exists('w:trailing_whitespace_match')
-	    call matchdelete(w:trailing_whitespace_match)
-	    unlet w:trailing_whitespace_match
-	endif
-    endif
-endfunction
+" This does not work on older VIM's that lack matchadd() & matchdelete():
+if exists("*matchadd")
+    " Enable or disable highlighting trailing whitespace for the current window.
+    " Used with the augroup below. Original match regex came from:
+    " https://github.com/peterlundgren/.home/blob/master/_vim/.vimrc
+    function! EnableTrailingWhitespaceMatch(is_enable)
+        if a:is_enable && !exists('w:trailing_whitespace_match')
+            let w:trailing_whitespace_match = matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
+        else
+            if exists('w:trailing_whitespace_match')
+                call matchdelete(w:trailing_whitespace_match)
+                unlet w:trailing_whitespace_match
+            endif
+        endif
+    endfunction
 
-" We have to use VimEnter & WinEnter to add the whitespace match separately
-" for each new window. However, it's annoying to see the red as I'm typing
-" so we'll toggle it OFF whenever we are in Insert mode.
-augroup TrailingWhitespaceGroup
-    au!
-    au VimEnter,WinEnter,InsertLeave * call EnableTrailingWhitespaceMatch(1)
-    au InsertEnter * call EnableTrailingWhitespaceMatch(0)
-augroup END
+    " We have to use VimEnter & WinEnter to add the whitespace match separately
+    " for each new window. However, it's annoying to see the red as I'm typing
+    " so we'll toggle it OFF whenever we are in Insert mode.
+    augroup TrailingWhitespaceGroup
+        au!
+        au VimEnter,WinEnter,InsertLeave * call EnableTrailingWhitespaceMatch(1)
+        au InsertEnter * call EnableTrailingWhitespaceMatch(0)
+    augroup END
+endif " exists("*matchadd")
 
 
 "====[ Shortcut to create header file double-inclusion guards ]========= {{{1
@@ -354,29 +358,33 @@ map <silent> <C-K> <C-W>k:call MaximizeWithoutResizingQuickfix()<CR>
 "====[ Highlight matches when jumping to next ]========================= {{{1
 " From: Damian Conway, "More Instantly Better Vim" - OSCON 2013
 
-" This rewires n and N to do the highlighing...
-nnoremap <silent> n   n:call HLNext(0.4)<cr>
-nnoremap <silent> N   N:call HLNext(0.4)<cr>
+" This does not work on older VIM's that lack matchadd() & matchdelete():
+if exists("*matchadd")
+
+    " This rewires n and N to do the highlighing...
+    nnoremap <silent> n   n:call HLNext(0.4)<cr>
+    nnoremap <silent> N   N:call HLNext(0.4)<cr>
 
 
-" ring the match in red...
-function! HLNext (blinktime)
-    highlight RedOnRed ctermfg=red ctermbg=red
-    let [bufnum, lnum, col, off] = getpos('.')
-    let matchlen = strlen(matchstr(strpart(getline('.'),col-1),@/))
-    echo matchlen
-    let ring_pat = (lnum > 1 ? '\%'.(lnum-1).'l\%>'.max([col-4,1]) .'v\%<'.(col+matchlen+3).'v.\|' : '')
-            \ . '\%'.lnum.'l\%>'.max([col-4,1]) .'v\%<'.col.'v.'
-            \ . '\|'
-            \ . '\%'.lnum.'l\%>'.max([col+matchlen-1,1]) .'v\%<'.(col+matchlen+3).'v.'
-            \ . '\|'
-            \ . '\%'.(lnum+1).'l\%>'.max([col-4,1]) .'v\%<'.(col+matchlen+3).'v.'
-    let ring = matchadd('RedOnRed', ring_pat, 101)
-    redraw
-    exec 'sleep ' . float2nr(0.5 * a:blinktime * 1000) . 'm'
-    call matchdelete(ring)
-    redraw
-endfunction
+    " ring the match in red...
+    function! HLNext (blinktime)
+        highlight RedOnRed ctermfg=red ctermbg=red
+        let [bufnum, lnum, col, off] = getpos('.')
+        let matchlen = strlen(matchstr(strpart(getline('.'),col-1),@/))
+        echo matchlen
+        let ring_pat = (lnum > 1 ? '\%'.(lnum-1).'l\%>'.max([col-4,1]) .'v\%<'.(col+matchlen+3).'v.\|' : '')
+                \ . '\%'.lnum.'l\%>'.max([col-4,1]) .'v\%<'.col.'v.'
+                \ . '\|'
+                \ . '\%'.lnum.'l\%>'.max([col+matchlen-1,1]) .'v\%<'.(col+matchlen+3).'v.'
+                \ . '\|'
+                \ . '\%'.(lnum+1).'l\%>'.max([col-4,1]) .'v\%<'.(col+matchlen+3).'v.'
+        let ring = matchadd('RedOnRed', ring_pat, 101)
+        redraw
+        exec 'sleep ' . float2nr(0.5 * a:blinktime * 1000) . 'm'
+        call matchdelete(ring)
+        redraw
+    endfunction
+endif " exists("*matchadd")
 
 
 "====[ Make it real obvious when we're in Insert mode by changing background ]= {{{1
