@@ -1,0 +1,38 @@
+#!/bin/bash
+
+cat <<EOF
+This script disables gnome "tracker" because it can be a resource hog,
+somewhat frequently crashes, and isn't very useful. Unfortunately, simply
+uninstalling it breaks other apps and meta-packages that depend on it,
+so we'll leave it installed but disable it by renaming its autostart files,
+/etc/xdg/autostart/*tracker*.desktop to ...-DISABLED.
+
+To prevent package updates from reverting this change, we'll
+apt-mark hold the following three packages:
+* tracker
+* tracker-extract
+* tracker-miner-fs
+* tracker-utils
+
+NOTE: As of now, this script only works on Debian (apt)-based systems.
+
+Do you wish to continue?
+EOF
+
+do_it() {
+    for f in /etc/xdg/autostart/*tracker*.desktop; do
+        echo sudo mv "$f" "$f-DISABLED";
+        sudo mv "$f" "$f-DISABLED";
+    done
+    for pkg in tracker tracker-extract tracker-miner-fs tracker-utils; do
+        echo sudo apt-mark hold $pkg
+        sudo apt-mark hold $pkg
+    done
+}
+
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes) do_it ; break;;
+        No)  echo Aborting ; break;;
+    esac
+done
