@@ -1,0 +1,77 @@
+#!/bin/bash
+# Wrapper script for ssh to foward an arbitrary port to the remote Xpra
+# server's attach port and to "xpra attach" to it. It's a bit cumbersome
+# because an "xpra attach" cannot succeed until ssh is connected and listening
+# on the forwarding port. So run a function in the background to repeatedly
+# try to xpra attach via the forwarding port once per second, retrying only
+# if it gets "Connection refused" up to $max_attempts.
+
+xpra_tcp_min_port=49500
+xpra_tcp_max_port=49599
+max_attempts=40
+dest_port=$(( 5000 + ${XPRA_DISPLAY#:} ))
+
+# Private function:
+# Generate a unique TCP port number to use for port-forwarding to Xpra
+function __xpra_attach_find_forwarding_port() {
+    local seq_num
+    local num_file=~/.config/xpra_attach_tcp_port
+    if [ -f $num_file ]; then
+        seq_num=$(<$num_file)
+        seq_num=$(( $seq_num + 1 ))
+        [[ $seq_num > $xpra_tcp_max_port ]] && seq_num=$xpra_tcp_min_port
+    else
+        seq_num=$xpra_tcp_min_port
+    fi
+    echo $seq_num > $num_file
+    echo $seq_num
+}
+
+function xpra_attach() {
+    local tcp_port=$1
+    local trycnt
+    local result
+    local logfile="$HOME/.xpra/client:${tcp_port}.log"
+
+    rm -f "$logfile"
+    for ((trycnt=1; trycnt <= $max_attempts; trycnt++)); do
+
+        # Do the sleep first to give ssh some chance of connecting
+        # before our first attempt
+        sleep 1
+        echo "==== Xpra Attach Attempt #${trycnt}:" >> "$logfile"
+        result=$(xpra attach tcp:localhost:${tcp_port} 2>> "$logfile")
+
+        # Let's append xpra's "result" (i.e. stdout) to its logfile
+        printf "%s\n\n" "$result" >> "$logfile"
+
+        # If it "didn't fail"
+        local regex_ECONREFUSED='initialization error:.*Connection refused'
+        if [[ ! "$result" =~ $regex_ECONNREFUSED ]]; then
+            break;
+        fi
+
+    done
+}
+
+# User can override the remote Xpra attach port, which we normally
+# derive from $XPRA_DISPLAY
+if [[ "$1" == "--xpra-port" ]]; then
+    dest_port="$2"
+    shift
+    shift
+fi
+
+# Use different port number each time so that multiple simultaneous
+# connections don't collide
+forwarding_port=$(__xpra_attach_find_forwarding_port)
+
+# Start a background thread to repeatedly try to connect over our fowarding port
+# until ssh is established or max_attempts exceeded
+xpra_attach $forwarding_port &
+
+# Do the SSH with needed port forarding. Do not let SSH do X forwarding,
+# as we don't need it and it interferes with value of $DISPLAY in remote shell
+forwarding_spec="$forwarding_port:localhost:${dest_port}"
+echo "Will attach Xpra via forwarding: -L $forwarding_spec"
+ssh -L $forwarding_spec -o ForwardX11=no "$@"
