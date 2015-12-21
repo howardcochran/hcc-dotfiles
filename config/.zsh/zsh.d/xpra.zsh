@@ -1,6 +1,7 @@
 # Functions to help with xpra in my typical config
 #
 
+export XPRA_XAUTHORITY="$HOME/.Xauthority"
 export XPRA_DISPLAY=:55
 export ORIG_DISPLAY=$DISPLAY
 export ORIG_XAUTHORITY=$XAUTHORITY
@@ -10,11 +11,7 @@ export ORIG_XAUTHORITY=$XAUTHORITY
 # I chose to use a subshell + exec rather than 'env -u XAUTHORITY..."$@"'
 # because the latter fails if the command to run is a shell function.
 function xp() {
-    (
-        unset XAUTHORITY
-        DISPLAY=$XPRA_DISPLAY
-        exec "$@"
-    )
+        DISPLAY=$XPRA_DISPLAY XAUTHORITY=$XPRA_XAUTHORITY "$@"
 }
 
 alias env -u XAUTHORITY DISPLAY=$XPRA_DISPLAY "$@"
@@ -28,13 +25,13 @@ function noxp() {
 # Configure this shell to launch in Xpra by default.
 function use_xpra() {
     DISPLAY=$XPRA_DISPLAY
-    env -u XAUTHORITY
+    XAUTHORITY=$XPRA_XAUTHORITY
 }
 
 # Configure this shell to launch in the original DISPLAY by default
 function unuse_xpra() {
     DISPLAY=$ORIG_DISPLAY
-    export XAUTHORITY=$ORIG_XAUTHORITY
+    XAUTHORITY=$ORIG_XAUTHORITY
 }
 
 # Start Xpra server with my preferred defaults for running inside Tmux
@@ -51,8 +48,10 @@ function xprastart() {
     local redir="/dev/stderr"
     [[ $quiet == 1 ]] && redir=/dev/null
 
-    xpra start --bind-tcp localhost:5055 --tcp-auth=none \
-        --sharing=yes \
+    local tcp_port=$(( 5000 + ${XPRA_DISPLAY#:} ))
+
+    xp xpra start --bind-tcp localhost:$tcp_port --tcp-auth=none \
+        --sharing=yes --start-child=xterm \
         --no-notifications $XPRA_DISPLAY 2>"$redir"
 }
 
