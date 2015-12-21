@@ -34,6 +34,12 @@ function unuse_xpra() {
     XAUTHORITY=$ORIG_XAUTHORITY
 }
 
+# Internal function to return the major version number of Xpra.
+# For example, for xpra v0.15.6, this will output "15"
+function __xpra_major_version() {
+    xpra --version | sed 's/xpra v0\.\([0-9]\+\).*/\1/'
+}
+
 # Start Xpra server with my preferred defaults for running inside Tmux
 # If already running, do nothing with a message. If -q specified, no message.
 function xprastart() {
@@ -43,6 +49,13 @@ function xprastart() {
     if xpra list | grep -q "LIVE session at $XPRA_DISPLAY"; then
         [[ $quiet == 0 ]] && echo "Xpra appears to be already running on display $XPRA_DISPLAY"
         return 0
+    fi
+
+    local ver=$(__xpra_major_version)
+    if [[ -z "$ver" || $ver < 15 ]]; then
+        echo 1>&2 "Cannot start Xpra, either because it is not installed or is too old."
+        echo 1>&2 "Need version 0.14.0+. Current version is $(xpra --version)"
+        return 2
     fi
 
     local redir="/dev/stderr"
