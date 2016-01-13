@@ -105,10 +105,17 @@ function __vim_build_launch_cmd() {
     job_and_server=( $(__vim_parse_job_and_server "$row") )
     __vim_job="${job_and_server[1]}"
 
-    # If want new tab page, first create it.
+    # If want new tab page, first create it and go ahead and open the first
+    # file in it (so that we don't end up with an empty split)
     if [[ $newtab == 1 ]]; then
         vim --servername ${job_and_server[2]} --remote-send \
             "<C-\><C-N>:tabnew<CR>"
+        vim --servername ${job_and_server[2]} --remote "$1"
+        shift
+
+        # Code below will handle all files after the first one, but if there
+        # was only one specified, then there is nothing left to do.
+        [ -z "$1" ] && return 0
     fi
 
     if [ -z "$opt_split" ] ; then
@@ -118,10 +125,15 @@ function __vim_build_launch_cmd() {
         # is no --remote-split command, we must open each file separately
         # in this loop. Can't use +cmd because it doesn't execute that
         # command until after opening the file into existing buffer.
+        # Also, we need to separately create the split and then open the
+        # file instead of including the filename in the keystrokes sent
+        # to the split command, in order for it to find a file when the
+        # shell's current directory is different from Vim's
         local filename
         for filename in "$@"; do
             vim --servername ${job_and_server[2]} --remote-send \
-                "<C-\><C-N>:split ${filename}<CR><C-W>x<C-W>j"
+                "<C-\><C-N>:split<CR><C-W>x<C-W>j"
+            vim --servername ${job_and_server[2]} --remote "${filename}"
             shift
         done
     fi
@@ -154,7 +166,7 @@ function v() {
     [[ $__vim_job == 0 ]] && return 0
 
     if [[ $__vim_job == 'n' ]]; then
-        # We're to launch a new shell. Command given in tmpfile
+        # We're to launch a new vim. Command given in tmpfile
         # In order for command to show up in jobnames correctly,
         # it will run in background.
         local bg_nice_save=$BG_NICE
@@ -164,7 +176,7 @@ function v() {
         BG_NICE=$bg_nice_save
 
         # There seems to be no direct way of finding out the job num of
-        # the new backgrounded vim, and no way to specify a pid to th fg cmd,
+        # the new backgrounded vim, and no way to specify a pid to the fg cmd,
         # so parse it from the output of the jobs list.
         local pid=$!
         __vim_job="$(jobs -l | sed -n -e 's/^\[\([0-9]*\)\][ +-]*'$pid'\s.*/\1/p')"
