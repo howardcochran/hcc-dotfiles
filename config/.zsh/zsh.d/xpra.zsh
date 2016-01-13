@@ -65,7 +65,7 @@ function xprastart() {
 
     xp xpra start --bind-tcp localhost:$tcp_port --tcp-auth=none \
         --sharing=yes --start-child=xterm \
-        --no-notifications $XPRA_DISPLAY 2>"$redir"
+        --no-notifications --clipboard=yes --pulseaudio=yes $XPRA_DISPLAY 2>"$redir"
 }
 
 function xprattach() {
@@ -75,12 +75,23 @@ function xprattach() {
         shift
     fi
 
+    # Convention: Local xpra windows will have a purple border, remote red.
+    local border
+    case "$1" in
+    *local)
+        border="--border=#a040ff,2"; shift ;;
+    *remote)
+        border="--border=red,2"; shift ;;
+    *border*)
+        border="$1"; shift ;;
+    esac
+
     local dest=$XPRA_DISPLAY
     [[ -n "$1" ]] && dest="$1"
 
     local -a args
-    args=( --pulseaudio=no --speaker=disabled --microphone=disabled \
-	    --border=red.1 --sharing=yes "$dest" )
+    args=( --clipboard=yes --pulseaudio=yes --speaker=disabled \
+            --microphone=disabled $border --sharing=yes "$dest" )
 
     local basefile="$HOME/.xpra/client-$dest"
 
@@ -88,7 +99,8 @@ function xprattach() {
     if [[ -f "$basefile.pid" ]]; then
         local pid=$(<"$basefile.pid")
         # Unfortunately, if I don't use cat here, I can't suppress ENOENT error
-        if [[ $(cat /proc/$pid/comm 2>/dev/null) == "xpra" ]]; then
+        if [[ $(cat /proc/$pid/comm 2>/dev/null) == "xpra" ]] &&
+            ! grep -q zombie /proc/$pid/status; then
             return 0
         fi
     fi
@@ -97,7 +109,7 @@ function xprattach() {
         xpra attach $args &>! "$basefile.log" &
         echo $! >! "$basefile.pid"
     else
-        xpra attach "$args"
+        xpra attach $args
     fi
 }
 
@@ -109,5 +121,5 @@ function lxpra() {
     # Skip attaching to it if we have no local display
     [[ -z $DISPLAY ]] && return 0
 
-    xprattach -b
+    xprattach -b --border=local
 }

@@ -40,7 +40,10 @@ function xpra_attach() {
         # before our first attempt
         sleep 1
         echo "==== Xpra Attach Attempt #${trycnt}:" >> "$logfile"
-        result=$(xpra attach tcp:localhost:${tcp_port} 2>> "$logfile")
+        #result=$(xpra attach tcp:localhost:${tcp_port} 2>> "$logfile")
+        result=$(xpra attach --border=red,2 --clipboard=yes --pulseaudio=no \
+            --speaker=disabled --microphone=disabled \
+            tcp:localhost:${tcp_port} 2>> "$logfile")
 
         # Let's append xpra's "result" (i.e. stdout) to its logfile
         printf "%s\n\n" "$result" >> "$logfile"
