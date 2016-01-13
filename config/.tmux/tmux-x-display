@@ -1,0 +1,32 @@
+#!/bin/bash
+# Calculate the DISPLAY and XAUTHORITY values to use for tmux clipboard
+# integration. For my environment, I prefer tmux talk with the Xpra server,
+# if possible, so that it is talking with the same X server that I use with
+# vim, and so that clipboard sharing between local and remote ssh host is
+# seamless.  However, if we can't connect to the Xpra clipboard, we'll
+# just use whatever is in $DISPLAY.
+# Since tmux's run-shell command strips the environment bare, we have to query
+# these env vars from tmux.
+
+unset XPRA_DISPLAY
+unset XPRA_XAUTHORITY
+eval $(tmux show-env -g XPRA_DISPLAY)
+eval $(tmux show-env -g XPRA_XAUTHORITY)
+
+# Test whether we can talk with an Xpra X server. If we get an error,
+# then either it's not running or we don't have a good value for XPRA_DISPLAY.
+# Using xdpyinfo is a non-invasive, reliable way to test connectivity with
+# the X server, albeit regrettably high overhead.
+test_xpra_display() {
+    [[ -n "$XPRA_DISPLAY" && -n "$XPRA_XAUTHORITY" ]] &&
+        DISPLAY="$XPRA_DISPLAY" XAUTHORITY="$XPRA_XAUTHORITY" \
+        xdpyinfo > /dev/null 2>/dev/null
+}
+
+if test_xpra_display; then
+    echo "export DISPLAY=$XPRA_DISPLAY; "
+    echo "export XAUTHORITY=$XPRA_XAUTHORITY; "
+else
+    echo "$(tmux show-env -g DISPLAY); export DISPLAY; "
+    echo "$(tmux show-env -g XAUTHORITY); export XAUTHORITY; "
+fi
