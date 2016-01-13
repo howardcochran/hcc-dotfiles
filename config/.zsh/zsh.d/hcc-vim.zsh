@@ -17,7 +17,7 @@ function __vim_get_serverjobs() {
 # We will return:
 # 4 aserver
 function __vim_parse_job_and_server() {
-    print "$1" |sed -n "/suspended \+vim.*--servername/s/\[\([0-9]\)\].*--servername \+\([^ ]\+\).*/\1 \2/p"
+    print "$1" |sed -n "/suspended \+\(xp \)\?vim.*--servername/s/\[\([0-9]\)\].*--servername \+\([^ ]\+\).*/\1 \2/p"
 }
 
 # Private function:
@@ -42,7 +42,7 @@ function __vim_unique_server_name() {
 function __vim_build_new_vim_cmd() {
     local tmpfile="$1"
     shift
-    print "vim --servername $(__vim_unique_server_name)" "$@" '&' > "$tmpfile"
+    print "${vimcmd} --servername $(__vim_unique_server_name)" "$@" '&' > "$tmpfile"
 }
 
 # Internal function:
@@ -53,7 +53,8 @@ function __vim_build_new_vim_cmd() {
 #    given $tmpfile. Our caller must actually launch it.
 # integer: We sent the command to the given vim instance. We did not create
 #          $tmpfile. Our caller is to forground $__vim_job
-# Optional --new, --newtab, and --split must come in this order because I'm lazy.
+# Optional --new, --newtab, --split, and --noxpra must come in this order
+# because I'm lazy.
 function __vim_build_launch_cmd() {
     local tmpfile="$1"
     shift
@@ -63,6 +64,8 @@ function __vim_build_launch_cmd() {
     [ "$1" = '--newtab' ] && { newtab=1 ; shift }
     local opt_split=''
     [ "$1" = '--split' ] && { opt_split='-o' ; shift }
+    local vimcmd="xp vim"
+    [ "$1" = '--noxpra' ] && { vimcd="vim" ; shift }
 
     local serverjobs
     local row # full text of chosen row of "jobs" output
@@ -108,9 +111,9 @@ function __vim_build_launch_cmd() {
     # If want new tab page, first create it and go ahead and open the first
     # file in it (so that we don't end up with an empty split)
     if [[ $newtab == 1 ]]; then
-        vim --servername ${job_and_server[2]} --remote-send \
+        ${vimcmd} --servername ${job_and_server[2]} --remote-send \
             "<C-\><C-N>:tabnew<CR>"
-        vim --servername ${job_and_server[2]} --remote "$1"
+        ${vimcmd} --servername ${job_and_server[2]} --remote "$1"
         shift
 
         # Code below will handle all files after the first one, but if there
@@ -119,7 +122,7 @@ function __vim_build_launch_cmd() {
     fi
 
     if [ -z "$opt_split" ] ; then
-        vim --servername ${job_and_server[2]} --remote "$@"
+        ${vimcmd} --servername ${job_and_server[2]} --remote "$@"
     else
         # Want to open each file in a new split window. Because there
         # is no --remote-split command, we must open each file separately
@@ -131,9 +134,9 @@ function __vim_build_launch_cmd() {
         # shell's current directory is different from Vim's
         local filename
         for filename in "$@"; do
-            vim --servername ${job_and_server[2]} --remote-send \
+            ${vimcmd} --servername ${job_and_server[2]} --remote-send \
                 "<C-\><C-N>:split<CR><C-W>x<C-W>j"
-            vim --servername ${job_and_server[2]} --remote "${filename}"
+            ${vimcmd} --servername ${job_and_server[2]} --remote "${filename}"
             shift
         done
     fi
@@ -147,14 +150,14 @@ function __vim_build_launch_cmd() {
 # --newtab: Open a new tab page before doing anything else (only applicable
 #           when dealing with an existing vim)
 # --split:  Open each specified file in a new split.
+# --noxpra: Don't connect it to Xpra server. Just use existing $DISPLAY.
 #
-# NOTE: --newtab only creates one new tab. This does not support file in
+# NOTE: --newtab only creates one new tab. This does not support each file in
 # its own tab, as I don't find that useful at all. It wouldn't be very hard
 # to add support for that, though using --remote-tab option to vim!
 # Example:
 #     v --newtab --split file1 file2 file3
 #     Creates a new tab with the three given files in splits within that tab.
-# BUG: The above example also creates an empty window in the new tab. Fix later.
 function v() {
     # Populated by inner function. 0=quit, n=new vim, integer=existing vim
     local __vim_job
