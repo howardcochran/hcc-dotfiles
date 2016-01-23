@@ -224,6 +224,11 @@ export GREP_COLOR='1;32'
 # $LESS was set to any string that did not include it!)
 export LESS='-R --ignore-case --quit-if-one-screen'
 
+# Use my wrapper script for less, which fixes --quit-if-one-screen behavior
+export PAGER=~/bin/pager
+export MANPAGER=~/bin/pager\ -s  # Don't use quotes so tilde expands
+alias less=~/bin/pager
+
 function ..() { cd .. }
 ## alias cd='cd -L' # This interferes with tab completion on the cd command
 alias rm='rm -i'
