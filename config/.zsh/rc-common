@@ -16,6 +16,9 @@ zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:warnings' format 'No matches for: %d' 
 zstyle ':completion:*' group-name ''
 
+# Menu completion allows cursor keys to highlight desired completion
+zstyle ':completion:*' menu select
+
 autoload -U compinit
 compinit  # -C means just use cached .zcompdump unconditionally - CAUSED ERRORS
 
@@ -99,8 +102,29 @@ unsetopt FLOW_CONTROL
 typeset -U path PATH cdpath fpath manpath MANPATH
 
 # Prevent the prompt from overwriting the last line of output of a command
-# if it does not end in a newline.
-unsetopt promptcr
+# does not end in a newline. These two options work together
+setopt promptsp
+setopt promptcr
+
+# Tab completion of a word with wildcard does menu completion rather than
+# the default of inserting all matches onto the line immediately
+setopt GLOB_COMPLETE
+
+# Save timestamp and command durations to history file
+setopt EXTENDED_HISTORY
+
+# Don't save a command to history if it is identical to previous command
+setopt HIST_IGNORE_DUPS
+
+# Don't save a command to history if it has a leading space
+# (useful for dangerous commands)
+setopt HIST_IGNORE_SPACE
+
+# Don't add the history (fc -l) command itself to history
+setopt HIST_NO_STORE
+
+# Remove superflous whitespace from history entries
+setopt HIST_REDUCE_BLANKS
 
 limit coredumpsize 0
 
