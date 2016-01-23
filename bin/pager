@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Downloaded from:
+# https://raw.githubusercontent.com/johnmellor/scripts/master/bin/least
+# With slight change to $LESS options and a tiny efficiency improvement.
+
+# This script makes --quit-if-one-screen play nice with the use of the
+# alternate screen by less. That is, if it would have fit on one screen
+# (so that less exited immediately, making the alternate screen disappear),
+# then cat it to the primary screen.
+
 # n.b. I posted this script to:
 # http://unix.stackexchange.com/a/205260/85237
 
@@ -11,7 +20,7 @@ trap '' EXIT
 
 TXTFILE=$(mktemp 2>/dev/null || mktemp -t 'tmp')
 
-export LESS=-FR
+export LESS='-R --ignore-case --quit-if-one-screen'
 if [[ -t 0 ]]; then
     # Stdin is a terminal (neither a file nor a pipe); hopefully "$@" contains a
     # filename that less can read into a pipe.
@@ -23,7 +32,7 @@ fi
 
 if [[ " $LESS $@" =~ \ -(-chop-long-lines|[a-jl-nq-su-zA-CE-NQ-SU-Z]*S) ]]; then
     # Don't wrap lines, since --chop-long-lines was passed to less.
-    LINECOUNT=$(cat "$TXTFILE" | wc -l)
+    LINECOUNT=$(wc -l < "$TXTFILE")
 else
     # Wrap lines like less before counting (the perl regex strips ANSI escapes).
     [[ -n $COLUMNS ]] || COLUMNS=$(tput cols)
