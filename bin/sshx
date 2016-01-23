@@ -8,7 +8,7 @@
 
 xpra_tcp_min_port=49500
 xpra_tcp_max_port=49599
-max_attempts=40
+xpra_attach_timeout=40
 dest_port=$(( 5000 + ${XPRA_DISPLAY#:} ))
 
 # Private function:
@@ -34,15 +34,14 @@ function xpra_attach() {
     local logfile="$HOME/.xpra/client:${tcp_port}.log"
 
     rm -f "$logfile"
-    for ((trycnt=1; trycnt <= $max_attempts; trycnt++)); do
-
+    while [[ $SECONDS < $xpra_attach_timeout ]]; do
         # Do the sleep first to give ssh some chance of connecting
         # before our first attempt
         sleep 1
         echo "==== Xpra Attach Attempt #${trycnt}:" >> "$logfile"
         #result=$(xpra attach tcp:localhost:${tcp_port} 2>> "$logfile")
         result=$(xpra attach --border=red,2 --clipboard=yes --pulseaudio=no \
-            --speaker=disabled --microphone=disabled \
+            --speaker=disabled --microphone=disabled --sharing=yes \
             tcp:localhost:${tcp_port} 2>> "$logfile")
 
         # Let's append xpra's "result" (i.e. stdout) to its logfile
@@ -70,7 +69,7 @@ fi
 forwarding_port=$(__xpra_attach_find_forwarding_port)
 
 # Start a background thread to repeatedly try to connect over our fowarding port
-# until ssh is established or max_attempts exceeded
+# until ssh is established or $xpra_attach_seconds have elapsed
 xpra_attach $forwarding_port &
 
 # Do the SSH with needed port forarding. Do not let SSH do X forwarding,
