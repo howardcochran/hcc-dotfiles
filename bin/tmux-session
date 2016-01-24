@@ -1,0 +1,227 @@
+#!/bin/bash
+
+#!/bin/bash
+
+# NOTE: This script is not Zsh compatible.
+
+shopt -s extglob
+
+# Strip suffix _C<digits> off the end of a session name
+# Equiv to regex substition s/_C[0-9]+$//
+base_session() {
+    printf "%s" ${1/_C+([[:digit:]])/}
+}
+
+list_all_sessions() {
+    tmux list-sessions -F '#{session_name}'
+}
+
+list_base_sessions() {
+    tmux list-sessions -F '#{session_name}' | egrep -v '_C[[:digit:]]+'
+}
+
+load_base_sessions() {
+    #declare -a -g base_sessions=( $(tmux list-sessions -F '#{session_name}' | egrep -v '_C[[:digit:]]+') )
+    declare -a -g base_sessions=( $(list_base_sessions) )
+}
+
+find_index_of_session() {
+    local looking_for="$1"
+    local i
+    for i in "${!base_sessions[@]}"; do
+        if [[ "${base_sessions[$i]}" = "${looking_for}" ]]; then
+            echo "${i}";
+        fi
+    done
+}
+
+get_current_base_session() {
+    base_session "$(tmux display-message -p '#{client_session}')"
+}
+
+load_info() {
+    declare -a -g all_sessions=( $(list_all_sessions) )
+    declare -a -g base_sessions=( ${all_sessions[@]//*_C+([[:digit:]])/} )
+    declare -a -g client_sessions=( $(tmux list-clients -F '#{session_name}') )
+    declare -a -g client_indices=( $(printf "%s\n" ${client_sessions[@]} | sed -e 's/.*_C\([0-9]\+\)/\1/' | sort | uniq) )
+    declare -g current_session=$(tmux display-message -p '#{client_session}')
+    declare -g current_base_session=$(base_session "$current_session")
+    declare -g client_num=${current_session#${current_base_session}_C}
+    declare -g session_index=$(find_index_of_session "$current_base_session")
+}
+
+sanity_checks() {
+    if [[ ! "$client_num" =~ ^[[:digit:]]*$ ]]; then
+        echo "Error: Cannot determine client number."
+        exit 1
+    fi
+    if [[ ${#base_sessions} < 1 ]]; then
+        echo "Error: There appear to be no \"base\" sessions!"
+        exit 1
+    fi
+}
+
+debug_dump_info() {
+    declare -p all_sessions
+    declare -p base_sessions
+    declare -p client_sessions
+    declare -p client_indices
+    echo "current_session=$current_session"
+    echo "current_base_session=$current_base_session"
+    echo "client_num=$client_num"
+    echo "session_index=$session_index"
+    echo ===============
+}
+
+show_next_session() {
+    local i=$(( session_index + 1 ))
+    if [[ $i -ge ${#base_sessions[@]} ]]; then
+        i=0
+    fi
+    echo ${base_sessions[$i]}
+}
+
+show_prev_session() {
+    local i=$(( session_index - 1 ))
+    if [[ $i < 0 ]]; then
+        i=$(( ${#base_sessions[@]} - 2 ))
+    fi
+    echo ${base_sessions[$i]}
+}
+
+function session_exists() {
+    tmux ls 2>/dev/null | grep -q "^$1:"
+}
+
+function find_unused_clone_name() {
+    local base_name="$1"
+    local suffix=1
+    while session_exists "${base_name}_C${suffix}"; do
+        suffix=$(( $suffix + 1 ))
+    done
+    echo "${base_name}_C${suffix}"
+}
+
+function switch_to_clone_session() {
+    local base_name="$1"
+    local clone_name="${base_name}_C${client_num}"
+
+    if ! tmux switch-client -t "$clone_name"; then
+        tmux new-session -d -t "$base_name" -s "$clone_name"
+        tmux switch-client -t "$clone_name"
+    fi
+}
+
+function client_exists_for_session_index() {
+    local session="$1"
+    local session_index=$(echo $session | sed -e 's/.*_C\([0-9]\+\)/\1/')
+    local i
+
+    for i in ${client_indices[@]}; do
+        if [[ $session_index == $i ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+function base_exists_for_session() {
+    local session="$1"
+    local base=$(base_session $session)
+
+    for candidate in ${base_sessions[@]}; do
+        if [[ $candidate == $base ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+function clean_unattached_sessions() {
+    local session
+
+    for session in ${all_sessions[@]}; do
+        # Skip "base" sessions
+        [[ $session =~ _C[[:digit:]]+$ ]] || continue
+        if ! client_exists_for_session_index "$session"; then
+            tmux kill-session -t "$session"
+            continue
+        fi
+        if ! base_exists_for_session "$session"; then
+            tmux kill-session -t "$session"
+            continue
+        fi
+    done
+}
+
+function usage() {
+cat <<EOF
+$0:
+Provides a way to manage separate clone sessions for each client so
+that they can effectively be ignored. I consider it a major usability
+bug that tmux requires the creation of ugly clone sessions in order
+to have two clients in the same session in a usable way. This script,
+along with key bindings to invoke it provide a workaround for this.
+
+Clone sessions are identified by special suffix on the name: _C<digits>,
+where the digits represent a client number. When switching to the next
+session, these are skipped so that the next "base" session is selected,
+then we switch to a clone of it having the same clone index as the
+session we were already on, creating it if it doesn't already exist.
+
+Sub-commands:
+  switch-next     Switch current client to clone of next "base" session
+  switch-prev     Switch current client to clone of prev "base" session
+  switch-to BASE_NAME
+                  Switch current client to clone of given session.
+                  (It is an error if this does not exist)
+  show-next       Show the name of the next "base" session
+  show-prev       Show the name of the prev "base" session
+  show-current    Show the base name of the current session
+  info            Show internal debug info and exit
+  clean-sessions  Kill any clone sessions for which there exists no client
+                  having the same index or for which no matching base
+                  session exists.
+  help            Display this help  message
+EOF
+}
+
+# Populate some globals
+load_info
+sanity_checks
+
+case "$1" in
+    list)
+        list_base_sessions
+        ;;
+    show-current)
+        get_current_base_session
+        ;;
+    show-next)
+        show_next_session
+        ;;
+    show-prev)
+        show_prev_session
+        ;;
+    switch-next)
+        switch_to_clone_session $(show_next_session)
+        ;;
+    switch-prev)
+        switch_to_clone_session $(show_prev_session)
+        ;;
+    switch-to)
+        switch_to_clone_session "$2"
+        ;;
+    clean-sessions|clean*)
+        clean_unattached_sessions
+        ;;
+    info)
+        debug_dump_info
+        ;;
+    usage|help|-h|--help)
+        usage
+        ;;
+    *)
+        echo >&2 "Unknown subcommand: $1"
+        usage >&2
+esac
