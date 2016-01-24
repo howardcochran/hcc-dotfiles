@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Tmux startup script for session management. Modiefied from:
+# Tmux startup script for session management. Modified from:
 #     http://forums.gentoo.org/viewtopic-t-836006-start-0.html
 #
 
@@ -12,6 +12,10 @@ case "$1" in
     move*|next*|pipe-pane|pipep|previous*|prevp|prevl|respawn*|rotate-window|\
     rotatew|select*|split-window|splitw|swap-pane|swapp|unlink-window|unlinkw)
         exec tmux "$@"
+        ;;
+    clean*)
+        ~/bin/tmux-session clean
+        exit 0
         ;;
 esac
 
@@ -25,33 +29,39 @@ function session_exists() {
     tmux ls 2>/dev/null | grep -q "^$1"
 }
 
-# I want my clone names to be short, since they take up space
-# in the status line, so we'll just append . + digit
-function find_unused_clone_name() {
-    local base_name="$1"
-    local suffix=1
-    while session_exists "$base_name_$suffix"; do
-        suffix=$(( $suffix + 1 ))
-    done
-    echo "$base_name_$suffix"
+function list_client_indices() {
+    tmux list-clients -F '#{session_name}' |
+        sed -e 's/.*_C\([0-9]\+\)/\1/' | sort | uniq
 }
 
-# If the desired session is already exists:
-if session_exists "${base_session}"; then
-    # Make sure we are not already in a tmux client
-    if [[ -z "$TMUX" ]]; then
-        echo "Launching copy of base session $base_session ..."
-        clone_name=$(find_unused_clone_name "$base_session")
+# I want my clone names to be short, since they take up space
+# in the status line, so we'll just append . + digit
+function find_unused_client_index() {
+    local base_name="$1"
+    local index_table=()
+    local i
+    for i in $(list_client_indices); do
+        index_table[$i]="exists"
+    done
 
-        # Create a new session (without attaching it) and link to base session 
-        # to share windows
-        exec tmux new-session -t $base_session -s $clone_name \; set-option destroy-unattached
-    else
-        # Switch current this client to the requested session
-        exec tmux switch-client -t $base_session
-    fi
-else
-    echo "Launching tmux base session $base_session ..."
-    exec tmux new-session -s $base_session
+    local new_index=1
+    while [[ ${index_table[$new_index]} == "exists" ]]; do
+        new_index=$(( $new_index + 1 ))
+    done
+    #echo "${base_name}_C${new_index}"
+    echo "${new_index}"
+}
+
+clone_session="${base_session}_C$(find_unused_client_index "${base_session}")"
+
+# if the base session doesn't already exist, create new empty session
+if ! session_exists "${base_session}"; then
+    tmux new-session -d -s "$base_session"
 fi
 
+if [[ -z "$TMUX" ]]; then  # Not already running under tmux
+    # Create new clone session or attach to it if already exists
+    exec tmux new-session -A -t "$base_session" -s "$clone_session"
+else
+    ~/bin/tmux-session switch-to "$base_session"
+fi
