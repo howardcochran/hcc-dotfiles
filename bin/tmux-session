@@ -102,15 +102,28 @@ function find_unused_clone_name() {
     echo "${base_name}_C${suffix}"
 }
 
+# Given a base session name, switch to a clone of it, creating the clone
+# if necessary. If base session doesn't exist, outputs an error message
+# and returns 1.
 function switch_to_clone_session() {
     local base_name="$1"
     local clone_name="${base_name}_C${client_num}"
 
-    if ! tmux switch-client -t "$clone_name"; then
-        TMUX= tmux new-session -d -t "$base_name" -s "$clone_name"
+    if ! tmux switch-client -t "$clone_name" >/dev/null 2>&1; then
+        TMUX= tmux new-session -d -t "$base_name" -s "$clone_name" || return $?
         tmux switch-client -t "$clone_name"
     fi
 }
+
+# Wrapper for switch_to_clone_session(), which will display an error message
+# in tmux's status line if it fails.
+#function switch_to_clone_session_report_error() {
+#    if ! errmsg=$(switch_to_clone_session "$1" 2>&1); then
+#        #tmux display-message "$errmsg"
+#        echo "$errmsg"
+#        return 1
+#    fi
+#}
 
 function client_exists_for_session_index() {
     local session="$1"
