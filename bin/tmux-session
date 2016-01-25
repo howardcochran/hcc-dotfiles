@@ -107,7 +107,7 @@ function switch_to_clone_session() {
     local clone_name="${base_name}_C${client_num}"
 
     if ! tmux switch-client -t "$clone_name"; then
-        tmux new-session -d -t "$base_name" -s "$clone_name"
+        TMUX= tmux new-session -d -t "$base_name" -s "$clone_name"
         tmux switch-client -t "$clone_name"
     fi
 }
