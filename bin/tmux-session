@@ -167,6 +167,27 @@ function clean_unattached_sessions() {
     done
 }
 
+function generate_new_base_name() {
+    local name=0
+
+    while session_exists "$name"; do
+        (( name++ ))
+    done
+    echo $name
+}
+
+function new_base_session() {
+set -x
+    local name="$1"
+    [[ -n $name ]] || name=$(generate_new_base_name)
+
+    # First try to switch to it, in case the named session already exists.
+    if ! switch_to_clone_session "$name" >/dev/null 2>&1; then
+        TMUX= tmux new-session -d -s "$name" || return $?
+        switch_to_clone_session "$name" || return $?
+    fi
+}
+
 function usage() {
 cat <<EOF
 $0:
@@ -185,16 +206,25 @@ session we were already on, creating it if it doesn't already exist.
 Sub-commands:
   switch-next     Switch current client to clone of next "base" session
   switch-prev     Switch current client to clone of prev "base" session
+
   switch-to BASE_NAME
                   Switch current client to clone of given session.
                   (It is an error if this does not exist)
+
   show-next       Show the name of the next "base" session
   show-prev       Show the name of the prev "base" session
   show-current    Show the base name of the current session
+
+  new-session BASE_NAME
+                  Create a new base session and switch-to it (actually to
+                  a clone of it with the current client's suffix)
+
   info            Show internal debug info and exit
+
   clean-sessions  Kill any clone sessions for which there exists no client
                   having the same index or for which no matching base
                   session exists.
+
   help            Display this help  message
 EOF
 }
@@ -224,6 +254,9 @@ case "$1" in
         ;;
     switch-to)
         switch_to_clone_session "$2"
+        ;;
+    new|new-session)
+        new_base_session "$2"
         ;;
     clean-sessions|clean*)
         clean_unattached_sessions
