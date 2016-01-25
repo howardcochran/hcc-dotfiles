@@ -188,6 +188,39 @@ set -x
     fi
 }
 
+function rename_base_session() {
+    local old_name="$1"
+    local new_name="$2"
+
+    if [[ -z $old_name || -z $new_name ]]; then
+        echo >&2 "Required parameter missing"
+        return 1
+    fi
+    if session_exists "$new_name"; then
+        echo >&2 "Session already exists: $new_name"
+        return 1
+    fi
+    tmux rename-session -t"$old_name" "$new_name" || return 1
+
+    local clone
+    for clone in ${all_sessions[@]}; do
+        [[ $clone == ${old_name}_C+([[:digit:]]) ]] || continue
+        local new_clone_name="${new_name}${clone#$old_name}"
+        tmux rename-session -t"$clone" "$new_clone_name"
+    done
+}
+
+function rename_current_base_session() {
+    local new_name="$1"
+    [[ -n "$new_name" ]] || return 1
+
+    if [[ -z "$current_base_session" ]]; then
+        echo >&2 "Unable to determine current session name. Are you not running in tmux?"
+        return 1
+    fi
+    rename_base_session "$current_base_session" "$new_name"
+}
+
 function usage() {
 cat <<EOF
 $0:
@@ -218,6 +251,11 @@ Sub-commands:
   new-session BASE_NAME
                   Create a new base session and switch-to it (actually to
                   a clone of it with the current client's suffix)
+
+  rename-session NEW_BASE_NAME
+                  Rename the current base session and all matching clones
+                  to have the given base name. It is an error if a session
+                  having that base name alreadye esists.
 
   info            Show internal debug info and exit
 
@@ -257,6 +295,9 @@ case "$1" in
         ;;
     new|new-session)
         new_base_session "$2"
+        ;;
+    rename|rename-session)
+        rename_current_base_session "$2"
         ;;
     clean-sessions|clean*)
         clean_unattached_sessions
