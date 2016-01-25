@@ -221,6 +221,31 @@ function rename_current_base_session() {
     rename_base_session "$current_base_session" "$new_name"
 }
 
+# Kill the given base session, then do "clean_sessions" to
+# kill all the associated clones of it
+function kill_session() {
+    local base_session="$1"
+
+    switch_to_clone_session $(show_prev_session)
+    tmux kill-session -t"$base_session"
+    for clone in ${all_sessions[@]}; do
+        [[ $clone == ${base_session}_C+([[:digit:]]) ]] || continue
+        tmux kill-session -t"$clone"
+    done
+}
+
+function kill_current_session_paranoid() {
+    if [[ -z "$TMUX" ]]; then
+        echo "Error: You do not appear to be running within tmux."
+        return 1
+    fi
+    if [[ "$1" != "--force" ]]; then
+        echo "Are you sure? Use --force to confirm."
+        return 1
+    fi
+    kill_session "$current_base_session"
+}
+
 function usage() {
 cat <<EOF
 $0:
@@ -256,6 +281,8 @@ Sub-commands:
                   Rename the current base session and all matching clones
                   to have the given base name. It is an error if a session
                   having that base name alreadye esists.
+
+  kill-session    Kill the current base session and all clones of it
 
   info            Show internal debug info and exit
 
@@ -299,7 +326,11 @@ case "$1" in
     rename|rename-session)
         rename_current_base_session "$2"
         ;;
-    clean-sessions|clean*)
+    kill-session)
+        set -x
+        kill_current_session_paranoid "$2"
+        ;;
+    clean|clean-sessions)
         clean_unattached_sessions
         ;;
     info)
