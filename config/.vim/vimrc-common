@@ -68,11 +68,6 @@ autocmd FileType c set noexpandtab shiftwidth=8
 autocmd FileType python,sh,perl set expandtab shiftwidth=4
 augroup END
 
-" Semi-colons are a much more convenient way to start a colon-command!
-nnoremap ;  :
-" However, the "repeat last motion" command is useful, so make Enter do that
-nnoremap <Enter> ;
-
 " Make PgUp and PgDn keep the cursor on the same line of the screen
 " http://vimrc-dissection.blogspot.com/2009/02/fixing-pageup-and-pagedown.html
 map <silent> <PageUp> 1000<C-U>
@@ -156,6 +151,21 @@ map <C-]> g<C-]>
 " Source line or visual selection
 nnoremap <leader>S ^"zy$:@z<cr>:echo 'sourced line.'<cr>
 vnoremap <leader>S "zy:@z<cr>:echo 'Sourced selection.'<cr>
+
+" Semi-colons are a much more convenient way to start a colon-command!
+nnoremap ;  :
+" However, the "repeat last motion" command is useful, so make Enter do that
+" BUT, we want <Enter> to do it's normal thing in the QuickFix window, so
+" we have to use a helper function
+function! Repeat_last_motion_except_in_quickfix()
+  if &buftype ==# 'quickfix'
+    execute "normal! \<CR>"
+  else
+    normal! ;
+  endif
+endfunction
+
+nnoremap <silent> <CR> :call Repeat_last_motion_except_in_quickfix()<CR>
 
 " Tab Control. {{{2
 " nmemonic middle letter of word "tab". Like tmux, but with a instead of ^a
