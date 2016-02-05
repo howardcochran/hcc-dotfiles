@@ -430,6 +430,9 @@ augroup END
 
 " Filter current buffer to a new temporary buffer (i.e current buffer grep)
 command! -nargs=0 Filter let @f='' | execute 'g//y F' | new | setlocal bt=nofile | put! f
+
+" Same thing, but invert the filter, selecting lines that do NOT match
+command! -nargs=0 FilterV let @f='' | execute 'v//y F' | new | setlocal bt=nofile | put! f
 " Supposedly better/faster method using redir, but I couldn't get it to work:
 " It would only copy first match into the buffer for reasons I don't fathom.
 ""command! -nargs=0 Filter redir @f> | g// | redir END | new | put! f
