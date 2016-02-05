@@ -119,7 +119,7 @@ unlet s:save_cpo
 map <leader>rc :source ~/.vimrc<CR>:source ~/.gvimrc<CR>
 
 " Like "Refresh" in a web browser. Center line with cursor and redraw screen.
-map <F5> ^L :norm zz<CR>:redraw!<CR>
+map <F5> :norm zz<CR>:redraw!<CR>
 
 " Kill current buffer without closing the window that it occupies.
 map <leader>c :bp<CR>:bd#<CR>
@@ -150,7 +150,7 @@ map <C-]> g<C-]>
 " Toggle whether to use git grep vs. standard grep. The lhs of these mappings
 " follows the conventions for toggle mappings in vim-unimpaired plugin.:w
 :nmap ]og   :set grepprg=git\ grep\ -n\ $*<CR>
-:nmap [og   :set grepprg=grep\ -n\ $*\ /dev/null<CR>
+:nmap [og   :set grepprg=grep\ -r\ -n\ $*\ .<CR>
 :nmap cog   :normal <C-R>=match(&grepprg, "^git") > -1 ? "[og" : "]og"<CR><CR>
 
 " Source line or visual selection
