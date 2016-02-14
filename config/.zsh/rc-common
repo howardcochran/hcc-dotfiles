@@ -326,7 +326,7 @@ bindkey "\ea" universal-argument # Original binding: accept-and-hold, which is u
                                  # Want to use ^U, like emacs, but that means kill input
 
 ## Abortive attempt to get zsh to auto-load config changes. Problem is that
-export PATH=~/bin:$PATH
+export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 
 # 256-color support with Tmux compatibility:
 # We need $TERM to be xterm-256color outside of Tmux but don't override
