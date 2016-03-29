@@ -22,7 +22,7 @@ esac
 base_session="$1"
 # We'll use tmux's standard default session name, "0", if none was given.
 if [[ -z "$base_session" ]]; then
-    base_session="0"
+    base_session="main"
 fi
 
 function session_exists() {
