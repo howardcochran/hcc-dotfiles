@@ -224,10 +224,15 @@ export GREP_COLOR='1;32'
 # $LESS was set to any string that did not include it!)
 export LESS='-R --ignore-case --quit-if-one-screen'
 
-# Use my wrapper script for less, which fixes --quit-if-one-screen behavior
-export PAGER=~/bin/pager
-export MANPAGER=~/bin/pager\ -s  # Don't use quotes so tilde expands
-alias less=~/bin/pager
+if [[ "$(lsb_release --id -s)" == "Ubuntu" ]]; then
+	# (Ubuntu-only) Use my wrapper script for less,
+	# which fixes --quit-if-one-screen behavior.
+	# Since less itself works correctly on Fedora, this workaround
+	# caused duplicate output when fits on one screen!
+	export PAGER=~/bin/pager
+	export MANPAGER=~/bin/pager\ -s  # Don't use quotes so tilde expands
+	alias less=~/bin/pager
+fi
 
 function ..() { cd .. }
 ## alias cd='cd -L' # This interferes with tab completion on the cd command
