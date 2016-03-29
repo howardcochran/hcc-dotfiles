@@ -1,6 +1,8 @@
-[user]
-	name = Howard Cochran
-	email = hcochran@kernelspring.com
+# Because I sometimes use a different email address on different machines,
+# read the [user] and [sendemail] sections from a separate file:
+[include]
+	path = ~/.gituser
+
 [color]
 	diff = true
 	status = auto
@@ -51,10 +53,5 @@
 [push]
 	default = tracking
 
-[sendemail]
-	from = Howard Cochran <hcochran@kernelspring.com>
-	smtpserver = smtp.gmail.com
-	smtpuser = hcochran@kernelspring.com
-	smtpencryption = tls
-	chainreplyto = false
-	smtpserverport = 587
+[mergetool]
+	keepBackup = false
