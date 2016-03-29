@@ -1,0 +1,61 @@
+#!/bin/zsh
+# Script to keep local Xpra and main X server's clipboards in sync.
+# Inspired by:
+# http://askubuntu.com/questions/352632/how-can-i-share-my-clipboard-between-two-x-servers
+
+source ~/.zsh/zsh.d/xpra.zsh
+
+# Parameterized function to sample a given clipboard, and, if its contents
+# changed since the last time it was sampled, copy it to a destination
+# clipboard.  Calling this repeatedly can achive one-way sync.
+# Calling it repeatedly with different paremters can achive two-way sync
+# Inputs:
+#   $1: Index into a global array to compare the current sample to
+#   $2: from_selection: X selection to read from ("primary" or "clipboard")
+#   $3: from: Name of function which will set $DISPLAY and $XAUTHORITY
+#             in order to contact the desired X server when reading from source
+#   $4: to_selection: X selection to write to ("primary" or "clipboard")
+#                     whenever contents of the "from" clipboard has changed
+#   $5: to: Name of function which will set $DISPLAY and $XAUTHORITY
+#           in order to contact the desired X server when writing to destination
+#
+# References global array "prevs" to remember previous clipboard contents.
+#
+# NOTE: The above xpra.zsh defines function xp(), which sets DISPLAY and
+#       XAUTHORITY for contacting a local Xpra X server started with its
+#       xprastart() function. Useful value for $3 or $5.
+# NOTE: $3 and/or $5 can be an empty string, in which case the current values
+#       of DISPLAY and XAUTHORITY will be used.
+declare -A prevs
+copy_clip_if_changed() {
+    local prev_index="$1" from_selection="$2" from="$3" to_selection="$4" to="$5"
+
+    # Get the current clipboard contents
+    local curr="$( ${from} xclip -o -selection $from_selection 2> /dev/null)"
+
+    # Compare to previous results and copy if it's changed
+    if [[ "$curr" != "$prevs[$prev_index]" ]]; then
+        local target="$( ${to} xclip -o -selection $to_selection 2> /dev/null)"
+
+        # Avoid replacing the selection if doing so won't actually change it.
+        # This is needed for PRIMARY, since replacing this selection
+        # un-highlights it, preventing the user from copying it to CLIPBOARD.
+        if [[ "$target" != "$curr" ]]; then
+            echo "$curr" | ${to} xclip -selection $to_selection
+        fi
+    fi
+
+    prevs[$prev_index]="$curr"
+}
+
+while true; do
+    #                    index from_sel  from_func to_sel    to_func
+    copy_clip_if_changed 0     clipboard 'xp'      clipboard ''
+    sleep 0.5
+    copy_clip_if_changed 1     clipboard ''        clipboard 'xp'
+    sleep 0.5
+    copy_clip_if_changed 2     primary   'xp'      primary   ''
+    sleep 0.5
+    copy_clip_if_changed 3     primary   ''        primary   'xp'
+    sleep 0.5
+done
