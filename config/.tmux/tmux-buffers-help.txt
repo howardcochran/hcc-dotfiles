@@ -1,0 +1,20 @@
+First, select a buffer, then type a letter to do something with it.
+.
+Selecting a buffer:
+  <prefix> b        Interactively choose buffer
+  <prefix> C-b      Type a single character to choose buffer of that name
+  <prefix> B        use the most recently chosen buffer ($TMUXBUF)
+  <prefix> Alt-b    Type the name of a buffer and press Enter.
+.
+Once buffer is selected, the commands are:
+  ]     Paste it into the terminal
+  d     Delete it
+  r     Rename it
+  t     Move it to the top
+  c     Make a copy of the buffer with a new name
+  p     Write X primary selection to the buffer
+  v     Write X clipboard to the buffer
+  *     Copy the buffer to both X selections
+  h     Show this help
+  e     Edit the buffer in Vim
+  q     Cancel

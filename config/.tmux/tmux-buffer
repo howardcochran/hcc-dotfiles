@@ -1,0 +1,71 @@
+#!/bin/bash
+
+shopt -s extglob
+
+# Helper script for manipulating sessions
+sessionctl=~/bin/tmux-session
+
+function tmux_rename_from_prompt() {
+    local old_name="$1"
+    if [ -z "$old_name" ]; then
+        echo >&2 Required parameter missing: old_name
+        return 2
+    fi
+    tmux command-prompt -p "Enter new name for buffer '$old_name':" \
+        "set-buffer -b \"$old_name\" -n %%"
+}
+
+# Load a tmux buffer into an edit and save the change back to the buffer.
+# @buffer_name 
+#   - The name of the buffer to edit. If this buffer does not
+#     exist, it will be created after saving & exiting editor.
+# @switch_to_session_when_finished
+#     (optional) The name of a tmux session to switch to after editing the
+#     buffer. This allows to use this function as the command to run in a
+#     temporary session and return  to the previous session when editing
+#     is complete.
+function edit-buffer() {
+    local buffer_name="$1"
+    local switch_to_session_when_finished="$2"
+    local tmpfile
+
+    [[ -z $buffer_name ]] && return 1
+    tmpfile=$(mktemp /tmp/edit-tmux-buffer-"${buffer_name}".XXXX)
+    tmux save-buffer -b ${buffer_name} - >> ${tmpfile}
+    cp ${tmpfile} ${tmpfile}.orig
+    editor ${tmpfile}
+
+    if ! cmp ${tmpfile} ${tmpfile}.orig; then
+        tmux load-buffer -b ${buffer_name} ${tmpfile}
+    fi
+    rm -f ${tmpfile} ${tmpfile}.orig
+    if [[ -n ${switch_to_session_when_finished} ]]; then
+        ${sessionctl} switch-to ${switch_to_session_when_finished}
+    fi
+}
+
+# Create a new temporary session and run an editor in it to edit the given
+# tmux buffer. After saving and exiting the editor, it will return back
+# to the original session. In order to do this, the meat of this must be
+# given as the command to be run within the session.
+function edit-buffer-in-temp-session() {
+    local buffer_name="$1"
+    local temp_session="bufedit"
+    local cur_session=$(${sessionctl} show-current)
+    ${sessionctl} new-session ${temp_session} "$0" edit-buffer ${buffer_name} ${cur_session}
+}
+
+case "$1" in
+    rename-from-prompt)
+        tmux_rename_from_prompt "$2"
+        ;;
+    edit-buffer)
+        edit-buffer "$2" "$3"
+        ;;
+    edit-buffer-in-temp-session)
+        edit-buffer-in-temp-session "$2"
+        ;;
+    *)
+        echo >&2 "Unknown subcommand: $1"
+        usage >&2
+esac
