@@ -115,16 +115,6 @@ function switch_to_clone_session() {
     fi
 }
 
-# Wrapper for switch_to_clone_session(), which will display an error message
-# in tmux's status line if it fails.
-#function switch_to_clone_session_report_error() {
-#    if ! errmsg=$(switch_to_clone_session "$1" 2>&1); then
-#        #tmux display-message "$errmsg"
-#        echo "$errmsg"
-#        return 1
-#    fi
-#}
-
 function client_exists_for_session_index() {
     local session="$1"
     local session_index=$(echo $session | sed -e 's/.*_C\([0-9]\+\)/\1/')
@@ -177,13 +167,12 @@ function generate_new_base_name() {
 }
 
 function new_base_session() {
-set -x
     local name="$1"
     [[ -n $name ]] || name=$(generate_new_base_name)
 
     # First try to switch to it, in case the named session already exists.
     if ! switch_to_clone_session "$name" >/dev/null 2>&1; then
-        TMUX= tmux new-session -d -s "$name" || return $?
+        TMUX= tmux new-session -d -s "$@" || return $?
         switch_to_clone_session "$name" || return $?
     fi
 }
@@ -321,13 +310,13 @@ case "$1" in
         switch_to_clone_session "$2"
         ;;
     new|new-session)
-        new_base_session "$2"
+        shift
+        new_base_session "$@"
         ;;
     rename|rename-session)
         rename_current_base_session "$2"
         ;;
     kill-session)
-        set -x
         kill_current_session_paranoid "$2"
         ;;
     clean|clean-sessions)
