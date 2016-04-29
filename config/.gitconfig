@@ -12,8 +12,19 @@
 
 	dns = diff --name-status
 
-	lol = log --decorate --pretty=oneline --abbrev-commit
-	loll = log --graph --decorate --pretty=oneline --abbrev-commit
+	# Log shortcuts
+	lol  = log --decorate --pretty=oneline --abbrev-commit
+	lol1 = log --decorate --pretty=oneline --abbrev-commit -n 10
+	lol2 = log --decorate --pretty=oneline --abbrev-commit -n 20
+	lol3 = log --decorate --pretty=oneline --abbrev-commit -n 30
+	lol4 = log --decorate --pretty=oneline --abbrev-commit -n 40
+
+	loll  = log --graph --decorate --pretty=oneline --abbrev-commit
+	loll1 = log --graph --decorate --pretty=oneline --abbrev-commit -n 10
+	loll2 = log --graph --decorate --pretty=oneline --abbrev-commit -n 20
+	loll3 = log --graph --decorate --pretty=oneline --abbrev-commit -n 30
+	loll4 = log --graph --decorate --pretty=oneline --abbrev-commit -n 40
+
 	logns = log --name-status --decorate --abbrev-commit
 	lg = log --name-status --decorate --abbrev-commit
 
@@ -23,7 +34,27 @@
 
 	local = log HEAD --not --remotes
 
+	# Quick shortcuts
 	co = checkout
+
+	rb  = rebase
+	rbi = rebase -i
+	rbc = rebase --continue
+	rba = rebase --abort
+
+	ch  = cherry-pick
+	chc = cherry-pick --continue
+	cha = cherry-pick --abort
+
+	# "Remote add force", for when I want to change the URL for an
+	# existing remote.
+	# Note Multiple shell commands like this do not require quotes if
+	# separated by &&, but I need the add to happen even if the remove
+	# fails, yet the ; confuses git without quotes (even when escaped)
+	raf = "!git remote remove $1 ; git remote add"
+	rv  = remote -v
+	ra  = remote add
+
 	mktags = !git ls-files | egrep '[.](c|h)$' | etags -
 
 	# git grep that recurses submodules
