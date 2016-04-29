@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Create 4 new panes in the current tmux window, each of which watches
+# the contents of the X primary & clipboard selections, plus
+# those of my standard Xpra instance
+
+if [[ -z $TMUX_PANE ]]; then
+    echo "Run this script from within tmux, preferably in a window"
+    echo "having only one pane. It will create 4 new panes"
+    exit 1
+fi
+
+function cur_pane_id() {
+    tmux list-panes | grep 'active' | sed 's/:.*$//'
+}
+
+# Note: This script was simpler with tmux 1.9. But with v. 2.1,
+# The new pane following a split-pane is not really "selected" from
+# the script's point of view (i.e. send-key will write to the old pane
+# and another split will split the old pane, evene though the new pane
+# actually does have keyboard focus and is listed as the active one
+# in the output of tmux list-panes (which we rely upon to make the
+# above function work). I think this inconsistency is a bug.
+# But we work arond it by using -t to explicitly identify the pane
+# in each split or send-key command
+
+tmux rename-window clip
+tmux split-window -v
+first_pane=".$(cur_pane_id)"  # Need to remember this so we can return to it below
+tmux send-key -t $first_pane 'watch xclip -o -sel PRIMARY' 'Enter'
+tmux resize-pane -t $TMUX_PANE -y 10
+
+tmux split-window -v -t ".$(cur_pane_id)"
+tmux send-key -t ".$(cur_pane_id)" "xp watch xclip -o -sel PRIMARY \'\[xp\]\'" 'Enter'
+tmux split-window -h -t ".$(cur_pane_id)"
+tmux send-key -t ".$(cur_pane_id)" "xp watch xclip -o -sel CLIPBOARD \'\[xp\]\'" 'Enter'
+tmux split-window -h -t $first_pane
+tmux send-key -t ".$(cur_pane_id)" 'watch xclip -o -sel CLIPBOARD' 'Enter'
+
+tmux select-pane -t $TMUX_PANE
+
