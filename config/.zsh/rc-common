@@ -126,6 +126,17 @@ setopt HIST_NO_STORE
 # Remove superflous whitespace from history entries
 setopt HIST_REDUCE_BLANKS
 
+# Use fcntl() to lock history file when writing, which performs better than
+# default ad hoc locking, and is safer on NFS.
+setopt HIST_FCNTL_LOCK
+
+# When searching history, do not display dups of a line previously found
+setopt HIST_FIND_NO_DUPS
+
+# When reading history from file, split shell words up the same way that
+# normal shell parser does. Otherwise, quoted words with spaces are wrong
+setopt HIST_LEX_WORDS
+
 limit coredumpsize 0
 
 # Fedora's limit is 1 million by default, which really slows down fork() in
@@ -321,7 +332,7 @@ bindkey "\e[1~" beginning-of-line # Home & end in screen + ssh
 bindkey "\e[4~" end-of-line
 bindkey "^F" forward-word   # Was forward-char. Default binding is M-f
 bindkey "^B" backward-word  # Was backward-char. Default binding is M-b
-bindkey "^P" push-input     # Was push-line
+bindkey "^Q" push-input     # Was push-line
 bindkey "^G" get-line       # Was send-break
 bindkey "^[[3~" delete-char # DEL key - delete char from right
 bindkey "^Z"    undo        # Undo effect of last keystroke. Default biding is C-xC-u
@@ -330,7 +341,6 @@ bindkey "^X^I"  redo        # Wanted to use ^X^R, but that is taken by _read_com
 bindkey "\ea" universal-argument # Original binding: accept-and-hold, which is useless
                                  # Want to use ^U, like emacs, but that means kill input
 
-## Abortive attempt to get zsh to auto-load config changes. Problem is that
 export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 
 # 256-color support with Tmux compatibility:
