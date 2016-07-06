@@ -168,9 +168,8 @@ endfunction
 nnoremap <silent> <CR> :call Repeat_last_motion_except_in_quickfix()<CR>
 
 " Tab Control. {{{2
-" nmemonic middle letter of word "tab". Like tmux, but with a instead of ^a
 :nnoremap gh :tabprev<CR>       " Overrides gh (start Select mode linewise)
-:nnoremap gl :tabnext<CR>       " Overrides :al. Use :all instead
+:nnoremap gl :tabnext<CR>
 :nnoremap gH :tabfirst<CR>
 :nnoremap gL :tablast<CR>
 :nnoremap g<Enter> :tabnew<CR>  " Don't want to override gn
