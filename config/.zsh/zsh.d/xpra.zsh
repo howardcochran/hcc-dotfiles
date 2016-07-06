@@ -65,7 +65,7 @@ function xprastart() {
 
     xp xpra start --bind-tcp localhost:$tcp_port --tcp-auth=none \
         --sharing=yes --start-child=xterm \
-        --no-notifications --clipboard=yes --pulseaudio=yes $XPRA_DISPLAY 2>"$redir"
+        --no-notifications --clipboard=no --pulseaudio=yes $XPRA_DISPLAY 2>"$redir"
 }
 
 function xprattach() {
