@@ -177,6 +177,62 @@ nnoremap <silent> <CR> :call Repeat_last_motion_except_in_quickfix()<CR>
 :nnoremap g<C-H> :tabmove -1<CR> " Override start Select mode blockwise)
 :nnoremap g<C-L> :tabmove +1<CR>
 
+" Functions to move current window to next / prev tab, since not built-in
+" From: http://vim.wikia.com/wiki/Move_current_window_between_tabs
+function! MoveToPrevTab()
+  "there is only one window
+  if tabpagenr('$') == 1 && winnr('$') == 1
+    return
+  endif
+  "preparing new window
+  let l:tab_nr = tabpagenr('$')
+  let l:cur_buf = bufnr('%')
+  if tabpagenr() != 1
+    close!
+    if l:tab_nr == tabpagenr('$')
+      tabprev
+    endif
+    sp
+    wincmd j
+  else
+    close!
+    exe "0tabnew"
+  endif
+  "opening current buffer in new window
+  exe "b".l:cur_buf
+endfunc
+
+function! MoveToNextTab()
+  "there is only one window
+  if tabpagenr('$') == 1 && winnr('$') == 1
+    return
+  endif
+  "preparing new window
+  let l:tab_nr = tabpagenr('$')
+  let l:cur_buf = bufnr('%')
+  if tabpagenr() < l:tab_nr
+    close!
+    if l:tab_nr == tabpagenr('$')
+      tabnext
+    endif
+    sp
+    wincmd j
+  else
+    close!
+    tabnew
+  endif
+  "opening current buffer in new window
+  exe "b".l:cur_buf
+endfunc
+
+" Map g+Alt-L, g+Alt-H to these functions. Unfortunately, vim doesn't
+" recognize what tmux sends as an Alt + character (which is Esc + character).
+" These "set" commands fix that, as explained here:
+" http://stackoverflow.com/questions/7501092/can-i-map-alt-key-in-vim
+set <A-L>=l
+:nnoremap g<A-L> :call MoveToNextTab()<CR>
+set <A-H>=h
+:nnoremap g<A-H> :call MoveToPrevTab()<CR>
 " }}}2
 
 " Window Control. Use <space> as alias for Ctrl-W {{{2
@@ -250,9 +306,8 @@ nnoremap <silent> <CR> :call Repeat_last_motion_except_in_quickfix()<CR>
 " a :command equivalent?) Bail if window motion didn't change current window
 " number, which means we must have been at a limit.
 
-" ToDo: Need a mapping to move the current window into a split on the next or
-" previous tab page (or absolute tab page number).  If current tab has only
-" one window, this should implicitly close the current tab page.
+" NOTE: Mapping to move current window into a split on the next or previous
+" tab page is defined in the "Tab Control" section.
 
 " }}}2
 
