@@ -1,0 +1,52 @@
+#!/bin/bash
+
+usage() {
+cat <<EOF
+Usage:
+$0 -o outfile in-file [in-file...]
+$0 [-o outfile] zip-file [zip-file...]
+EOF
+exit $1
+}
+
+handle_zip_file() {
+    local zip_file="$1"
+    local out="$opt_outfile"
+    [[ -z "$out" ]] && out="${zip_file%.zip}.mp3"
+    local tmpdir="$(mktemp --directory)"
+    unzip "$zip_file" -d "$tmpdir"
+    id3convert --strip "$tmpdir/"*mp3
+    cat "$tmpdir/"*mp3 > "$out"
+    rm -rf "$tmpdir"
+}
+
+handle_mp3_args() {
+    if [[ -z $opt_outfile ]]; then
+        echo >&2 "Required paraameter missing: -o output_file"
+        usage 2
+    fi
+    local tmpdir="$(mktemp --directory)"
+    cp "$@" "$tmpdir/"
+    id3convert --strip "$tmpdir"/*mp3
+    cat "$tmpdir"/*mp3 > "$opt_outfile"
+    rm -rf "$tmpdir"
+}
+
+opt_outfile=
+if [[ $1 == '-o' ]]; then
+    opt_outfile="$2"
+    shift 2
+fi
+
+[[ $# -eq 0 ]] && usage 2
+[[ $1 == --help || $1 == -h ]] && usage 0
+
+while [[ $# -gt 0 ]]; do
+    if [[ $1 == *zip ]]; then
+        handle_zip_file "$1"
+        shift
+    else
+        handle_mp3_args "$@"
+        break
+    fi
+done
