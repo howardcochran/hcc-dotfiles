@@ -1,0 +1,30 @@
+#!/bin/bash
+# Suggestion: In gnome settings/Keyboard icon/Shortcuts tab, create custom
+# Alt+Super+F:  toggle-pause-browser firefox
+# Alt+Super+C:  toggle-pause-browser chrome
+
+if [ -n "$1" ]; then
+    browser="$1"
+else
+    browser="chrome"
+fi
+
+first_pid=$(pidof "$browser" | cut -d ' ' -f 1)
+
+# Idiom: $foo -eq $foo tests whether $foo is a valid integer
+if [[ ! "$first_pid" =~ ^[[:digit:]]+$ ]]; then
+    notify-send --hint int:transient:1 \
+        "Error" "Cannot find any ${browser} processes"
+    exit 1
+fi
+
+if grep -q stopped /proc/$first_pid/status; then
+    sig="-CONT"
+    msg="Resuming ${browser}"
+else
+    sig="-STOP"
+    msg="Stopping ${browser}"
+fi
+
+killall $sig $browser
+notify-send --hint int:transient:1 "$msg"
