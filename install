@@ -32,7 +32,7 @@ def copy_if_not_exist(src, dest):
     realdest = os.path.expanduser(dest)
     if not os.path.exists(realdest):
         shutil.copy(realsrc, realdest)
-    
+
 # I make .zshrc and .vimrc contain only machine-specifical customizations,
 # so instead of symlinking it into the source, we'll just copy a template
 # if not exist.
@@ -48,7 +48,4 @@ mklink("config/.tmux", "~/.tmux")
 mklink("config/.config/htop/htoprc", "~/.config/htop/htoprc")
 mklink(".fonts", "~/.fonts")
 mklink("config/.terminfo", "~/.terminfo")
-
-
-
-
+mklink("config/.gitconfig", "~/.gitconfig")
