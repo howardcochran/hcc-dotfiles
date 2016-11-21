@@ -8,3 +8,8 @@ function mkcd() {
 }
 
 alias rt='redshift-toggle'
+
+# Edit the current command line in full-screen Vim
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
