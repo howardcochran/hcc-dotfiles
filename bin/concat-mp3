@@ -41,6 +41,11 @@ fi
 [[ $# -eq 0 ]] && usage 2
 [[ $1 == --help || $1 == -h ]] && usage 0
 
+if [[ ! -x $(which id3convert) ]]; then
+    echo >&2 "ERROR: id3convert command not found. Install libid3-tools?"
+    exit 3
+fi
+
 while [[ $# -gt 0 ]]; do
     if [[ $1 == *zip ]]; then
         handle_zip_file "$1"
