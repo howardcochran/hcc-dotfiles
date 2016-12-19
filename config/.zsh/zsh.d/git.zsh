@@ -1072,6 +1072,8 @@ _git-stripspace () {
 }
 
 _git_ps1 () {
+  [[ "$no_git_ps1" > 0 || "$nogitps1" > 0 ]] && return 0
+
   local d="$(git rev-parse --git-dir 2>/dev/null)"
   if [ -z "$d" ]; then
     exit 0
