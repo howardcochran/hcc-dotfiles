@@ -41,6 +41,11 @@ set cursorline     " cox
 behave xterm       " Mouse drag enters Visual mode instead of Select mode.
                    " behave sets several options. See help
 set nostartofline
+set path+=**       " File operations recurse directories
+
+" New windows open below or to right of current one (why isn't this default?)
+set splitbelow
+set splitright
 
 " Tighter X server clipboard integration. Of these unnamed and unnamedplus
 " are added to the defaults.
