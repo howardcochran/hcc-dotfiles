@@ -47,6 +47,13 @@ set path+=**       " File operations recurse directories
 set splitbelow
 set splitright
 
+" Format Options
+set formatoptions+=j " Delete comment char when joining commented lines
+set formatoptions-=o " (don't) Insert the comment leader after hitting 'o' etc.
+set textwidth=78
+set formatoptions+=c " Auto-format comments in insert mode
+set formatoptions-=t " But do not auto-format normal text (i.e. code)
+
 " Tighter X server clipboard integration. Of these unnamed and unnamedplus
 " are added to the defaults.
 set clipboard=unnamed,unnamedplus,autoselect,exclude:cons\|linux
