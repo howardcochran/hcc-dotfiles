@@ -1,0 +1,22 @@
+#!/bin/bash
+# Simple script that tries to make a TCP connection to the given host & port
+# repeatedly until successful or a timeout has elapsed, then closes the
+# connection. There is no printed output. Success/failure is reported
+# via exit status.
+#
+# Usage: $0 HOST_OR_IP PORT [TIMEOUT_SECS]
+#
+# The default timeout is 30 seconds. Timeout must be an integer.
+
+opt_host="$1"
+opt_port="$2"
+opt_timeout="$3"
+
+# Default timeout
+[[ -z $opt_timeout ]] && opt_timeout=30
+
+while true; do
+    exec 2>/dev/null 6<>/dev/tcp/"$opt_host"/"$opt_port" && exit 0  # Success
+    [[ $SECONDS -ge $opt_timeout ]] && exit 1               # Timed out
+    sleep 0.1
+done

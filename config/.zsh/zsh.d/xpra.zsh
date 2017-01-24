@@ -67,6 +67,17 @@ function xprastart() {
         --sharing=yes --start-child=xterm \
         --no-notifications --clipboard=yes --pulseaudio=yes --bell=yes \
 	$XPRA_DISPLAY 2>"$redir"
+
+    # Workaround: As of xpra v1.0.1, xpra daemonizes before it is ready
+    # to accept connections (boo!), so wait till its port is open.
+    local tmp_time=$(date +%s.%N)
+    if ~/bin/wait-for-tcp localhost $tcp_port 10; then
+        echo Xpra server startup took $(( $(date +%s.%N) - $tmp_time )) secs
+    else
+        echo "ERROR: Xpra server appears to have failed to start!\n"
+        ps auxw |grep xpra
+        return 1
+    fi
 }
 
 function xprattach() {
