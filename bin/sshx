@@ -42,7 +42,7 @@ function xpra_attach() {
         #result=$(xpra attach tcp:localhost:${tcp_port} 2>> "$logfile")
         result=$(xpra attach --border=red,2 --clipboard=yes --pulseaudio=no \
             --speaker=disabled --microphone=disabled --sharing=yes \
-            tcp:localhost:${tcp_port} 2>> "$logfile")
+            --desktop-scaling=off tcp:localhost:${tcp_port} 2>> "$logfile")
 
         # Let's append xpra's "result" (i.e. stdout) to its logfile
         printf "%s\n\n" "$result" >> "$logfile"

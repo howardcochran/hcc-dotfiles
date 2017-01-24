@@ -91,7 +91,8 @@ function xprattach() {
 
     local -a args
     args=( --clipboard=yes --pulseaudio=yes --speaker=disabled \
-            --microphone=disabled $border --sharing=yes "$dest" )
+            --microphone=disabled $border --sharing=yes "$dest" \
+	    --desktop-scaling=off )
 
     local basefile="$HOME/.xpra/client-$dest"
 
