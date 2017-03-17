@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 # NOTE: This script is not Zsh compatible.
 
 shopt -s extglob
@@ -13,7 +11,7 @@ base_session() {
 }
 
 list_all_sessions() {
-    tmux list-sessions -F '#{session_name}'
+    tmux list-sessions -F '#{session_name}' | egrep -v '^outer'
 }
 
 list_base_sessions() {
