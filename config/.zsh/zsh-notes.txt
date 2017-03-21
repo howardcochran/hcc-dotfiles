@@ -72,21 +72,10 @@ Will run diff on the output of the two commands.
 Some really good tips here:
 http://blog.printf.net/articles/page/2
 
-    * Hostname completion based on the contents of your ~/.ssh/known_hosts file. This requires you to turn off HashKnownHosts (see below), and add the following to your ~/.zshrc:
-
-       hosts=(${${${${(f)"$(<$HOME/.ssh/known_hosts)"}:#[0-9]*}%%\*}%%,*})
-       zstyle ':completion:*:hosts' hosts $hosts
-#
-
 Remote filename completion over ssh, which works wonderfully with public key auth, remote host completion, and the ssh ControlMaster tip below. This is enabled by default; an example use is below, with the bold characters written by tab presses rather than by my keyboard directly:
 
 % scp foo.html printf.net:public_html/index.html
 #
-
-By default, modern ssh hashes the known_hosts file so that someone who hacks access to your account doesn't have a list of where they might be able to go next. This is sensible, but breaks the hostname completion above, so I turn it off in ~/.ssh/config:
-
-HashKnownHosts no
-    *
 
       New (4.0+) versions of OpenSSH have support for multiplexing several shells over a single ssh connection; this means that the second time you type ssh host, the first (already established) connection is used and told to spawn a new shell, making your new shell appear immediately instead of in a few seconds. This cuts login time for a new shell from 1.891s to 0.267s on my work machine. It also speeds up anything that uses a single ssh session per file such as bash/zsh remote filename completion (see above), or rsync/darcs/svn/etc over ssh. To enable, in ~/.ssh/config:
 
@@ -95,10 +84,4 @@ HashKnownHosts no
 
     I have a few annoyances with ControlMaster %G—%@ let me know if you know of a clean way to have the first connection for each host be created as a background process without a tty so that it can't easily be killed by accident.
 
-#
-
-I use tramp to edit files remotely %G—%@ this has the same host and filename completion as zsh, and is insanely useful for me; some of the machines I use at work are an ssh tunnel away (meaning high latency) and don't have emacs or vim installed (only vi, meaning no syntax highlighting). Setting up tramp is easy:
-
-(require 'tramp)
-C-x C-f /somehost:some/dir/and/file RET
 
