@@ -367,3 +367,5 @@ export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 # }
 # PERIOD=60
 
+# Put any local / machine-specific settings into the following file:
+[ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
