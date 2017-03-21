@@ -67,6 +67,10 @@ set wildmode=longest:full
 set wildmenu
 " I think this is the default: set wildchar=<Tab>
 
+" Fix delay exiting insert mode using Esc. Default was 1000ms
+" See https://www.johnhawthorn.com/2012/09/vi-escape-delays/
+set timeoutlen=100
+
 " Leader
 let mapleader = ","
 let maplocalleader = "\\"
