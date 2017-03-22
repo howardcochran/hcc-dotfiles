@@ -12,7 +12,7 @@ DEFAULT_SA_SOCK="/tmp/.jgeisj${USER}ijwkdjy/auaghgigijaua"
 # Read the name of the socket file from config file
 function read_ssh_agent_sock() {
 	[ -r $SINGLE_SA_SOCK_CONF ] || return 1
-	cat $SINGLE_SA_SOCK_CONF 
+	cat $SINGLE_SA_SOCK_CONF
 }
 
 # Output the name of the sock file. Reads from config file,
@@ -20,7 +20,7 @@ function read_ssh_agent_sock() {
 function get_ssh_agent_sock() {
 	read_ssh_agent_sock && return 0
 	print "$DEFAULT_SA_SOCK" > "$SINGLE_SA_SOCK_CONF"
-	print "$DEFAULT_SA_SOCK" 
+	print "$DEFAULT_SA_SOCK"
 }
 
 # Wrapper function for starting the ssh-agent
@@ -32,7 +32,7 @@ function start_agent() {
 function ensure_agent_running() {
 	local agent_socket="$1"
 	local command="ssh-agent -s -a ${agent_socket}"
-	
+
 	# Socket already exists. See if it's still running
 	if [ -e "${agent_socket}" ] ; then
 		# Can we find a plausible PID for the existing agent?
@@ -69,6 +69,4 @@ function ensure_agent_running() {
 	return 0
 }
 
-
 ensure_agent_running $(get_ssh_agent_sock)
-
