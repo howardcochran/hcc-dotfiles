@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copy buffer #N (given as sole command line arg) to
 # X selection and clipboard. If this argument is - , will read from stdin
 # rather than a tmux buffer. Designed to be run from within tmux
@@ -6,7 +6,7 @@
 # This integrates with my Xpra set-up - if $XPRA_DISPLAY and $XPRA_XAUTHAURITY
 # are set in tmux's environment, connect to that server. If not, connect to
 # the one in $DISPLAY.
-
+set -x
 bufnum=$1
 [ -z "$bufnum" ] && bufnum=0
 
