@@ -69,7 +69,7 @@ set wildmenu
 
 " Fix delay exiting insert mode using Esc. Default was 1000ms
 " See https://www.johnhawthorn.com/2012/09/vi-escape-delays/
-set timeoutlen=100
+set timeoutlen=300
 
 " Leader
 let mapleader = ","
