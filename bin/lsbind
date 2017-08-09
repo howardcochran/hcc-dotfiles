@@ -1,0 +1,48 @@
+#!/usr/bin/python3
+#
+# Lists all bind mounts on the machine and what they are binded with.
+# Note that it arbitrarily assumes that the shortest path is the "original"
+# mount.
+#
+# Code came from:
+# https://unix.stackexchange.com/questions/18048/list-only-bind-mounts
+
+import os.path, re
+from collections import namedtuple
+
+MountInfo = namedtuple('MountInfo', ['mountid', 'parentid', 'devid', 'root', 'mountpoint', 'mountoptions', 'extra', 'fstype', 'source', 'fsoptions'])
+
+mounts = {}
+
+def unescape(string):
+    return re.sub(r'\\([0-7]{3})', (lambda m: chr(int(m.group(1), 8))), string)
+
+with open('/proc/self/mountinfo', 'r') as f:
+    for line in f:
+        # Parse line
+        mid, pid, devid, root, mp, mopt, *tail = line.rstrip().split(' ')
+        extra = []
+        for item in tail:
+            if item != '-':
+                extra.append(item)
+            else:
+                break
+        fstype, src, fsopt = tail[len(extra)+1:]
+        # Save mount info
+        mount = MountInfo(int(mid), int(pid), devid, unescape(root), unescape(mp), mopt, extra, fstype, unescape(src), fsopt)
+        mounts.setdefault(devid, []).append(mount)
+
+for devid, mnts in mounts.items():
+    # Skip single mounts
+    if len(mnts) <= 1:
+        continue
+    # Sort list to get the first mount of the device's root dir (if still mounted)
+    mnts.sort(key=lambda x: x.root)
+    src, *binds = mnts
+    # Print bind mounts
+    for bindmount in binds:
+        if src.root == bindmount.root:
+            srcstring = src.mountpoint
+        else:
+            srcstring = src.mountpoint+':/'+os.path.relpath(bindmount.root, src.root)
+        print('{0} -> {1.mountpoint} ({1.mountoptions})'.format(srcstring, bindmount))
