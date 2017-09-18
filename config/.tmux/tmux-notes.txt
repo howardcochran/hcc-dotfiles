@@ -21,10 +21,10 @@ Desired Functions:
 NOTE: M-  is Alt+
 
 Mine   |Default|Screen | What
-a      |       |a(?)   | send-keys ^a  ; To send command to nested tmux or screen
+^a     |       |a(?)   | send-keys ^a  ; To send command to nested tmux or screen
 l,-n M-PgDown|n  |n," "  | (vim C-PgDown) Switch to Next window
 h,-n M-PgUp |p   |p,<BS> | (vim C-PgUp)   Switch to Prev window
-^a     |l      |^a     | Toggle to last-focused window
+a      |l      |^a     | Toggle to last-focused window
 def    |0-9    |0-9    | Jump focus to specific window (so above toggle is useful!)
 w      |w      |"      | List windows & interactively pick one to switch to
 M-PgUp |<none> |<none> | Move current window Left
@@ -32,13 +32,10 @@ M-PgDn |<none> |<none> | Move current window Reft
 c      |c      |c,^c   | Create a new window
 A      |,      |A      | Rename current window
 
-k,K    |&      |k,K    | Kill window
-\      |       |\      | Kill session
-       |$      |<none> | Rename current session
-def    |(      |       | switch-client -p ; Switch current client to previous session
-def    |)      |       | switch-client -n ; Switch current client to next session
-def    |L      |       | switch-client -l ; Toggle current client to last session
-       |       |       | 
+S      |$      |<none> | Rename current session
+^k     |(      |       | Switch to previous session (via tmux-buffer script)
+^j     |)      |       | Switch to next session (via tmux-buffer script)
+       |       |       |
 
 s      |"      | ???   | (vim ^W s) Create horizontal split
 v      |%      | |     | (vim ^W v) Create vertical split
@@ -60,7 +57,6 @@ def    |C-Right|       | (vim ^W >)    Right
 ]      |]      |       | paste-buffer
 def    |=      |       | choose-buffer
 ^Z     |^Z     |       | Suspend client (SIGSTOP)
-^L     |???    | ^L    | refresh-client
 def    |q      |       | display-panes   ; Show number in each pane briefly
 def    |~      |       | Show messages
 D      |D      |??     | choose-client, and detach selected one
@@ -79,7 +75,7 @@ To Do:
    * x ^a <  Load buffer #0 with contents of /tmp/tmux-exchange, and paste it immediately
  * environment
    * x Propagate DISPLAY variable
-   * Get ssh agent working on remote session?
+   * x Get ssh agent working on remote session?
    * x tmuxenv: zsh function to manually reload env
    * zsh auto-reload periodic?
  * x Improve status window notifications/color
@@ -97,56 +93,14 @@ To Do:
  * vim + tmux integration: http://thedrearlight.com/blog/tmux-vim.html
  * vim: folding via grep
  * vim: Get rid of ^a.  Maybe make it equiv to ^w, for pane switching similar to tmux?
- * vim: Get mouse to work within terminal
-   * In tmux
-   * Through ssh?
+ * x vim: Get mouse to work within terminal
+   * x In tmux
+   * x Through ssh?
 
 
 
-
-
-
-
-Nested sessions:
+Todo make macro for Nested sessions:
 • Enter pass-through mode:
 ∘ un-binds all "non-escaped" bindings
 ∘ Changes the escape to ^e
 ∘ Adds a "PASS" tag to the status line (maybe left side?)
-
-
-Byobu Bindings:
-F1                            * Used by X11 *                
-  Shift-F1                    Display this help              
-F2                            Create a new window            
-  Shift-F2                    Create a horizontal split      
-  Ctrl-F2                     Create a vertical split        
-  Ctrl-Shift-F2               Create a new session           
-F3/F4                         Move focus among windows       
-  Shift-F3/F4                 Move focus among splits        
-  Ctrl-F3/F4                  Move a split                   
-  Ctrl-Shift-F3/F4            Move a window                  
-  Alt-Up/Down                 Move focus among sessions      
-  Shift-Left/Right/Up/Down    Move focus among splits        
-  Ctrl-Shift-Left/Right       Move focus among windows       
-  Ctrl-Left/Right/Up/Down     Resize a split                 
-F5                            Reload profile, refresh status 
-  Shift-F5                    Toggle through status lines    
-  Ctrl-F5                     Reconnect ssh/gpg/dbus sockets     
-  Ctrl-Shift-F5               Change status bar's color randomly 
-F6                            Detach session and then logout     
-  Shift-F6                    Detach session and do not logout   
-  Ctrl-F6                     Kill split in focus                
-F7                            Enter scrollback history           
-  Alt-PageUp/PageDown         Enter and move through scrollback  
-F8                            Change the current window's name   
-  Shift-F8                    Toggle through split arrangements  
-  Ctrl-F8                     Restore a split-pane layout        
-  Ctrl-Shift-F8               Save the current split-pane layout 
-F9                            Launch byobu-config window         
-F10                           * Used by X11 *                    
-F11                           * Used by X11 *                    
-  Alt-F11                     Expand split to a full window      
-  Shift-F11                   Join window into a horizontal split
-F12                           Escape sequence                  
-  Shift-F12                   Toggle on/off Byobu's keybindings
-  Ctrl-Shift-F12        Modrian squares
