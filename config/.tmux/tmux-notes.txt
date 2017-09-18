@@ -11,8 +11,7 @@ C-a !  break-pane
 C-a @  join-pane interactively
 C-a >  Choose buffer, write it to /tmp/tmux-exchange
 C-a <  Paste contents of /tmp/tmux-exchange
-    M-[0-9]  Select window 10-19
-C-a M-[0-9]  Select window 20-29
+C-a M-[0-9]  Select window 10-19
 
 
 
