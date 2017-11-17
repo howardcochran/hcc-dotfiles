@@ -6,9 +6,12 @@
 # This integrates with my Xpra set-up - if $XPRA_DISPLAY and $XPRA_XAUTHAURITY
 # are set in tmux's environment, connect to that server. If not, connect to
 # the one in $DISPLAY.
-set -x
-bufnum=$1
-[ -z "$bufnum" ] && bufnum=0
+
+if [[ -n "$1" ]]; then
+    bufarg="-b $1"
+else
+    bufarg=''
+fi
 
 # Get $DISPLAY and $XAUTHORITY from tmux's environment, since tmux does not
 # preserve these within a run-shell context.
@@ -21,8 +24,8 @@ stdin_to_clipboard() {
     xclip -i -sel primary >/dev/null 2>/dev/null
 }
 
-if [[ "$bufnum" == '-' ]]; then
+if [[ "$1" == '-' ]]; then
     stdin_to_clipboard  # Read from script's stdin.
 else
-    tmux save-buffer -b $bufnum - | stdin_to_clipboard
+    tmux save-buffer $bufarg - | stdin_to_clipboard
 fi
