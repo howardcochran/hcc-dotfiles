@@ -31,7 +31,7 @@ function session_exists() {
 
 function list_client_indices() {
     tmux list-clients -F '#{session_name}' |
-        sed -e 's/.*_C\([0-9]\+\)/\1/' | sort | uniq
+        sed -n -e 's/.*_C\([0-9]\+\)/\1/p' | sort | uniq
 }
 
 # I want my clone names to be short, since they take up space
