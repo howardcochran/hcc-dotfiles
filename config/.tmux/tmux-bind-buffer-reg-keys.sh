@@ -6,13 +6,7 @@
 # buffer-cmd key table, which will define the various commands that
 # can be done with the register.
 
-# Note: I had to use a shell script for this rather than just listing
-# all of these bindings in a tmux conf file because doing that would
-# generate a "no such key table" error on the preceding unbind.
-# Here in the script, we can suppress that error.
-
 function define_reg_key() {
-    tmux unbind -Tbuffer-reg "$1" 2>/dev/null
     tmux bind -Tbuffer-reg "$1" set-environment -g TMUXBUF "$1" '\;' switch-client -Tbuffer-cmd
 }
 
