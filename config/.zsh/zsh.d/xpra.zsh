@@ -13,7 +13,9 @@ export ORIG_XAUTHORITY=$XAUTHORITY
 function xp() {
         DISPLAY=$XPRA_DISPLAY XAUTHORITY=$XPRA_XAUTHORITY "$@"
 }
-compdef _precommand xp
+
+# Suppress err if non-interactive shell. Used by xpra-sync-clip script
+compdef _precommand xp 2>/dev/null
 
 alias env -u XAUTHORITY DISPLAY=$XPRA_DISPLAY "$@"
 
@@ -22,7 +24,7 @@ alias env -u XAUTHORITY DISPLAY=$XPRA_DISPLAY "$@"
 function noxp() {
     XAUTHORITY=$ORIG_XAUTHORITY DISPLAY=$ORIG_DISPLAY "$@"
 }
-compdef _precommand noxp
+compdef _precommand noxp 2>/dev/null
 
 # Configure this shell to launch in Xpra by default.
 function use_xpra() {
@@ -104,7 +106,7 @@ function xprattach() {
     [[ -n "$1" ]] && dest="$1"
 
     local -a args
-    args=( --clipboard=yes --pulseaudio=yes --speaker=disabled \
+    args=( --clipboard=no --pulseaudio=yes --speaker=disabled \
             --microphone=disabled $border --sharing=yes "$dest" \
 	    --desktop-scaling=off )
 
