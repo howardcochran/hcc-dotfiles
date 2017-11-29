@@ -13,3 +13,28 @@ alias rt='redshift-toggle'
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "^X^E" edit-command-line
+
+# Quick alias to find filename
+function f.() {
+    find . -name "$@"
+}
+
+# Case-insensitive version
+function fi.() {
+    find . -iname "$@"
+}
+
+# "find star"  Find file whose name contains string
+function fs.() {
+    local name="$1"
+    shift
+    find . -name "*${name}*" "$@"
+}
+
+# Case-insensitive version
+function fis.() {
+    local name="$1"
+    shift
+    find . -iname "*${name}*" "$@"
+}
+
