@@ -263,7 +263,9 @@ alias mroe=more
 function ga { a | egrep $* }
 alias sz="source ~/.zshrc"
 alias gitags='git ls-files | ctags -L - --sort=foldcase'
+alias gitagpp='git ls-files | ctags -L - --sort=foldcase --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++'
 alias mktags='find . -name \*.\[ch\] | ctags -L - --sort=foldcase'
+alias mktagpp='find . -name \*.\[ch\]\* | ctags -L - --sort=foldcase --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++'
 alias gba='git branch -a'
 alias gbl='git branch -l'
 alias gr='git rebase'
