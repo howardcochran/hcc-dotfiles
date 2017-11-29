@@ -38,3 +38,4 @@ function fis.() {
     find . -iname "*${name}*" "$@"
 }
 
+compdef _find f. fi. fs. fis.

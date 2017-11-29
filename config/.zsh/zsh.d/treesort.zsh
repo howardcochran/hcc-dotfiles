@@ -30,3 +30,4 @@ function treesize() {
 	__treesort "%s %u %g %Cc %k %p\n" "$@"
 }
 
+compdef _find treedate treesize

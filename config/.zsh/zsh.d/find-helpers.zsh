@@ -13,3 +13,6 @@ function findnotmp () {
     find . -path '*/tmp' -prune -o -iname "$@" -print
 }
 
+# Not 100% accurate since directory has already been given, but works well
+# enough to complete options after typing -
+compdef _find findnotmp

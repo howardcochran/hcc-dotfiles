@@ -261,6 +261,7 @@ alias a=alias
 alias u=unalias
 alias mroe=more
 function ga { a | egrep $* }
+compdef _grep ga
 alias sz="source ~/.zshrc"
 alias gitags='git ls-files | ctags -L - --sort=foldcase'
 alias gitagpp='git ls-files | ctags -L - --sort=foldcase --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++'
@@ -337,4 +338,7 @@ export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 # PERIOD=60
 
 # Put any local / machine-specific settings into the following file:
+
+compdef _precommand eatmydata
+
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true

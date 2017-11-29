@@ -13,6 +13,7 @@ export ORIG_XAUTHORITY=$XAUTHORITY
 function xp() {
         DISPLAY=$XPRA_DISPLAY XAUTHORITY=$XPRA_XAUTHORITY "$@"
 }
+compdef _precommand xp
 
 alias env -u XAUTHORITY DISPLAY=$XPRA_DISPLAY "$@"
 
@@ -21,6 +22,7 @@ alias env -u XAUTHORITY DISPLAY=$XPRA_DISPLAY "$@"
 function noxp() {
     XAUTHORITY=$ORIG_XAUTHORITY DISPLAY=$ORIG_DISPLAY "$@"
 }
+compdef _precommand noxp
 
 # Configure this shell to launch in Xpra by default.
 function use_xpra() {
