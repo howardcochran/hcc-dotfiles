@@ -283,40 +283,7 @@ alias -g CL='| one-line-strip | tmux load-buffer -'
 
 alias psg='ps -Af | grep '
 
-# Lexmark LPDEV Setup
-#alias mlsinit='eval `/m/mls/tools/bin/mlsinit`'
-#mlsinit
-export MLS_EXPERT=1
-export HWSIM_DATA_DIR=~/hwsim_data_dir
-alias mstatreal 'mstatus | grep -v "^[?]"'
-alias mstatusreal mstatreal
-
 alias sdis='export DISPLAY=$(cat ~/.DISPLAY)'
-
-# Previous globbing-method to do bldtarget completions based on globbing:
-#function complete-mls-target () {
-#	if [ ! -e bconfig ] ; then
-#	    return
-#	fi
-#
-#	targets=( bconfig/*.target )
-#	for i in "${targets[@]}" ; do
-#	    compadd -- $(echo $i | sed -e 's/bconfig\/\(.*\).target/\1/')
-#	done
-#}
-
-# Shortened output of the mls 'builds' command.  This works by filtering
-# out headers and other undesireable rows, then cutting out only the
-# actual build name from the result. For use in bldtarget completion.
-function short-build-list () {
-    builds | egrep -v '^[>)]|^ *[-A-Z]|^[*]|^$' | cut --delimiter=' ' -f 2
-}
-
-function complete-mls-target2 () {
-    compadd -- $(short-build-list)
-}
-compdef complete-mls-target2 bldtarget
-
 
 # Make ^N always do regular non-smart filename completion
 complete-files () { compadd - * }
