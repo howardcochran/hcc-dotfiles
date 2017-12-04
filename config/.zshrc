@@ -1,4 +1,3 @@
-
 # Fix $SHELL, since we often inherited csh's idea of $SHELL
 export SHELL=/bin/zsh
 
@@ -10,10 +9,10 @@ stty stop undef    # normally ^S
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 
 # Be very verbose with completions
-zstyle ':completion:*' verbose yes 
-zstyle ':completion:*:descriptions' format '%B%d%b' 
-zstyle ':completion:*:messages' format '%d' 
-zstyle ':completion:*:warnings' format 'No matches for: %d' 
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*:descriptions' format '%B%d%b'
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format 'No matches for: %d'
 zstyle ':completion:*' group-name ''
 
 # Menu completion allows cursor keys to highlight desired completion
@@ -337,8 +336,11 @@ export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 # }
 # PERIOD=60
 
-# Put any local / machine-specific settings into the following file:
 
 compdef _precommand eatmydata
 
+# Load plugins:
+source ~/.zsh/plugins/plugins.zsh
+
+# Put any local / machine-specific settings into the following file:
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
