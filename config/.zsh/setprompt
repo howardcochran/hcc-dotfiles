@@ -22,35 +22,52 @@ function hccprompt {
     PR_URCORNER=${altchar[k]:--}
     PR_BELL=$(echo -n "\a")
 
+    # We choose yellow because it stands out. Makes it easy to find
+    # command boundary in terminal scroll-back buffer
     local maincolor="%{$hyellow%}"
-    local hostcolor="%{$hgreen%}"
 
+    # Opening and Time of Day
+    PS1="${maincolor}===[%T"
+
+    # If in Docker container, print the container name
     local dockercolor="%{$hblue%}"
-    local docker_label
     if [[ -n $DOCKER_NAME ]] ; then
-        docker_label="${dockercolor}$DOCKER_NAME "
+        PS1+=" ${dockercolor}$DOCKER_NAME"
     fi
 
-    local ptagcolor="%{$hcyan%}"
+    # ptag variable. User can set this to "tag" this shell
+    local ptagcolor="$hcyan"
+    if [[ -n $ptag ]]; then
+        PS1+=" ${ptagcolor}${ptag}"
+    fi
 
-    local host=$(hostname)
-    # Strip domain portion of hostname, if present:
-    host=${host%.*}
+    # Hostname, up to first dot
+    PS1+=" ${hgreen}%m${maincolor}"
 
-    PS1="${maincolor}===${maincolor}\
-[%T ${docker_label}${hostcolor}${host}"'${ptag:+ }'"${ptagcolor}"'${ptag}'"${maincolor}]%0(?,, %{$bgred%}%{$hwhite%} Exit %? %{$norm%}${maincolor})"\
-'$(_git_ps1)'" %~/
-${maincolor}==>%{$norm%} "
+    # Close the bracketed section
+    PS1+="${maincolor}]"
+
+    # Exit status if command exited with Error.
+    PS1+="%0(?,, $bgred$hwhite Exit %? $norm${maincolor})"
+
+    # Git info, if applicable
+    PS1+='$(_git_ps1)'
+
+    # Current directory and newline
+    PS1+="${maincolor} %~/
+==>${norm} "
 
 }
-hccprompt
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd hccprompt
 
 # Emit a terminal bell if last command exited with non-zero status. This makes
 # the tmux window label change to "alert" color. Used to do this in the prompt
 # but it would re-asert alert status every time the prompt was redrawn, causing
 # lots of false alerts. Doing it in precmd means it will happen only once.
-function precmd {
+__bell_on_error() {
     [[ $? != 0 ]] && echo -n ${PR_BELL}
 }
+add-zsh-hook precmd __bell_on_error
 
 alias sp='source ~/.zsh/setprompt'
