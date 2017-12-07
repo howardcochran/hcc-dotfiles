@@ -7,6 +7,10 @@
 setopt PROMPT_SUBST
 
 
+_can_i_sudo() {
+    sudo -n true 2>/dev/null
+}
+
 function hccprompt {
     # This is magic for drawing extended character art. I got this stuff
     # from: http://www.aperiodic.net/phil/prompt/
@@ -43,6 +47,9 @@ function hccprompt {
 
     # Hostname, up to first dot
     PS1+=" ${hgreen}%m${maincolor}"
+
+    # Show a flag if this shell has cached Sudo permission
+    _can_i_sudo && PS1+=" ${hred}SUDO"
 
     # Close the bracketed section
     PS1+="${maincolor}]"
