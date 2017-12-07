@@ -61,6 +61,30 @@ function hccprompt {
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd hccprompt
 
+# Show Elapsed wall-clock time for any command that takes longer
+# than 1 second. This is like $REPORTTIME except that the threshold is
+# real time rather than user+system CPU time.
+__real_seconds() {
+    echo $(( $(date '+%s + %N') / 1000000000.0 ))
+}
+
+__record_start_time() {
+    # Used in elapsed time calculation in the prompt
+    _start=$(__real_seconds)
+}
+add-zsh-hook preexec __record_start_time
+
+__show_elapsed() {
+    # Show how long the previous command took if more than 1 second
+    if (($+_start)); then
+        local elapsed=$(( $(__real_seconds)-_start ))
+        unset _start
+        (($elapsed > 1.0)) && printf "${hcyan}Elapsed: %.3f${norm}\n" $elapsed >&2
+    fi
+}
+add-zsh-hook precmd __show_elapsed
+
+
 # Emit a terminal bell if last command exited with non-zero status. This makes
 # the tmux window label change to "alert" color. Used to do this in the prompt
 # but it would re-asert alert status every time the prompt was redrawn, causing
