@@ -79,3 +79,19 @@ zle -N history-incremental-search-backward-local
 zle -N history-incremental-search-forward-local
 bindkey "^Xr" history-incremental-search-backward-local
 bindkey "^Xs" history-incremental-search-forward-local
+
+# Alt-m will copy prev word on command line. Makes renames faster
+# Default binding is Esc,Ctrl+Shift+_, ("^]^_"), which is a pain!
+# This mapping is what key-bindings.zsh in oh-my-zsh uses.
+# If used after "Alt-." it cycles through prev words on that prev command
+autoload -Uz copy-earlier-word
+zle -N copy-earlier-word
+bindkey "^[m" copy-earlier-word
+
+# Sudo: Alt-s
+function add_sudo() {
+    BUFFER="sudo "$BUFFER
+    zle end-of-line
+}
+zle -N add_sudo
+bindkey "^[s" add_sudo
