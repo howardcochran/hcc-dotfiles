@@ -58,7 +58,14 @@ function hccprompt {
     PS1+="%0(?,, $bgred$hwhite Exit %? $norm${maincolor})"
 
     # Git info, if applicable
-    PS1+='$(_git_ps1)'
+    if git rev-parse --is-inside-work-tree 2>&1 >/dev/null; then
+        PS1+=" (%{$hblue%}$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
+        local changes=$(git status --short | grep -v '^[?][?]' | wc -l)
+        if [[ $changes -gt 0 ]]; then
+            PS1+="${hred}+${changes}"
+        fi
+        PS1+="${maincolor})"
+    fi
 
     # Current directory and newline
     PS1+="${maincolor} %~/
