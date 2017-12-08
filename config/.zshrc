@@ -21,6 +21,8 @@ zstyle ':completion:*' menu select
 autoload -U compinit
 compinit  # -C means just use cached .zcompdump unconditionally - CAUSED ERRORS
 
+compdef _precommand eatmydata
+
 setopt PROMPT_SUBST # Allow parameter substitution in prompt
 
 for file in ~/.zsh/zsh.d/*; do
@@ -156,6 +158,9 @@ BLOCKSIZE=K ; export BLOCKSIZE
 
 # color-ls This sets LS_COLORS for my dark background
 eval `dircolors --sh`
+
+# This makes file completion use same colors as ls
+zstyle ':completion:*' list-colors "$LS_COLORS"
 
 # LS aliases
 alias ls='ls --color=auto -Fs'
@@ -336,8 +341,6 @@ export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 # }
 # PERIOD=60
 
-
-compdef _precommand eatmydata
 
 # Load plugins:
 source ~/.zsh/plugins/plugins.zsh
