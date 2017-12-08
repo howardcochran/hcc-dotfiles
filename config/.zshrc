@@ -345,5 +345,9 @@ export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 # Load plugins:
 source ~/.zsh/plugins/plugins.zsh
 
+# Simple bulk renamer
+autoload -U zmv            # zmv '(*)-(*).mp3' '$2_$1.mp3'
+alias mmv='noglob zmv -W'  # mmv *.JPG *.jpg
+
 # Put any local / machine-specific settings into the following file:
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
