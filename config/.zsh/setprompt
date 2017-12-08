@@ -16,36 +16,37 @@ GIT_PS1_DESCRIBE_STYLE="branch"
 GIT_PS1_SHOWCOLORHINTS=1
 
 function hccprompt {
-    # We choose yellow because it stands out. Makes it easy to find
-    # command boundary in terminal scroll-back buffer
-    local maincolor="%{$hyellow%}"
+    # Colors: Main one bright makes cmd boundaries easy to find in scrollback
+    local maincolor="%F{yellow}"
+    local dockercolor="%F{blue}"
+    local ptagcolor="%F{cyan}"
+    local hostcolor="%F{green}"
+    local sudocolor="%F{red}"
 
     # Opening and Time of Day
-    PS1="${maincolor}===[%T"
+    PS1="%B${maincolor}===[%T"
 
     # If in Docker container, print the container name
-    local dockercolor="%{$hblue%}"
     if [[ -n $DOCKER_NAME ]] ; then
         PS1+=" ${dockercolor}$DOCKER_NAME"
     fi
 
     # ptag variable. User can set this to "tag" this shell
-    local ptagcolor="$hcyan"
     if [[ -n $ptag ]]; then
         PS1+=" ${ptagcolor}${ptag}"
     fi
 
     # Hostname, up to first dot
-    PS1+=" ${hgreen}%m${maincolor}"
+    PS1+=" ${hostcolor}%m${maincolor}"
 
     # Show a flag if this shell has cached Sudo permission
-    _can_i_sudo && PS1+=" ${hred}SUDO"
+    _can_i_sudo && PS1+=" ${sudocolor}SUDO"
 
     # Close the bracketed section
     PS1+="${maincolor}]"
 
     # Exit status if command exited with Error.
-    PS1+="%0(?,, $bgred$hwhite Exit %? $norm${maincolor})"
+    PS1+="%0(?,, %K{red}%F{white} Exit %? %f%k${maincolor})"
 
     # Git info, using the gitfast/git-prompt plugin from oh-my-zsh. In
     # colorizing, it uses %f to "return to the default color (white)".  But the
@@ -57,7 +58,7 @@ function hccprompt {
 
     # Current directory and newline
     PS1+="${maincolor} %~/
-==>${norm} "
+==>%f%b "
 
 }
 autoload -Uz add-zsh-hook
