@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Setup hcochran's prompt.
 # We expect that ~/.zsh/gencolors has already been sourced by this shell, so
 # that all the color strings therein are already defined.
@@ -18,20 +16,6 @@ GIT_PS1_DESCRIBE_STYLE="branch"
 GIT_PS1_SHOWCOLORHINTS=1
 
 function hccprompt {
-    # This is magic for drawing extended character art. I got this stuff
-    # from: http://www.aperiodic.net/phil/prompt/
-    typeset -A altchar
-    set -A altchar ${(s..)terminfo[acsc]}
-    PR_SET_CHARSET="%{$terminfo[enacs]%}"
-    PR_SHIFT_IN="%{$terminfo[smacs]%}"
-    PR_SHIFT_OUT="%{$terminfo[rmacs]%}"
-    PR_HBAR=${altchar[q]:--}
-    PR_ULCORNER=${altchar[l]:--}
-    PR_LLCORNER=${altchar[m]:--}
-    PR_LRCORNER=${altchar[j]:--}
-    PR_URCORNER=${altchar[k]:--}
-    PR_BELL=$(echo -n "\a")
-
     # We choose yellow because it stands out. Makes it easy to find
     # command boundary in terminal scroll-back buffer
     local maincolor="%{$hyellow%}"
@@ -108,7 +92,7 @@ add-zsh-hook precmd __show_elapsed
 # but it would re-asert alert status every time the prompt was redrawn, causing
 # lots of false alerts. Doing it in precmd means it will happen only once.
 __bell_on_error() {
-    [[ $? != 0 ]] && echo -n ${PR_BELL}
+    [[ $? != 0 ]] && echo -n "\a"
 }
 add-zsh-hook precmd __bell_on_error
 
