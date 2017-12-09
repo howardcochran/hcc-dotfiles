@@ -80,9 +80,12 @@ add-zsh-hook preexec __record_start_time
 __show_elapsed() {
     # Show how long the previous command took if more than 1 second
     if (($+_start)); then
-        local elapsed=$(( $(__real_seconds)-_start ))
+        local t=$(( $(__real_seconds)-_start ))
         unset _start
-        (($elapsed > 1.0)) && printf "${hcyan}Elapsed: %.3f${norm}\n" $elapsed >&2
+        if (($t > 1.0)); then
+            echo >&2 "${hcyan}Elapsed:" \
+                ${${${$(printf "%d:%02d:%05.2f" $((t / 3600)) $((t / 60 % 60)) $((t % 60)))#0:}#00:}#0}"${norm}"
+        fi
     fi
 }
 add-zsh-hook precmd __show_elapsed
