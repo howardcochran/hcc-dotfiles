@@ -2,6 +2,9 @@ ZSH_PLUGDIR=${0:a:h}
 
 autoload -U is-at-least
 
+# ==== Frecent directory changing plugin ====
+source $ZSH_PLUGDIR/z/z.sh
+
 if is-at-least 5.1.1; then  # Not compatible with older
     source $ZSH_PLUGDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
