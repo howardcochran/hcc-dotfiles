@@ -90,7 +90,14 @@ __real_seconds() {
 
 __record_start_time() {
     # Used in elapsed time calculation in the prompt
-    _start=$(__real_seconds)
+    # However, don't do it if the command to be run is fg, because it makes
+    # little sense to report the time of just one "fg" session in a
+    # longer running command.
+    if ! [[ $2 == fg || $2 == fg\ * ]]; then
+        _start=$(__real_seconds)
+    else
+        unset _start
+    fi
 }
 add-zsh-hook preexec __record_start_time
 
