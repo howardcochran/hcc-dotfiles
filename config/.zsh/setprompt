@@ -21,6 +21,7 @@ function hccprompt {
     local dockercolor="%F{blue}"
     local ptagcolor="%F{cyan}"
     local hostcolor="%F{69}"       # A bright blue
+    local bgjobscolor="%F{128}"    # purple
     local sudocolor="%F{red}"
 
     # Opening and Time of Day
@@ -38,6 +39,22 @@ function hccprompt {
 
     # Hostname, up to first dot
     PS1+=" ${hostcolor}%m${maincolor}"
+
+
+    # Count of background jobs and "vim" flag.
+    # If the only BG jobs are vim, don't show count.
+    local jobcnt=${#jobtexts}
+    # Filter jobs to those that start with "vim" or contain " vim "
+    local -a vims=( ${(@M)${(v)jobtexts[@]}#* vim} ${(@M)${(v)jobtexts[@]}#vim} )
+    if (( jobcnt - ${#vims} > 0 )); then
+        # There are some non-vim background jobs. Show total count of BG jobs
+        PS1+=" ${bgjobscolor}J:${#jobtexts}"
+    fi
+    # Show flag if at least one of the background jobs is vim
+    if (( ${#vims} > 0 )); then
+        PS1+=" ${bgjobscolor}vim"
+    fi
+
 
     # Show a flag if this shell has cached Sudo permission
     _can_i_sudo && PS1+=" ${sudocolor}SUDO"
