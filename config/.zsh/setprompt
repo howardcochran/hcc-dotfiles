@@ -20,7 +20,7 @@ function hccprompt {
     local maincolor="%F{yellow}"
     local dockercolor="%F{blue}"
     local ptagcolor="%F{cyan}"
-    local hostcolor="%F{green}"
+    local hostcolor="%F{69}"       # A bright blue
     local sudocolor="%F{red}"
 
     # Opening and Time of Day
