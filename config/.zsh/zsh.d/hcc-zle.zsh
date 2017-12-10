@@ -13,7 +13,16 @@ key[Right]=${terminfo[kcuf1]}
 key[PageUp]=${terminfo[kpp]}
 key[PageDown]=${terminfo[knp]}
 
+# Basic key bindings.
+bindkey -e # Emacs bindings
+bindkey "^Q" push-input     # Was push-line
+bindkey "^G" get-line       # Was send-break
+bindkey "^XU"  redo         # Wanted to use ^X^R, but that is taken by _read_comp.
+                            # Undo is ^xu and ^x^u, so Ctrl-x,Shift-u will redo
+
+#################
 # History Walking:
+#################
 # Normal Up & Down arrows are to use local history, searching for history
 # that matches beginning of current line.i
 #
@@ -95,3 +104,13 @@ function add_sudo() {
 }
 zle -N add_sudo
 bindkey "^[s" add_sudo
+
+#########
+# Shift-Tab will unconditionally complete files, in case current completion
+# won't normally complete files.
+# This method came from: http://www.zsh.org/mla/users/2011/msg00974.html
+# FIXME: Not colorized like normal file completeion
+#########
+zle -C complete-file menu-expand-or-complete _generic
+zstyle ':completion:complete-file:*' completer _files
+bindkey "^[[Z" complete-file # Shift-Tab: Do regular file completion

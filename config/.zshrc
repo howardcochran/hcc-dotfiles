@@ -295,29 +295,6 @@ alias psg='ps -Af | grep '
 
 alias sdis='export DISPLAY=$(cat ~/.DISPLAY)'
 
-# Make ^N always do regular non-smart filename completion
-complete-files () { compadd - * }
-zle -C dumb-complete complete-word complete-files
-bindkey "^[[Z"  dumb-complete # Shift-Tab: Do regular file completion
-
-# Setup key bindings.  For some stupid reason, Home and End keys don't work
-# out of the box!
-bindkey -e # Emacs bindings
-bindkey "\eOH" beginning-of-line # Normal Home & end
-bindkey "\eOF" end-of-line
-bindkey "\e[1~" beginning-of-line # Home & end in screen + ssh
-bindkey "\e[4~" end-of-line
-bindkey "^F" forward-word   # Was forward-char. Default binding is M-f
-bindkey "^B" backward-word  # Was backward-char. Default binding is M-b
-bindkey "^Q" push-input     # Was push-line
-bindkey "^G" get-line       # Was send-break
-bindkey "^[[3~" delete-char # DEL key - delete char from right
-bindkey "^Z"    undo        # Undo effect of last keystroke. Default biding is C-xC-u
-bindkey "^X^I"  redo        # Wanted to use ^X^R, but that is taken by _read_comp.
-                            # Also wanted to use C-xC-S-u, but zle can't do Ctrl+Shift!
-bindkey "\ea" universal-argument # Original binding: accept-and-hold, which is useless
-                                 # Want to use ^U, like emacs, but that means kill input
-
 export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 
 # 256-color support with Tmux compatibility:
