@@ -153,6 +153,9 @@ TIMEFMT="Time: %*E real %U usr %S sys %P %J"
 # oh-my-zsh hard-codes this to emty string, which makes it behave like bash (yuck!)
 WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 
+# Add a few more chars beyond the default so it will only stop on spaces
+WORDCHARS+='":'"'"
+
 # I like ls -s to tell me the number of blocks in 1K blocks.
 BLOCKSIZE=K ; export BLOCKSIZE
 
