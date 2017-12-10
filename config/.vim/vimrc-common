@@ -71,6 +71,9 @@ set wildmenu
 " See https://www.johnhawthorn.com/2012/09/vi-escape-delays/
 set timeoutlen=300
 
+" Re-use of existing windows when switching buffers:
+set switchbuf=useopen,usetab,split
+
 " Leader
 let mapleader = ","
 let maplocalleader = "\\"
