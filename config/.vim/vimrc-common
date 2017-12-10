@@ -4,7 +4,7 @@
 " Use vim settings, not vi (yuck!)
 set nocompatible
 
-set wrap           " wrap long lines in the window
+set nowrap         " I mostly write code, so don't word wrap by default.
 set nolinebreak    " wrap exactly at window edge, not between words
 set sw=8           " Shift width - how much to indent with tab key
 set ts=8           " Tab stop - how far a tab char indents
@@ -50,8 +50,8 @@ set splitright
 " Format Options
 set formatoptions+=j " Delete comment char when joining commented lines
 set formatoptions-=o " (don't) Insert the comment leader after hitting 'o' etc.
-set textwidth=78
 set formatoptions+=c " Auto-format comments in insert mode
+set textwidth=78
 
 " Tighter X server clipboard integration. Of these unnamed and unnamedplus
 " are added to the defaults.
