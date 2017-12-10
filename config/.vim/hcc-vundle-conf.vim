@@ -12,5 +12,6 @@ Bundle 'tpope/vim-fugitive.git'
 Bundle 'benmills/vimux.git'
 Bundle 'tpope/vim-eunuch.git'
 Bundle 'scrooloose/nerdcommenter'
+Bundle 'Valloric/YouCompleteMe'
 
 filetype plugin indent on     " required!
