@@ -5,8 +5,20 @@ autoload -U is-at-least
 # ==== Frecent directory changing plugin ====
 source $ZSH_PLUGDIR/z/z.sh
 
+# ==== zsh-autosuggestions config ====
 if is-at-least 5.1.1; then  # Not compatible with older
     source $ZSH_PLUGDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+    # Make zsh-autosuggest ignore these wrapper widgets that I defined in
+    # zsh.d/hcc-zle.zsh. Cuz it just invokes an underlying widget which
+    # zsh-autosuggest will wrap at that level. Otherwise it double wraps,
+    # which breaks the widget. Note that changes to this array only take
+    # affect until the first time the ZSH Line Editor is invoked after
+    # sourcing the zsh-autosuggestions plugin.
+    ZSH_AUTOSUGGEST_IGNORE_WIDGETS+=(
+        'forward-word-normal'
+        'forward-word-bash'
+    )
 fi
 
 # ==== zsh-syntax-highlighting config ====

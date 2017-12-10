@@ -105,6 +105,73 @@ function add_sudo() {
 zle -N add_sudo
 bindkey "^[s" add_sudo
 
+#########################################
+# Word-style-wrapper bindings
+#########################################
+
+# In this section, we create two different bindings for many of the -word
+# widgets. One which uses the "normal zsh" definition of words, and one
+# that uses the bash definition. In general, the default Alt-key binding
+# maps to the normal style and, and the Ctrl-key binding uses the bash style,
+# wherever this makes sense.
+#
+# Implementaiton:
+# For each -word widget function, we define two new widgets that have the
+# same names with -normal and -bash appended. All of these are bound to
+# the word-style-zle-wrapper function, herein, which sets the word style
+# to whatever the suffix of whatever widget name it was called from, then
+# calls whatever function the base widget was originally mapped to.
+# NOTE: It is safe to run this multiple times without adverse consequences
+# (as when re-sourcing zsh's dotfiles)
+
+autoload -U select-word-style
+select-word-style normal
+
+word-style-zle-wrapper() {
+    local word_style=${WIDGET/*-}
+    [[ $word_style == (bash|normal|shell|whitespace) ]] || word_style='default'
+    select-word-style $word_style
+    zle -w ${WIDGET%-$word_style} # Call original widget
+
+    # Restore word style so we don't affect any widgets not wrapped by us.
+    # TODO: Actually read the prior word style and restore it rather than
+    #       assuming default.
+    select-word-style default
+}
+zle -N bash-word-wrapper
+
+declare -a __word_functions
+
+__word_widgets=(backward-kill-word backward-word
+  capitalize-word down-case-word
+  forward-word kill-word
+  transpose-words up-case-word)
+
+for f in $__word_widgets; do
+    zle -N $f-bash word-style-zle-wrapper
+    zle -N $f-normal word-style-zle-wrapper
+done
+
+# zle -N backward-word-before-style-wrapper ${widgets[backward-word]#user:}
+zle -N backward-word-bash word-style-zle-wrapper
+zle -N backward-word-normal word-style-zle-wrapper
+
+# The Alt- bindings use normal word style, while Ctrl- bindings use bash style
+bindkey '^[b'     backward-word-normal
+bindkey '^b'      backward-word-bash         # (default: backward-char)
+bindkey '^[f'     forward-word-normal
+bindkey '^f'      forward-word-bash          # (default: backward-char)
+bindkey '^[d'     kill-word-normal
+bindkey '^d'      kill-word-bash
+bindkey '^]^?'    backward-kill-word-normal  # Alt-backspace
+bindkey '^h'      backward-kill-word-bash    # Ctrl-backspace and Ctrl-h (default: backward-kill-char)
+bindkey '^[[3;3~' kill-word-normal           # Alt-Del (default: unbound)
+bindkey '^[[3;5~' kill-word-bash             # Ctrl-Del (default: unbound)
+
+# TODO: Wrap transpose, up-case, down-case, copy-as-kill.  Deferring for
+#       now because I don't know what bindings I want to use since the default
+#       mappings already distinguish Ctrl- and Alt- for these things.
+
 #########
 # Shift-Tab will unconditionally complete files, in case current completion
 # won't normally complete files.
