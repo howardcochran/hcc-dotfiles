@@ -80,10 +80,12 @@ let maplocalleader = "\\"
 
 augroup hcc_indents
 autocmd!
-" hardware tabs are special in makefiles, don't expand them
-autocmd FileType make set noexpandtab shiftwidth=8
-autocmd FileType c set noexpandtab shiftwidth=8
-autocmd FileType python,sh,perl set expandtab shiftwidth=4
+" hard tabs are special in makefiles, don't expand them
+autocmd FileType make set noexpandtab shiftwidth=8 nowrap
+autocmd FileType c set noexpandtab shiftwidth=8 nowrap
+autocmd FileType xml set expandtab shiftwidth=2 nowrap
+autocmd FileType gitcommit,md,txt set expandtab shiftwidth=4 wrap
+autocmd FileType python,sh,perl,cpp set expandtab shiftwidth=4 nowrap
 augroup END
 
 " Make PgUp and PgDn keep the cursor on the same line of the screen
