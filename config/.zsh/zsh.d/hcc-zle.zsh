@@ -215,6 +215,22 @@ zle -N zle-double-quote-argument
 bindkey '^X"' zle-double-quote-argument
 
 #########
+# Increment/decrement number under cursor.
+# TODO: Make wrapper widget that first moves the cursor left to the nearest
+#       number on the command line.
+# And make it preserve leading zeros
+#########
+autoload -U incarg
+zle -N incarg
+decarg() {
+    NUMERIC="-1"
+    incarg
+}
+zle -N decarg
+bindkey "^[+" incarg
+bindkey "^[_" decarg  # Cant use Alt-- because that is "negative numeric arg"
+
+#########
 # Shift-Tab will unconditionally complete files, in case current completion
 # won't normally complete files.
 # This method came from: http://www.zsh.org/mla/users/2011/msg00974.html
