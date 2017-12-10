@@ -186,6 +186,35 @@ zle -N zle-expand-to-realpath
 bindkey "^XA" zle-expand-to-realpath
 
 #########
+# Expand path containing wildcards by inserting all the matching filenames.
+# This used to be the default behavior, but it can be annoying, so I changed
+# the default to show matches in a menu instead.
+#########
+zle-insert-glob-files() {
+    set -o LOCAL_OPTIONS
+    set -o NOGLOB_COMPLETE
+    zle -c expand-or-complete
+}
+zle -N zle-insert-glob-files
+bindkey "^[*"  zle-insert-glob-files   # Alt+shift+8  (i.e. Alt+*)
+
+#########
+# Replace argument containing escaped spaces with single-quoted, non-escaped.
+# Useful after using tab completion to expand a filename that contains spaces
+# #######
+zle-single-quote-argument() {
+    modify-current-argument '${(qq)${(Q)ARG}}'
+}
+zle -N zle-single-quote-argument
+bindkey "^X'" zle-single-quote-argument
+
+zle-double-quote-argument() {
+    modify-current-argument '${(qqq)${(Q)ARG}}'
+}
+zle -N zle-double-quote-argument
+bindkey '^X"' zle-double-quote-argument
+
+#########
 # Shift-Tab will unconditionally complete files, in case current completion
 # won't normally complete files.
 # This method came from: http://www.zsh.org/mla/users/2011/msg00974.html
