@@ -132,7 +132,7 @@ unlet s:save_cpo
 map <leader>rc :source ~/.vimrc<CR>:source ~/.gvimrc<CR>
 
 " Like "Refresh" in a web browser. Center line with cursor and redraw screen.
-map <F5> :norm zz<CR>:redraw!<CR>
+map <F5> :norm zz<CR>:redraw!<CR>:nohl<CR>
 
 " Kill current buffer without closing the window that it occupies.
 map <leader>c :bp<CR>:bd#<CR>
