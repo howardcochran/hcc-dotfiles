@@ -173,6 +173,19 @@ bindkey '^[[3;5~' kill-word-bash             # Ctrl-Del (default: unbound)
 #       mappings already distinguish Ctrl- and Alt- for these things.
 
 #########
+# Modify the current argument to the absolute path to it.
+#########
+autoload -U modify-current-argument
+zle-expand-to-realpath() {
+    # ~ expands homedir if the arg starts with '~'.  :a does "realpath"
+    # For more info, search for "modify-current-argument" in:
+    # http://zsh.sourceforge.net/Doc/Release/User-Contributions.html
+    modify-current-argument '${~ARG:a}'
+}
+zle -N zle-expand-to-realpath
+bindkey "^XA" zle-expand-to-realpath
+
+#########
 # Shift-Tab will unconditionally complete files, in case current completion
 # won't normally complete files.
 # This method came from: http://www.zsh.org/mla/users/2011/msg00974.html
