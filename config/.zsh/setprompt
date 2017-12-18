@@ -4,9 +4,16 @@
 
 setopt PROMPT_SUBST
 
+# Helper function for showing a SUDO flag in prompt when shell has cached sudo
+# access (i.e. temporary password-less sudo)
 _can_i_sudo() {
     sudo -n true 2>/dev/null
 }
+# Let user disable the SUDO flag in prompt by touching a flag file because it
+# is annoying in "classic mode" of Ubuntu Core because the shell always has
+# password-less sudo access.
+enable_sudo_flag_in_prompt=1
+[[ -e ~/.config/no_sudo_flag_in_prompt ]] && enable_sudo_flag_in_prompt=0
 
 # Options for the gitfast/git-prompt plugin from oh-my-zsh
 GIT_PS1_SHOWDIRTYSTATE=1
@@ -57,7 +64,9 @@ function hccprompt {
 
 
     # Show a flag if this shell has cached Sudo permission
-    _can_i_sudo && PS1+=" ${sudocolor}SUDO"
+    if (( $enable_sudo_flag_in_prompt > 0 )) && _can_i_sudo; then
+        PS1+=" ${sudocolor}SUDO"
+    fi
 
     # Close the bracketed section
     PS1+="${maincolor}]"
