@@ -17,7 +17,6 @@ set incsearch      " Incremental search
 set ignorecase     " the case of normal letters is ignored
 set smartcase      " upper case letters in search turn off ignorecase
 set wrapscan       " wrap to top of file on search
-set cinoptions=(0l1
 set showmatch      " When a bracket is inserted, briefly jump to the matching.
 set whichwrap=,,<,>,[,],b,s
 set hlsearch       " Highlight search results as
@@ -107,6 +106,30 @@ nmap <End> $l
 " I'm not really sure this matters
 let s:save_cpo = &cpoptions
 set cpo&vim
+
+"====[ C/C++ formatting options ]======================================= {{{1
+
+" Indent C++ class declarations & constructor initializations, if they start
+" on a new line, by double the shiftwidth
+set cinoptions=i2s
+
+" Indent a contination line of a long expression double the shiftwidth.
+set cinoptions+=+2s
+
+" This option must be set for the following two to work (W and m)
+set cinoptions+=(0
+
+" Indent line following a line ending with open-parenthesis double shiftwidth
+" So arguments to a long function call will not start way over to the left,
+" which makes going to a new line pointless!
+set cinoptions+=W2s
+
+" Line up a line starting with a closing parentheses with the first character
+" of the line with the matching opening parentheses
+set cinoptions+=m1
+
+" Align with case label instead of the statement after it
+set cinoptions+=l1
 
 "====[ General Purpose Mappings ]======================================= {{{1
 " backspace in Visual mode deletes selection
