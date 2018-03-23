@@ -189,13 +189,18 @@ endfunction
 nnoremap <silent> <CR> :call Repeat_last_motion_except_in_quickfix()<CR>
 
 " Tab Control. {{{2
-:nnoremap gh :tabprev<CR>       " Overrides gh (start Select mode linewise)
+" Overrides gh (start Select mode linewise)
+:nnoremap gh :tabprev<CR>
 :nnoremap gl :tabnext<CR>
+
 :nnoremap gH :tabfirst<CR>
 :nnoremap gL :tablast<CR>
-:nnoremap g<Enter> :tabnew<CR>  " Don't want to override gn
+" Don't want to override gn
+:nnoremap g<Enter> :tabnew<CR>
 :nnoremap gc :tabclose<CR>
-:nnoremap g<C-H> :tabmove -1<CR> " Override start Select mode blockwise)
+
+" Override start Select mode blockwise)
+:nnoremap g<C-H> :tabmove -1<CR>
 :nnoremap g<C-L> :tabmove +1<CR>
 
 " Functions to move current window to next / prev tab, since not built-in
