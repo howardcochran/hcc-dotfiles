@@ -528,6 +528,25 @@ augroup hcc_fugitive
     autocmd BufReadPost fugitive://* set bufhidden=delete
 augroup END
 
+"====[ YouCompleteMe customization ]======================= {{{1
+
+" The default highlight for this red background but leave foreground color
+" alone. That combination can be unreadable sometimes.
+" Here, we use Maroon background w/ NavyBlue foreground (the Maroon looks red
+" to me)
+highlight YcmErrorSection ctermbg=1 ctermfg=17 guibg=#800000 guifg=#00005f
+
+" When this option is set, YCM will populate the location list automatically
+" every time it gets new diagnostic data. Default: 0
+let g:ycm_always_populate_location_list = 1
+
+" Defines where GoTo* commands result should be opened. Can take one of the
+" following values: [ 'same-buffer', 'horizontal-split', 'vertical-split',
+" 'new-tab', 'new-or-existing-tab' ]
+" Default: 'same-buffer'
+let g:ycm_goto_buffer_command = 'horizontal-split'
+
+nnoremap <leader>f :YcmCompleter FixIt<CR>
 
 "====[ Experimental / Broken ]========================================== {{{1
 
