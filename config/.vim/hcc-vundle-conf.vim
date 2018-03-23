@@ -13,5 +13,6 @@ Bundle 'benmills/vimux.git'
 Bundle 'tpope/vim-eunuch.git'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'Valloric/YouCompleteMe'
+Bundle 'wesQ3/vim-windowswap'
 
 filetype plugin indent on     " required!
