@@ -211,6 +211,14 @@ endfunction
 
 nnoremap <silent> <CR> :call Repeat_last_motion_except_in_quickfix()<CR>
 
+" Analogous to C or D; easier to type
+nnoremap Y y$
+
+" I often want to change/copy/delete a word up to next underscore:
+nnoremap cu  ct_
+nnoremap yu  yt_
+nnoremap du  dt_
+
 " Tab Control. {{{2
 " Overrides gh (start Select mode linewise)
 :nnoremap gh :tabprev<CR>
