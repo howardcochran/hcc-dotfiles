@@ -1,51 +1,101 @@
-#!/usr/bin/python
-# vim: set et sw=4 ts=4
+#!/bin/bash
 
-# This script is written in python because the shell environment lacks
-# a realpath command. A shell function could be written to do it, but
-# it's pretty convoluted.
-#
-# By default, this script is non-destructive, in that it will not replace
-# any file or symlink that already exists (but will silently skip them).
-#
-# To do: Add -f option to overwrite existing links and files
-# To do: Add -v option to complain about existing links & files that don't
-#        match what we were trying to set them to.
+scriptdir=$(realpath $(dirname "$0"))
 
-import sys
-import os
-import os.path
-import shutil
+mklink() {
+    local real_src="$(realpath $1)"
 
-scriptdir = os.path.realpath(os.path.dirname(sys.argv[0]))
+    local real_dest="$2"
+    if [[ -h "$real_dest" ]]; then
+        local tmp
+        if ! tmp="$(readlink -f ${real_dest})"; then
+            echo Removing broken symlink at ${real_dest}
+            \rm -f "${real_dest}"
+        else
+            :
+            # real_dest="${tmp}"
+        fi
+    else
+        :
+        # real_dest="$(realpath --canonicalize-missing $2)"
+    fi
 
-def mklink(src, dest):
-    realsrc = os.path.join(scriptdir, src)
-    realdest = os.path.expanduser(dest)
-    try:
-        os.symlink(realsrc, realdest)
-    except:
-        pass
+    local relative_src=$(python -c "import os.path; print os.path.relpath('${real_src}', '$(realpath $(dirname ${real_dest}))')")
 
-def copy_if_not_exist(src, dest):
-    realsrc = os.path.join(scriptdir, src)
-    realdest = os.path.expanduser(dest)
-    if not os.path.exists(realdest):
-        shutil.copy(realsrc, realdest)
+    if [[ -h "${real_dest}" ]]; then
+        local existing_src="$(readlink ${real_dest})"
 
-# I make .vimrc contain only machine-specific customizations,
-# so instead of symlinking it into the source, we'll just
-# copy a template if not exist.
-copy_if_not_exist("config/vimrc-template", "~/.vimrc")
+        if [[ "${existing_src}" == "${relative_src}" ]]; then
+            return 0
+        elif [[ "${opt_force}" == '0' ]]; then
+            echo "Not overwriting existing symlink: ${real_dest} -> ${existing_src}"
+            echo "    (Would link this to ${relative_src})"
+            return 1
+        else
+            [[ $opt_verbose == 1 ]] && echo rm -f "${real_dest}"
+            rm -f "${real_dest}"
+        fi
+    elif [[ -e "${real_dest}" ]]; then
+        if [[ "${opt_force}" == '0' ]]; then
+            echo "Not overwriting existing real file: ${real_dest}"
+            echo "    (Would link this to ${relative_src})"
+            return 1
+        else
+            [[ $opt_verbose == 1 ]] && echo rm -f "${real_dest}"
+            rm -f "${real_dest}"
+        fi
+    fi
 
-mklink("config/.zsh", "~/.zsh")
-mklink("config/.zshrc", "~/.zshrc")
-mklink("bin", "~/bin")
-mklink("config/.gvimrc", "~/.gvimrc")
-mklink("config/.vim", "~/.vim")
-mklink("config/.tmux.conf", "~/.tmux.conf")
-mklink("config/.tmux", "~/.tmux")
-mklink("config/.config/htop/htoprc", "~/.config/htop/htoprc")
-mklink(".fonts", "~/.fonts")
-mklink("config/.terminfo", "~/.terminfo")
-mklink("config/.gitconfig", "~/.gitconfig")
+    [[ $opt_verbose == 1 ]] && echo ln -s "${relative_src}" "${real_dest}"
+    ln -s "${relative_src}" "${real_dest}"
+}
+
+mkdir_verbose() {
+    dir="$1"
+
+    if [[ ! -d  "${dir}" ]]; then
+        [[ $opt_verbose == 1 ]] && echo mkdir -p "${dir}"
+        mkdir -p "${dir}"
+    fi
+}
+
+lntree() {
+    src_tree="$1"
+    dest_tree="$2"
+
+    mkdir_verbose "${dest_tree}"
+
+    pushd "$src_tree" >/dev/null || return 1
+    for file in $(find .); do
+        file="${file#.}"
+        file="${file#/}"
+        if [[ -d "${file}" ]]; then
+            mkdir_verbose "${dest_tree}/${file}"
+        elif [[ -f "${file}" ]]; then
+            mklink "${file}" "${dest_tree}/${file}"
+        fi
+    done
+    popd >/dev/null
+}
+
+opt_verbose=1
+opt_force=0
+[[ "$1" == "-f" ]] && opt_force=1
+
+cd "${scriptdir}"
+pwd
+
+git submodule update --init --recursive
+mklink config/.zsh                ~/.zsh
+mklink config/.zshrc              ~/.zshrc
+mklink bin                        ~/bin
+mklink config/.gvimrc             ~/.gvimrc
+mklink config/.vim                ~/.vim
+mklink config/.vim                ~/.config/nvim  # Neovim will share .vim config
+mklink config/.tmux.conf          ~/.tmux.conf
+mklink config/.tmux               ~/.tmux
+mklink config/.config/htop/htoprc ~/.config/htop/htoprc
+mklink .fonts                     ~/.fonts
+mklink config/.terminfo           ~/.terminfo
+mklink config/.gitconfig          ~/.gitconfig
+echo
