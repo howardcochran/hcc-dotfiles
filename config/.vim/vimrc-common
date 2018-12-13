@@ -585,6 +585,90 @@ let g:ycm_goto_buffer_command = 'horizontal-split'
 
 nnoremap <leader>f :YcmCompleter FixIt<CR>
 
+"====[ LanguageClient-neovim customization ]======================= {{{1
+if has_key(get(g:, "plugs", {}), "LanguageClient-neovim")
+  " used on CTRL-X CTRL-U on insert mode
+  " set completefunc=LanguageClient#complete
+
+  let g:LanguageClient_autoStart = 1 " Automatically start language servers.
+  let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
+  let g:LanguageClient_serverCommands = {
+    \ 'python': ['~/ve/py2neovim/bin/pyls'],
+    \ }
+
+  " Activate range formatting using standard gq key.
+  set formatexpr=LanguageClient_textDocument_rangeFormatting_sync()
+
+  nnoremap <silent> <leader>ga :call LanguageClient_textDocument_codeAction()<CR>
+  nnoremap <silent> <leader>gd :call LanguageClient_textDocument_definition()<CR>
+  nnoremap <silent> <leader>ge :call LanguageClient#explainErrorAtPoint()<CR>
+  nnoremap <silent> <leader>gf :call LanguageClient_textDocument_formatting()<CR>
+  vnoremap <silent> <leader>gf :call LanguageClient_textDocument_rangeFormatting()<CR>
+  nnoremap <silent> <leader>gg :call LanguageClient_contextMenu()<CR>
+  nnoremap <silent> <leader>gh :call LanguageClient_textDocument_hover()<CR>
+  nnoremap <silent> <leader>gi :call LanguageClient_textDocument_implementation()<CR>
+  nnoremap <silent> <leader>gr :call LanguageClient_textDocument_references()<CR>
+  nnoremap <silent> <leader>gR :call LanguageClient_textDocument_rename()<CR>
+  nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<CR>
+  nnoremap <silent> <leader>gt :call LanguageClient_textDocument_typeDefinition()<CR>
+  nnoremap <silent> <leader>gw :call LanguageClient_textDocument_workspace_symbol()<CR>
+  " This is almost same as default. Just changed the waring signText to be more
+  " visible
+  "Test some symbols: ≋ ♒   ⚑  ☣  ☢  ⚠  ✗  ✖
+  let g:LanguageClient_diagnosticsDisplay = {
+    \   1: {
+    \       "name": "Error",
+    \       "texthl": "ALEError",
+    \       "signText": "✖",
+    \       "signTexthl": "ALEErrorSign",
+    \   },
+    \   2: {
+    \       "name": "Warning",
+    \       "texthl": "ALEWarning",
+    \       "signText": "≋",
+    \       "signTexthl": "ALEWarningSign",
+    \   },
+    \   3: {
+    \       "name": "Information",
+    \       "texthl": "ALEInfo",
+    \       "signText": "ℹ",
+    \       "signTexthl": "ALEInfoSign",
+    \   },
+    \   4: {
+    \       "name": "Hint",
+    \       "texthl": "ALEInfo",
+    \       "signText": "➤",
+    \       "signTexthl": "ALEInfoSign",
+    \   },
+    \}
+
+  " Highlight usages of symbol under cursor whenever cursor moves
+  " When cursor stays still for awhile, show the Hover info from language server
+
+  " The cursor hold delay is governed by updatetime (default 4000ms), but
+  " appears to be about double the configured value, so set it to 500 for ~1 sec
+  set updatetime=500
+
+  function! LspMaybeHover(is_running) abort
+    if a:is_running.result
+      call LanguageClient_textDocument_hover()
+    endif
+  endfunction
+
+  function! LspMaybeHighlight(is_running) abort
+    if a:is_running.result
+      call LanguageClient#textDocument_documentHighlight()
+    endif
+  endfunction
+
+
+  augroup lsp_aucommands
+    au!
+    au CursorHold * call LanguageClient#isAlive(function('LspMaybeHover'))
+    au CursorMoved * call LanguageClient#isAlive(function('LspMaybeHighlight'))
+  augroup END
+endif
+
 "====[ ncm2 customization ]======================= {{{1
 if has_key(get(g:, "plugs", {}), "ncm2")
     " autocmd BufEnter * echom "foo" exists("g:ncm2_loaded") | if exists("g:ncm2_loaded") | echom "ncm2" | call ncm2#enable_for_buffer() | endif

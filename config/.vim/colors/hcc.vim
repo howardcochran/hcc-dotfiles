@@ -219,3 +219,12 @@ hi literal guifg=#0000ff guibg=NONE guisp=NONE gui=NONE ctermfg=21 ctermbg=NONE 
 hi Folded guifg=#000000 guibg=#00af5f guisp=#00af5f gui=NONE ctermfg=0 ctermbg=35 cterm=NONE
 hi OpenedFold guibg=#5f0000 ctermbg=52
 syn match OpenedFold "^.*{{{.*"
+
+" These are used by LanguageClient-neovim in the gutter:
+hi ALEErrorSign guifg=red guibg=NONE guisp=NONE gui=NONE ctermfg=red ctermbg=black cterm=NONE
+hi ALEWarningSign guifg=red guibg=NONE guisp=NONE gui=NONE ctermfg=yellow ctermbg=black cterm=bold
+hi ALEInfoSign guifg=cyan guibg=NONE guisp=NONE gui=NONE ctermfg=85 ctermbg=NONE cterm=NONE
+hi ALEError guifg=red guibg=NONE guisp=NONE gui=undercurl ctermfg=NONE ctermbg=NONE cterm=undercurl
+hi ALEWarning guifg=red guibg=NONE guisp=NONE gui=undercurl ctermfg=NONE ctermbg=NONE cterm=undercurl,bold
+" hi ALEInfoSign guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+

@@ -17,6 +17,10 @@ Plug 'scrooloose/nerdcommenter'
 "" Plug 'Valloric/YouCompleteMe'
 Plug 'wesQ3/vim-windowswap'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'install --all' }
+Plug 'autozimu/LanguageClient-neovim', {
+  \ 'branch': 'next',
+  \ 'do': 'bash install.sh',
+  \ }
 Plug 'ncm2/ncm2'
 
 " This is a dependency of ncm2:
