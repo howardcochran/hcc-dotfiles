@@ -54,7 +54,9 @@ set textwidth=78
 
 " Tighter X server clipboard integration. Of these unnamed and unnamedplus
 " are added to the defaults.
-set clipboard=unnamed,unnamedplus,autoselect,exclude:cons\|linux
+if !has('nvim')
+  set clipboard=unnamed,unnamedplus,autoselect,exclude:cons\|linux
+endif
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -76,6 +78,10 @@ set switchbuf=useopen,usetab,split
 " Leader
 let mapleader = ","
 let maplocalleader = "\\"
+
+if has("nvim")
+  set inccommand=split  " Shows incremental results of substitute cmd in split
+endif
 
 augroup hcc_indents
 autocmd!
@@ -167,14 +173,12 @@ map <leader>c :bp<CR>:bd#<CR>
 map <F9> :set mouse=a
 map <S-F9> :set mouse=
 set mouse=a  " Let's default to mouse On
-set ttymouse=sgr   " Take advantage reasonable term support for mouse
-
-" Scroll window up or down a bit, preserving cursor pos in buffer:
-map <C-Down> <C-E>
-map <C-Up> <C-Y>
+if !has('nvim')
+  set ttymouse=sgr   " Take advantage reasonable term support for mouse
+endif
 
 " Make CTRL-] show tab select list iff more than one match
-map <C-]> g<C-]>
+nnoremap <C-]> g<C-]>
 
 " Better than typing Esc:
 :inoremap  jk <Esc>
@@ -227,6 +231,12 @@ nnoremap du  dt_
 " Workaround is to map it to <Esc> instead. TODO: Report this.
 nnoremap q <Esc>
 nnoremap qq q
+
+" Neovim-specific Stuff. {{{2
+if has('nvim')
+  let g:python_host_prog = expand('~/ve/py2neovim/bin/python')
+  let g:python3_host_prog = expand('~/ve/py3neovim/bin/python')
+endif
 
 " Tab Control. {{{2
 " Overrides gh (start Select mode linewise)
@@ -295,9 +305,12 @@ endfunc
 " recognize what tmux sends as an Alt + character (which is Esc + character).
 " These "set" commands fix that, as explained here:
 " http://stackoverflow.com/questions/7501092/can-i-map-alt-key-in-vim
-set <A-L>=l
+" But Neovim supports Alt-key mappings out of the box.
+if !has('nvim')
+  set <A-L>=l
+  set <A-H>=h
+endif
 :nnoremap g<A-L> :call MoveToNextTab()<CR>
-set <A-H>=h
 :nnoremap g<A-H> :call MoveToPrevTab()<CR>
 " }}}2
 
@@ -440,7 +453,11 @@ function! HeaderGuard ()
 endfunction
 :command! HeaderGuard :call HeaderGuard()<CR>
 
-source ~/.vim/hcc-vundle-conf.vim
+if has('nvim')
+    source ~/.config/nvim/hcc-vim-plug-config.vim
+else
+    source ~/.vim/hcc-vundle-conf.vim
+endif
 
 "====[ QuickFix Window ]================================================ {{{1
 "====[ Toggle QuickFix Window ]========================================= {{{2
