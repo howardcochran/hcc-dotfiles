@@ -585,6 +585,22 @@ let g:ycm_goto_buffer_command = 'horizontal-split'
 
 nnoremap <leader>f :YcmCompleter FixIt<CR>
 
+"====[ ncm2 customization ]======================= {{{1
+if has_key(get(g:, "plugs", {}), "ncm2")
+    " autocmd BufEnter * echom "foo" exists("g:ncm2_loaded") | if exists("g:ncm2_loaded") | echom "ncm2" | call ncm2#enable_for_buffer() | endif
+  augroup ncm2
+    autocmd!
+    autocmd BufEnter * call ncm2#enable_for_buffer()
+  augroup end
+
+  " IMPORTANT: :help Ncm2PopupOpen for more information
+  set completeopt=noinsert,menuone,noselect
+
+  " Use <TAB> to select the popup menu:
+  inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+endif
+
 "====[ vim-airline customization ]======================= {{{1
 if has_key(get(g:, "plugs", {}), "vim-airline")
   let g:airline_theme="cool_hcc"

@@ -17,6 +17,12 @@ Plug 'scrooloose/nerdcommenter'
 "" Plug 'Valloric/YouCompleteMe'
 Plug 'wesQ3/vim-windowswap'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'install --all' }
+Plug 'ncm2/ncm2'
+
+" This is a dependency of ncm2:
+Plug 'roxma/nvim-yarp'
+" This thing is a beast: Plug 'ncm2/ncm2-bufword'
+
 Plug 'vim-airline/vim-airline'
 " I just autoload my own theme directoy, so I don't need this repo of themes:
 " Plug 'vim-airline/vim-airline-themes'
