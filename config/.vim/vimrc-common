@@ -1,4 +1,4 @@
-" vim: set et sw=4 foldmethod=marker foldmarker={{{,}}}:
+" vim: set et sw=2 foldmethod=marker foldmarker={{{,}}}:
 
 "====[ Basic options ]================================================== {{{1
 " Use vim settings, not vi (yuck!)
