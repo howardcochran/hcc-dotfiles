@@ -78,12 +78,42 @@ lntree() {
     popd >/dev/null
 }
 
+promptyn() {
+    local prompt="$1"
+    local default="Y"
+    local prompt_yn="[Yn]"
+    if [[ "${2^^}" == N ]]; then
+        default='N'
+        prompt_yn="[yN]"
+    fi
+    local REPLY=unset
+    while [[ -n "${REPLY}" && "${REPLY^^}" != [YN] ]]; do
+        read -p "$prompt $prompt_yn " -n 1
+    done
+    [[ -z "$REPLY" ]] && REPLY="$default"
+    [[ "${REPLY^^}" == Y ]]  # This expression is the return value
+}
+
+required_packages=(
+    git
+)
+
+install_packages() {
+    apt list -qq "$@"
+    echo
+    if promptyn 'Install any packages in the above list that are missing?' Y; then
+        sudo apt install -y "$@"
+    fi
+}
+
 opt_verbose=1
 opt_force=0
 [[ "$1" == "-f" ]] && opt_force=1
 
 cd "${scriptdir}"
 pwd
+
+install_packages "${required_packages[@]}"
 
 git submodule update --init --recursive
 mklink config/.zsh                ~/.zsh
