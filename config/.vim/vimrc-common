@@ -585,6 +585,14 @@ let g:ycm_goto_buffer_command = 'horizontal-split'
 
 nnoremap <leader>f :YcmCompleter FixIt<CR>
 
+"====[ vim-airline customization ]======================= {{{1
+if has_key(get(g:, "plugs", {}), "vim-airline")
+  let g:airline_theme="cool_hcc"
+  let g:airline_powerline_fonts = 0  " Not looking right in gnome-terminal on 16.04?
+  let g:airline_exclude_preview = 1
+  let g:airline#parts#ffenc#skip_expected_string="utf-8[unix]"
+endif
+
 "====[ Experimental / Broken ]========================================== {{{1
 
 " Filter current buffer to a new temporary buffer (i.e current buffer grep)
