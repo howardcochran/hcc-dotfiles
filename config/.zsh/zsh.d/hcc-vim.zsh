@@ -158,7 +158,7 @@ function __vim_build_launch_cmd() {
 # Example:
 #     v --newtab --split file1 file2 file3
 #     Creates a new tab with the three given files in splits within that tab.
-function v() {
+function oldv() {
     # Populated by inner function. 0=quit, n=new vim, integer=existing vim
     local __vim_job
 
@@ -187,8 +187,18 @@ function v() {
     fg %$__vim_job
 }
 
-alias vnew='v --new'
-alias vs='v --split'
-alias vts='v --newtab --split'
-alias vt='v --newtab'
-alias vnews='v --new --split'
+alias oldvnew='v --new'
+alias oldvs='v --split'
+alias oldvts='v --newtab --split'
+alias oldvt='v --newtab'
+alias oldvnews='v --new --split'
+
+# If NeoVim not installed, use the old Vim for everything:
+if ! whence nvim > /dev/null; then
+    alias v=oldv
+    alias vnew=oldvnew
+    alias vs=oldvs
+    alias vtsoldvts
+    alias vt=oldvt
+    alias vnews=oldvnews
+fi
