@@ -529,6 +529,9 @@ augroup ToggleBackgroundInInsertMode
     au InsertLeave * :highlight Normal ctermbg=17 guibg=#00005f
 augroup END
 
+" Ctrl-C does not trigger the InsertLeave autocmd; map to <Esc> instead
+inoremap <C-c> <Esc>
+
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
             \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
             \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
