@@ -57,7 +57,10 @@ hi Search guifg=#000020 guibg=#ffffff guisp=#ffffff gui=NONE ctermfg=17 ctermbg=
 hi Delimiter guifg=#A9EE8A guibg=NONE guisp=NONE gui=NONE ctermfg=156 ctermbg=NONE cterm=NONE
 hi Statement guifg=#ffd700 guibg=NONE guisp=NONE gui=bold ctermfg=220 ctermbg=NONE cterm=bold
 "ORIG: hi Statement guifg=#ff9742 guibg=NONE guisp=NONE gui=bold,italic ctermfg=215 ctermbg=NONE cterm=bold
-"hi SpellRare -- no settings --
+hi SpellCap guifg=NONE guibg=#4e4e4e guisp=#4e4e4e gui=NONE ctermfg=NONE ctermbg=239 cterm=NONE
+hi SpellLocal guifg=NONE guibg=#005f00 guisp=#005f00 gui=NONE ctermfg=NONE ctermbg=22 cterm=bold
+hi SpellRare guifg=NONE guibg=#af0000 guisp=#af0000 gui=NONE ctermfg=NONE ctermbg=124 cterm=bold
+hi SpellBad guifg=NONE guibg=#ff0000 guisp=#ff0000 gui=NONE ctermfg=NONE ctermbg=red cterm=bold
 "hi EnumerationValue -- no settings --
 hi Comment guifg=#afafff guibg=NONE guisp=NONE gui=NONE ctermfg=147 ctermbg=NONE cterm=bold
 "ORIG: hi Comment guifg=#666666 guibg=NONE guisp=NONE gui=italic ctermfg=241 ctermbg=NONE cterm=NONE
@@ -87,14 +90,12 @@ hi PreProc guifg=#d75fd7 guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE
 hi Visual guifg=black guibg=#C0FFC0 guisp=#C0FFC0 gui=bold ctermfg=black ctermbg=157 cterm=bold
 "ORIG: hi Visual guifg=#000000 guibg=#C0FFC0 guisp=#C0FFC0 gui=bold ctermfg=NONE ctermbg=157 cterm=bold
 hi MoreMsg guifg=#00ced1 guibg=#188F90 guisp=#188F90 gui=NONE ctermfg=44 ctermbg=30 cterm=NONE
-"hi SpellCap -- no settings --
 hi VertSplit guifg=#075554 guibg=#C0FFFF guisp=#C0FFFF gui=NONE ctermfg=23 ctermbg=159 cterm=NONE
 hi Exception guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
 hi Keyword guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
 hi Type guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
 "hi DiffChange -- no settings --
 hi Cursor guifg=#e3e3e3 guibg=#D74141 guisp=#D74141 gui=NONE ctermfg=254 ctermbg=167 cterm=NONE
-"hi SpellLocal -- no settings --
 "hi Error -- no settings --
 hi PMenu guifg=#004443 guibg=#067C7B guisp=#067C7B gui=NONE ctermfg=23 ctermbg=6 cterm=NONE
 hi SpecialKey guifg=#BF9261 guibg=NONE guisp=NONE gui=NONE ctermfg=137 ctermbg=NONE cterm=NONE
@@ -108,7 +109,6 @@ hi PMenuThumb guifg=NONE guibg=#a4a6a8 guisp=#a4a6a8 gui=NONE ctermfg=NONE cterm
 "hi MatchParen -- no settings --
 "hi LocalVariable -- no settings --
 hi Repeat guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
-"hi SpellBad -- no settings --
 "hi CTagsClass -- no settings --
 "hi Directory -- no settings --
 hi Structure guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
@@ -142,7 +142,7 @@ hi doxygencomment guifg=#00ff00 guibg=#000000 guisp=#000000 gui=NONE ctermfg=10 
 hi cspecialcharacter guifg=#ff5fff guibg=NONE guisp=NONE gui=bold ctermfg=207 ctermbg=NONE cterm=NONE
 "ORIG: hi cspecialcharacter guifg=#c080d0 guibg=#404040 guisp=#404040 gui=NONE ctermfg=176 ctermbg=238 cterm=NONE
 "hi clear -- no settings --
-hi htmlitalic guifg=#000000 guibg=#90ee90 guisp=#90ee90 gui=NONE ctermfg=NONE ctermbg=120 cterm=NONE
+hi htmlitalic guifg=#000000 guibg=#90ee90 guisp=#90ee90 gui=NONE ctermfg=16 ctermbg=120 cterm=NONE
 hi htmlboldunderlineitalic guifg=#add8e6 guibg=#000000 guisp=#000000 gui=NONE ctermfg=152 ctermbg=NONE cterm=NONE
 hi djangostatement guifg=#005f00 guibg=#ddffaa guisp=#ddffaa gui=NONE ctermfg=22 ctermbg=193 cterm=NONE
 hi htmlbolditalic guifg=#000000 guibg=#add8e6 guisp=#add8e6 gui=NONE ctermfg=NONE ctermbg=152 cterm=NONE
