@@ -219,6 +219,15 @@ nnoremap cu  ct_
 nnoremap yu  yt_
 nnoremap du  dt_
 
+" Really tired of accidentally starting macro recording, so let's make you
+" have to press it twice, like you really mean it!
+" NOTE: I didn't use Q for this because I make that toggle quickfix window
+" BUG: in Nvim 0.3.1: When I map q to <nop> then, if I press q and let it
+" timeout, then it will no longer recognize qq until I press escape.
+" Workaround is to map it to <Esc> instead. TODO: Report this.
+nnoremap q <Esc>
+nnoremap qq q
+
 " Tab Control. {{{2
 " Overrides gh (start Select mode linewise)
 :nnoremap gh :tabprev<CR>
