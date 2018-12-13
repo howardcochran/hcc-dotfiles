@@ -70,7 +70,7 @@ set wildmenu
 
 " Fix delay exiting insert mode using Esc. Default was 1000ms
 " See https://www.johnhawthorn.com/2012/09/vi-escape-delays/
-set timeoutlen=300
+set timeoutlen=1000
 
 " Re-use of existing windows when switching buffers:
 set switchbuf=useopen,usetab,split
