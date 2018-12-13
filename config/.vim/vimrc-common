@@ -592,7 +592,10 @@ if has_key(get(g:, "plugs", {}), "LanguageClient-neovim")
 
   let g:LanguageClient_autoStart = 1 " Automatically start language servers.
   let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
+  let g:LanguageClient_settingsPath = expand('~/.config/nvim/cquery_settings.json')
   let g:LanguageClient_serverCommands = {
+    \ 'c': ['~/.local/share/nvim/plugged/cquery/build/release/bin/cquery', '--log-file=/tmp/cq.log'],
+    \ 'cpp': ['~/.local/share/nvim/plugged/cquery/build/release/bin/cquery', '--log-file=/tmp/cq.log'],
     \ 'python': ['~/ve/py2neovim/bin/pyls'],
     \ }
 
