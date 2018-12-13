@@ -578,3 +578,8 @@ command! -nargs=0 FilterV let @f='' | execute 'v//y F' | new | setlocal bt=nofil
 " Supposedly better/faster method using redir, but I couldn't get it to work:
 " It would only copy first match into the buffer for reasons I don't fathom.
 ""command! -nargs=0 Filter redir @f> | g// | redir END | new | put! f
+
+" This mapping does not work. Maybe the terminal does not send Ctrl+Arrows?
+" Scroll window up or down a bit, preserving cursor pos in buffer:
+nnoremap <C-Down> <C-E>
+nnoremap <C-Up> <C-Y>
