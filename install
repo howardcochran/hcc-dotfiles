@@ -96,6 +96,10 @@ promptyn() {
 
 required_packages=(
     git
+    apt-utils
+    python3-pip
+    python3-virtualenv
+    python-virtualenv
 )
 
 install_packages() {
@@ -129,3 +133,44 @@ mklink .fonts                     ~/.fonts
 mklink config/.terminfo           ~/.terminfo
 mklink config/.gitconfig          ~/.gitconfig
 echo
+
+inst_nvim() {
+    echo Installing Neovim AppImage in ~/.local/bin
+    mkdir -p ~/.local/bin/
+    curl -L -o ~/.local/bin/nvim.appimage 'https://github.com/neovim/neovim/releases/download/v0.3.1/nvim.appimage'
+    chmod +x ~/.local/bin/nvim.appimage
+    ln -s nvim.appimage ~/.local/bin/nvim
+}
+
+inst_virtualenv() {
+    mkdir  -p ~/pe
+    python3 -m virtualenv --python=python2.7 ~/ve/py2neovim
+    python3 -m virtualenv --python=python3.5 ~/ve/py3neovim
+    inst_neovim_stuff_in_virtualenv ~/ve/py2neovim
+    inst_neovim_stuff_in_virtualenv ~/ve/py3neovim
+}
+
+inst_neovim_stuff_in_virtualenv() {
+    local virtualenv_path="$1"
+    # Do this in a subshell so I don't mess with this shell's config:
+    (
+        source $virtualenv_path/bin/activate
+        pip install neovim
+        pip install 'python-language-server[pycodestyle, pyflakes, yapf]'
+    )
+}
+
+inst_neovim_remote() {
+    pip3 install --user wheel
+    pip3 install --user neovim-remote
+}
+
+if promptyn 'Do you want to install & configure Neovim AppImage?' Y; then
+    inst_nvim
+    inst_virtualenv
+    inst_neovim_remote
+    echo
+    if promptyn 'Will now launch Neovim to install plugins. Manually exit it when finished. Proceed?' Y; then
+        nvim
+    fi
+fi
