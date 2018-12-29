@@ -331,3 +331,5 @@ alias mmv='noglob zmv -W'  # mmv *.JPG *.jpg
 
 # Put any local / machine-specific settings into the following file:
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
