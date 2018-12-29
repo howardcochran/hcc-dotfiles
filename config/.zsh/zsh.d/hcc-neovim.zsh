@@ -5,7 +5,7 @@
 
 # The socket will be based on the pseudo-terminal number for this shell,
 # but if stdout is not a pseudo-terminal, base it on this shell's PID
-nvim_sock_dir='/tmp/nvimsockets'
+nvim_sock_dir="$XDG_RUNTIME_DIR/nvimsockets"
 if [[ $(readlink /proc/$$/fd/1) = /dev/pts/* ]]; then
     nvim_socket="${nvim_sock_dir}/$(basename $(readlink /proc/$$/fd/1))"
 else
@@ -38,6 +38,7 @@ function v() {
     fi
 
     if [[ -z $job ]]; then
+        mkdir -p "$nvim_sock_dir"
         # This silly game of writing the command to a file and then sourcing
         # it is what it takes to get the command's name in Zsh's job list to
         # be correct.
