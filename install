@@ -145,7 +145,7 @@ inst_nvim() {
 inst_virtualenv() {
     mkdir  -p ~/pe
     python3 -m virtualenv --python=python2.7 ~/ve/py2neovim
-    python3 -m virtualenv --python=python3.5 ~/ve/py3neovim
+    python3 -m virtualenv --python=python3.6 ~/ve/py3neovim
     inst_neovim_stuff_in_virtualenv ~/ve/py2neovim
     inst_neovim_stuff_in_virtualenv ~/ve/py3neovim
 }
