@@ -7,14 +7,6 @@ if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall
 endif
 
-function! BuildCquery(info)
-    !git submodule update --init
-    !mkdir -p build
-    !cd build
-    !cmake .. -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=release -DCMAKE_EXPORT_COMPILE_COMMANDS=YES
-    !make -j 8 install
-endfunction
-
 call plug#begin('~/.local/share/nvim/plugged')
 
 "" Plug 'tpope/vim-unimpaired'
@@ -29,7 +21,6 @@ Plug 'autozimu/LanguageClient-neovim', {
   \ 'branch': 'next',
   \ 'do': 'bash install.sh',
   \ }
-Plug 'cquery-project/cquery', { 'do': function('BuildCquery') }
 Plug 'ncm2/ncm2'
 
 " This is a dependency of ncm2:
