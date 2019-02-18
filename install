@@ -141,7 +141,7 @@ echo
 inst_nvim() {
     echo Installing Neovim AppImage in ~/.local/bin
     mkdir -p ~/.local/bin/
-    curl -L -o ~/.local/bin/nvim.appimage 'https://github.com/neovim/neovim/releases/download/v0.3.1/nvim.appimage'
+    curl -L -o ~/.local/bin/nvim.appimage 'https://github.com/neovim/neovim/releases/download/v0.3.4/nvim.appimage'
     chmod +x ~/.local/bin/nvim.appimage
     ln -s nvim.appimage ~/.local/bin/nvim
 }
