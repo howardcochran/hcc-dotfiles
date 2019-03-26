@@ -1,0 +1,31 @@
+#!/bin/bash
+# Quick & dirty script to monitor connectivity to a host by pinging.
+# It is noisy when server is not responding but quiet when it is answering
+# normally, except that it outputs one message on transition from
+# not-answering to answering.
+# This makes it much easier to use for monitoring purposes than plain ping
+
+host="$1"
+[[ -z "$host" ]] && echo "Usage: $0 hostname_or_addr" && exit 1
+
+# Sugar: Human-friendly timestamps if ts from moreutils is installed
+TS=ts
+command -v ${TS} >/dev/null || TS=cat
+
+# Ping:
+# -n  Don't resolve IP addrs
+# -D  Timestamp each line in seconds from epoch (useful if ts not installed)
+# -O  Make noise whenever server is not responding
+ping -n -D -O "$host" | ${TS} | perl -e '
+    $host="'"$host"'";
+    $ok=0;
+    while(<>) {
+        if (/64 bytes from/) {
+            !$ok && print "${_}SERVER OK\n";
+            $ok=1;
+        } else {
+            chomp;
+            print "$_ ($host)\n";
+            $ok=0;
+        };
+    }'
