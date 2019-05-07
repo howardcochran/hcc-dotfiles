@@ -103,6 +103,12 @@ imap <silent> <PageDown> <C-b>1000<C-D>
 
 set tags=tags,../tags,../../tags,../../../tags,../../../../tags
 
+" Detect file changes in a timely manner
+set autoread
+augroup hcc_do_checktime
+  autocmd!
+  autocmd CursorHold * if mode() != 'c' | checktime | endif
+augroup END
 
 " Be a little bit more Common User Interface-like
 set virtualedit=onemore,block
