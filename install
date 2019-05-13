@@ -6,6 +6,7 @@ mklink() {
     local real_src="$(realpath $1)"
 
     local real_dest="$2"
+    mkdir_verbose $(dirname $real_dest)
     if [[ -h "$real_dest" ]]; then
         local tmp
         if ! tmp="$(readlink -f ${real_dest})"; then
