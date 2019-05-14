@@ -105,6 +105,8 @@ required_packages=(
     python3-pip
     python3-virtualenv
     python-virtualenv
+    python-setuptools
+    python3-setuptools
     build-essential     # cquery nvim plugin
     cmake               # cquery nvim plugin
 )
