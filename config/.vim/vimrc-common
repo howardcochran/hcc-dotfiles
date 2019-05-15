@@ -651,9 +651,6 @@ if has_key(get(g:, "plugs", {}), "LanguageClient-neovim")
     \   },
     \}
 
-  " Highlight usages of symbol under cursor whenever cursor moves
-  " When cursor stays still for awhile, show the Hover info from language server
-
   " The cursor hold delay is governed by updatetime (default 4000ms), but
   " appears to be about double the configured value, so set it to 500 for ~1 sec
   set updatetime=600
@@ -665,24 +662,37 @@ if has_key(get(g:, "plugs", {}), "LanguageClient-neovim")
   " :LanguageClientStart, which is pretty drastic.
   let g:LanguageClient_useVirtualText = 0
 
+  function! DoNothingHandler(output)
+  endfunction
+
+  function! LspIsDifferentHoverPosFromLast()
+    if !exists('b:last_hover_line')
+      return 1
+    endif
+
+    return b:last_hover_line !=# line('.') || b:last_hover_col !=# col('.')
+  endfunction
+
   function! LspMaybeHover(is_running) abort
-    if a:is_running.result
-      call LanguageClient_textDocument_hover()
+    if a:is_running.result && mode() == 'n' && LspIsDifferentHoverPosFromLast()
+      let b:last_hover_line = line('.')
+      let b:last_hover_col = col('.')
+      call LanguageClient_textDocument_hover({'handle': v:true}, 'DoNothingHandler')
     endif
   endfunction
 
   function! LspMaybeHighlight(is_running) abort
     if a:is_running.result
-      call LanguageClient#textDocument_documentHighlight()
+      call LanguageClient_textDocument_documentHighlight()
     endif
   endfunction
-
 
   augroup lsp_aucommands
     au!
     au CursorHold * call LanguageClient#isAlive(function('LspMaybeHover'))
     au CursorMoved * call LanguageClient#isAlive(function('LspMaybeHighlight'))
   augroup END
+
 endif
 
 "====[ ncm2 customization ]======================= {{{1
