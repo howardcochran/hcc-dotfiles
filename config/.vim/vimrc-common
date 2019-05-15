@@ -656,7 +656,14 @@ if has_key(get(g:, "plugs", {}), "LanguageClient-neovim")
 
   " The cursor hold delay is governed by updatetime (default 4000ms), but
   " appears to be about double the configured value, so set it to 500 for ~1 sec
-  set updatetime=500
+  set updatetime=600
+
+  " Don't display code errors inline, overlaying the buffer, because this can
+  " be visually annoying. They echo as a message instead.
+  " NOTE: I want to make a hotkey to toggle this, but changes to this variable
+  " do not seem to be honored by LanguageClient without :LanguageClientStop |
+  " :LanguageClientStart, which is pretty drastic.
+  let g:LanguageClient_useVirtualText = 0
 
   function! LspMaybeHover(is_running) abort
     if a:is_running.result
