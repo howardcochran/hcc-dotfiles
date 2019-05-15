@@ -307,17 +307,19 @@ function! MoveToNextTab()
   exe "b".l:cur_buf
 endfunc
 
-" Map g+Alt-L, g+Alt-H to these functions. Unfortunately, vim doesn't
-" recognize what tmux sends as an Alt + character (which is Esc + character).
-" These "set" commands fix that, as explained here:
-" http://stackoverflow.com/questions/7501092/can-i-map-alt-key-in-vim
-" But Neovim supports Alt-key mappings out of the box.
-if !has('nvim')
+if has('nvim')
+  " Neovim supports Alt-key mappings out of the box, using <M-x> syntax
+  :nnoremap g<M-l> :call MoveToNextTab()<CR>
+  :nnoremap g<M-h> :call MoveToPrevTab()<CR>
+else
+  " Regular vim doesn't recognize what tmux sends as an Alt + character
+  " (which is Esc + character). These "set" commands fix that, as explained:
+  " http://stackoverflow.com/questions/7501092/can-i-map-alt-key-in-vim
   set <A-L>=l
   set <A-H>=h
+  :nnoremap g<A-L> :call MoveToNextTab()<CR>
+  :nnoremap g<A-H> :call MoveToPrevTab()<CR>
 endif
-:nnoremap g<A-L> :call MoveToNextTab()<CR>
-:nnoremap g<A-H> :call MoveToPrevTab()<CR>
 " }}}2
 
 " Window Control. Use <space> as alias for Ctrl-W {{{2
