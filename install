@@ -95,6 +95,28 @@ promptyn() {
     [[ "${REPLY^^}" == Y ]]  # This expression is the return value
 }
 
+opt_verbose=1
+opt_force=0
+opt_yes=0
+while getopts ":fy" opt; do
+    case ${opt} in
+        f)
+            opt_force=1
+            ;;
+        y)
+            opt_yes=1
+            ;;
+        \?)
+            echo "Usage: $0 [-f] [-y]"
+            echo "    -f  Force creation of symlinks, overwriting existing"
+            echo "    -y  Answer Yes to all questions"
+            exit 1
+    esac
+done
+is_yes() {
+    [[ "$opt_yes" == "1" ]]
+}
+
 required_packages=(
     git
     curl
@@ -114,14 +136,10 @@ required_packages=(
 install_packages() {
     apt list -qq "$@"
     echo
-    if promptyn 'Install any packages in the above list that are missing?' Y; then
+    if is_yes || promptyn 'Install any packages in the above list that are missing?' Y; then
         sudo apt install -y "$@"
     fi
 }
-
-opt_verbose=1
-opt_force=0
-[[ "$1" == "-f" ]] && opt_force=1
 
 cd "${scriptdir}"
 pwd
@@ -174,12 +192,12 @@ inst_neovim_remote() {
     pip3 install --user neovim-remote
 }
 
-if promptyn 'Do you want to install & configure Neovim AppImage?' Y; then
+if is_yes || promptyn 'Do you want to install & configure Neovim AppImage?' Y; then
     inst_nvim
     inst_virtualenv
     inst_neovim_remote
     echo
-    if promptyn 'Will now launch Neovim to install plugins. Manually exit it when finished. Proceed?' Y; then
+    if is_yes || promptyn 'Will now launch Neovim to install plugins. Manually exit it when finished. Proceed?' Y; then
         nvim
     fi
 fi
