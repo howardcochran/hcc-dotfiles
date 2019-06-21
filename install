@@ -161,6 +161,11 @@ mklink config/.terminfo           ~/.terminfo
 mklink config/.gitconfig          ~/.gitconfig
 echo
 
+upgrade_pip() {
+    pip install --upgrade pip
+    pip3 install --upgrade pip
+}
+
 inst_nvim() {
     echo Installing Neovim AppImage in ~/.local/bin
     mkdir -p ~/.local/bin/
@@ -191,6 +196,10 @@ inst_neovim_remote() {
     pip3 install --user wheel
     pip3 install --user neovim-remote
 }
+
+if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04)?" Y; then
+    upgrade_pip
+fi
 
 if is_yes || promptyn 'Do you want to install & configure Neovim AppImage?' Y; then
     inst_nvim
