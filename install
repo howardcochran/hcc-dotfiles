@@ -165,6 +165,7 @@ echo
 upgrade_pip() {
     pip install --upgrade pip
     pip3 install --upgrade pip
+    hash -r  # Teach this shell about the new pip
 }
 
 inst_nvim() {
@@ -194,9 +195,14 @@ inst_neovim_stuff_in_virtualenv() {
 }
 
 inst_neovim_remote() {
+    which pip3
     pip3 install --user wheel
     pip3 install --user neovim-remote
 }
+
+# After upgrading pip in ~/.local/bin, we want to use it, so make sure the
+# .local dirs are in the path for this script
+export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 
 if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04)?" Y; then
     upgrade_pip
