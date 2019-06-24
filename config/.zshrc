@@ -1,6 +1,10 @@
 # Fix $SHELL, since we often inherited csh's idea of $SHELL
 export SHELL=/bin/zsh
 
+# Do this early as some setup files use whence to test for the existance
+# of things normally in ~/.local/bin
+export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
+
 # Turn off Xon/Xoff in this termal so that can use <CTRL-Q> in progs like vim
 stty start undef   # normally ^Q
 stty stop undef    # normally ^S
@@ -294,8 +298,6 @@ alias -g CL='| one-line-strip | tmux load-buffer -'
 alias psg='ps -Af | grep '
 
 alias sdis='export DISPLAY=$(cat ~/.DISPLAY)'
-
-export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 
 # 256-color support with Tmux compatibility:
 # We need $TERM to be xterm-256color outside of Tmux but don't override
