@@ -151,6 +151,7 @@ mklink config/.zsh                ~/.zsh
 mklink config/.zshrc              ~/.zshrc
 mklink bin                        ~/bin
 mklink config/.gvimrc             ~/.gvimrc
+mklink config/.vimrc              ~/.vimrc
 mklink config/.vim                ~/.vim
 mklink config/.vim                ~/.config/nvim  # Neovim will share .vim config
 mklink config/.tmux.conf          ~/.tmux.conf

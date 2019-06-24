@@ -1,9 +1,0 @@
-source ~/.vim/vimrc-common
-
-" Local settings go here:
-
-" Example:
-" set tags+=/users/hcochran/src/granite/tags,/users/hcochran/src/linux_kernel/tags,/users/hcochran/src/drivers/tags,/users/hcochran/src/lf/tags
-
-
-
