@@ -16,12 +16,14 @@ Plug 'tpope/vim-eunuch'
 Plug 'scrooloose/nerdcommenter'
 "" Plug 'Valloric/YouCompleteMe'
 Plug 'wesQ3/vim-windowswap'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'install --all' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'autozimu/LanguageClient-neovim', {
   \ 'branch': 'next',
   \ 'do': 'bash install.sh',
   \ }
 Plug 'ncm2/ncm2'
+Plug 'ncm2/ncm2-path'
 
 " This is a dependency of ncm2:
 Plug 'roxma/nvim-yarp'
