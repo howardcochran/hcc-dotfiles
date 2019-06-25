@@ -689,18 +689,17 @@ if has_key(get(g:, "plugs", {}), "LanguageClient-neovim")
 
   augroup lsp_aucommands
     au!
-    au CursorHold * call LanguageClient#isAlive(function('LspMaybeHover'))
-    au CursorMoved * call LanguageClient#isAlive(function('LspMaybeHighlight'))
+    au CursorHold * silent! call LanguageClient#isAlive(function('LspMaybeHover'))
+    au CursorMoved * silent! call LanguageClient#isAlive(function('LspMaybeHighlight'))
   augroup END
 
 endif
 
 "====[ ncm2 customization ]======================= {{{1
 if has_key(get(g:, "plugs", {}), "ncm2")
-    " autocmd BufEnter * echom "foo" exists("g:ncm2_loaded") | if exists("g:ncm2_loaded") | echom "ncm2" | call ncm2#enable_for_buffer() | endif
   augroup ncm2
     autocmd!
-    autocmd BufEnter * call ncm2#enable_for_buffer()
+    autocmd BufEnter * :silent! call ncm2#enable_for_buffer()
   augroup end
 
   " IMPORTANT: :help Ncm2PopupOpen for more information
