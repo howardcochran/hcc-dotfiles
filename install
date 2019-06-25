@@ -208,6 +208,10 @@ if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04)
     upgrade_pip
 fi
 
+if is_yes || promptyn "Do you want to install tmux plugins?" Y; then
+    ~/.tmux/plugins/tpm/bin/install_plugins
+fi
+
 if is_yes || promptyn 'Do you want to install & configure Neovim AppImage?' Y; then
     inst_nvim
     inst_virtualenv
