@@ -5,6 +5,7 @@
 
 # The socket will be based on the pseudo-terminal number for this shell,
 # but if stdout is not a pseudo-terminal, base it on this shell's PID
+[[ -n "$XDG_RUNTIME_DIR" ]] || export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 nvim_sock_dir="$XDG_RUNTIME_DIR/nvimsockets"
 if [[ $(readlink /proc/$$/fd/1) = /dev/pts/* ]]; then
     nvim_socket="${nvim_sock_dir}/$(basename $(readlink /proc/$$/fd/1))"
