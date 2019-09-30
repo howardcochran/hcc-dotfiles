@@ -332,18 +332,49 @@ endif
 " will be followed.
 :nmap <Space> <C-W>
 " }}}2
+
 " Window Control. Custom Mappings. {{{2
 
-" Move current window up or down, staying within it
-:nnoremap <Space><C-j>  <C-W>x<C-W>p
-:nnoremap <Space><C-k>  <C-W>k<C-W>x
-" ToDo: The above relies on "exchange", which works OK when there are only
-" horizontal splits.  How to make it work for both vertical and horizontal
-" splits?  Probably need to write a function that does something like this:
-" save current window number in local var. Move in the direction indicated.
-" Exchange the current window with the original one (arg to ^Wx, but is there
-" a :command equivalent?) Bail if window motion didn't change current window
-" number, which means we must have been at a limit.
+if has('nvim')
+  " Move current window up or down. Focus moves with it
+  " Requires nvim because vim's winnr() doesn't understand "h", "j", "k", "l".
+  " Note: Was almost able to do a much simpler version using {nr} wincmd x
+  " to exchange windows. It worked when there were only horizontal splits
+  " but breaks down if vert splits are also present because of its peculiar
+  " definition of what {nr} means. So, I had to do it the "hard way", which
+  " I learned from the source of the win-windowswap plugin.
+  function! MoveWinDirection(key_dir)
+      " a:key_dir must be one of "h", "j", "k", "l"
+      let this_win = winnr()
+      let other_win = winnr(a:key_dir)
+      if this_win == other_win
+          return
+      endif
+
+      let this_buf = bufnr( "%" )
+      let this_view = winsaveview()
+
+      exec other_win . " wincmd w"
+      let other_buf = bufnr( "%" )
+      let other_view = winsaveview()
+      exe this_win . " wincmd w"
+
+      exe "hide buf " . other_buf
+      call winrestview(other_view)
+      exe other_win . " wincmd w"
+      exe "hide buf " . this_buf
+      call winrestview(this_view)
+  endfunction
+
+  :nnoremap <silent> <C-w><C-h> :call MoveWinDirection("h")<CR>
+  :nnoremap <silent> <C-w><C-j> :call MoveWinDirection("j")<CR>
+  :nnoremap <silent> <C-w><C-k> :call MoveWinDirection("k")<CR>
+  :nnoremap <silent> <C-w><C-l> :call MoveWinDirection("l")<CR>
+
+  " For up & down, define tmux-like mappings
+  :nnoremap <silent> <C-w>{ :call MoveWinDirection("k")<CR>
+  :nnoremap <silent> <C-w>} :call MoveWinDirection("j")<CR>
+endif
 
 " NOTE: Mapping to move current window into a split on the next or previous
 " tab page is defined in the "Tab Control" section.
