@@ -62,11 +62,21 @@ endif
 set backspace=indent,eol,start
 
 " make the completion mode behave more like bash -- complete the longest
-" string, then list the alternatives.  as an added bonus, revert to the
-" normal cycle-through behavior for later tabbing.
+" string, then list the alternatives in a popup menu.
 set wildmode=longest:full
 set wildmenu
 " I think this is the default: set wildchar=<Tab>
+if has("nvim")
+  " Only nvim has the "pum" wildoption, making the menu vertical. Since it's
+  " vertical, all the mappings are sideways, so fix that here.
+  set wildoptions=pum,tagfile
+  " Due to a bug, the mapping of <Right> below requires whildcharm to be <tab>
+  set wildcharm=<Tab>
+  cnoremap <expr> <Up>    pumvisible() ? "\<Left>"  : "\<Up>"
+  cnoremap <expr> <Down>  pumvisible() ? "\<Right>" : "\<Down>"
+  cnoremap <expr> <Left>  pumvisible() ? "\<Up>"    : "\<Left>"
+  cnoremap <expr> <Right> pumvisible() ? "\<Down>"  : "\<Right>"
+endif
 
 " Fix delay exiting insert mode using Esc. Default was 1000ms
 " See https://www.johnhawthorn.com/2012/09/vi-escape-delays/
