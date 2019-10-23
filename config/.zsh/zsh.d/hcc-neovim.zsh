@@ -25,7 +25,7 @@ nvim_virtual_env=~/ve/py2neovim
 [[ ! -d $nvim_virtual_env/bin ]] && nvim_virtual_env=''
 
 __find_nvim_job() {
-    jobs | sed -n '/ VIRTUAL_ENV=.*nvim --listen/ s/^\[\([0-9]\+\)\].* nvim --listen.*/\1/p;q'
+    jobs | sed -n '/ VIRTUAL_ENV=.*nvim --listen/ {s/^\[\([0-9]\+\)\].* nvim --listen.*/\1/; p; q}'
 }
 
 function v() {
