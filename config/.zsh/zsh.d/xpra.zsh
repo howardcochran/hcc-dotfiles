@@ -67,7 +67,7 @@ function xprastart() {
 
     local tcp_port=$(( 5000 + ${XPRA_DISPLAY#:} ))
 
-    xp xpra start --bind-tcp localhost:$tcp_port --tcp-auth=none \
+    xp xpra start --mdns=no --systemd-run=no --bind-tcp localhost:$tcp_port --tcp-auth=none \
         --sharing=yes --start-child=xterm \
         --no-notifications --clipboard=yes --pulseaudio=yes --bell=yes \
 	$XPRA_DISPLAY 2>"$redir"
