@@ -191,13 +191,14 @@ inst_neovim_stuff_in_virtualenv() {
     # Do this in a subshell so I don't mess with this shell's config:
     (
         source $virtualenv_path/bin/activate
-        pip install neovim
-        pip install 'python-language-server[pycodestyle, pyflakes, yapf]'
+        pip install --upgrade pynvim
+        pip install --upgrade 'python-language-server[pycodestyle, pyflakes, yapf]'
     )
 }
 
 inst_neovim_remote() {
-    which pip3
+    # Since this not used by nvim itself but by the user in a shell, put this
+    # in ~/.local rather than a Python virtenv
     pip3 install --user wheel
     pip3 install --user neovim-remote
 }
