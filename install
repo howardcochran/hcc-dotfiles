@@ -169,11 +169,13 @@ upgrade_pip() {
 }
 
 inst_nvim() {
-    echo Installing Neovim AppImage in ~/.local/bin
+    local neovim_version=0.4.2
+    echo Installing Neovim ${neovim_version} AppImage in ~/.local/bin
     mkdir -p ~/.local/bin/
-    curl -L -o ~/.local/bin/nvim.appimage 'https://github.com/neovim/neovim/releases/download/v0.3.4/nvim.appimage'
-    chmod +x ~/.local/bin/nvim.appimage
-    ln -s nvim.appimage ~/.local/bin/nvim
+    curl -L -o ~/.local/bin/nvim-${neovim_version}.appimage \
+        "https://github.com/neovim/neovim/releases/download/v${neovim_version}/nvim.appimage"
+    chmod +x ~/.local/bin/nvim-${neovim_version}.appimage
+    ln -s nvim-${neovim_version}.appimage ~/.local/bin/nvim
 }
 
 inst_virtualenv() {
