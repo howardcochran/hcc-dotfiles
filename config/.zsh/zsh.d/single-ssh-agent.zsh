@@ -10,6 +10,11 @@ is_ssh_agent_forwarded() {
 }
 is_ssh_agent_forwarded && return 0
 
+# If we are running under tmx with agent forwarding, abort
+is_tmx_agent_forwarded() {
+	[[ "$SSH_AUTH_SOCK" =~ tmx_.*_auth_sock ]]
+}
+is_tmx_agent_forwarded && return 0
 
 # Stash away the original, in case user wants to restore it.
 if [ -n "$SSH_AUTH_SOCK" -a -z "$ORIG_SSH_AUTH_SOCK" ] ; then
