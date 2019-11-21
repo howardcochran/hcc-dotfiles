@@ -52,11 +52,21 @@ function find_unused_client_index() {
     echo "${new_index}"
 }
 
+
+function fix_up_ssh_agent() {
+    local session_auth_sock=${XDG_RUNTIME_DIR}/tmx_${base_session}_auth_sock
+    if [ ! -S ${session_auth_sock} ] && [ -S ${SSH_AUTH_SOCK} ]; then
+         ln -sf ${SSH_AUTH_SOCK} ${session_auth_sock}
+    fi
+    echo "${session_auth_sock}"
+}
+
 clone_session="${base_session}_C$(find_unused_client_index "${base_session}")"
+session_auth_sock=$(fix_up_ssh_agent)
 
 # if the base session doesn't already exist, create new empty session
 if ! session_exists "${base_session}"; then
-    tmux new-session -d -s "$base_session"
+    SSH_AUTH_SOCK=${session_auth_sock} tmux new-session -d -s "$base_session"
 fi
 
 if [[ -z "$TMUX" ]]; then  # Not already running under tmux
