@@ -14,21 +14,10 @@ call plug#begin('~/.local/share/nvim/plugged')
 "" Plug 'benmills/vimux'
 Plug 'tpope/vim-eunuch'
 Plug 'scrooloose/nerdcommenter'
-"" Plug 'Valloric/YouCompleteMe'
 Plug 'wesQ3/vim-windowswap'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'autozimu/LanguageClient-neovim', {
-  \ 'branch': 'next',
-  \ 'do': 'bash install.sh',
-  \ }
-Plug 'ncm2/ncm2'
-Plug 'ncm2/ncm2-path'
-
-" This is a dependency of ncm2:
-Plug 'roxma/nvim-yarp'
-" This thing is a beast: Plug 'ncm2/ncm2-bufword'
-
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline'
 " I just autoload my own theme directoy, so I don't need this repo of themes:
 " Plug 'vim-airline/vim-airline-themes'

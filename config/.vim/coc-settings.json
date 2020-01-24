@@ -1,0 +1,50 @@
+// See scheme for more options (although it's easier to just use autocomplete for it).
+//   https://github.com/neoclide/coc.nvim/blob/master/data/schema.json
+{
+  // COC OPTIONS
+
+  // Used to show a menu item is a snippet.
+  "suggest.snippetIndicator": " ►",
+  "suggest.enablePreview": true,
+  // Used in the gutter for errors.
+  "diagnostic.errorSign": "✖",
+  // Used in the gutter for warnings.
+  "diagnostic.warningSign": "⚠",
+  // Used in the gutter for Info messages.
+  "diagnostic.infoSign": "ℹ",
+  // Used in the gutter for Info messages.
+  "diagnostic.hintSign": "ℹ",
+  // Write errors and warnings to location list.
+  "diagnostic.locationlist": true,
+
+  // Used in diagnostics lists etc (:h coc-list-mappings).
+  // "list.insertMappings": {
+  //   // Select all options (use with an action).
+  //   "<C-a>": "do:selectall",
+  //   "<C-r>": "do:refresh",
+  //   "<C-q>": "action:quickfix"
+  // },
+  "codeLens.enable": true,
+  "coc.preferences.colorSupport": true,
+  // Unset this as the python autoformat disagrees with flake8.
+  "coc.preferences.formatOnType": true,
+  "coc.preferences.currentFunctionSymbolAutoUpdate": true,
+  // The symbol in the completion menu for words in the current file.
+  "coc.source.around.shortcut": "↕",
+  // The symbol in the completion menu for words in other open buffers.
+  "coc.source.buffer.shortcut": "↔",
+  // The symbol in the completion menu for words in other open buffers.
+  "coc.source.file.shortcut": "F",
+  // 🐓 🐔 Set this for LanguageServer symbol instead of LS once possible.
+
+  // COC EXTENSION OPTIONS
+  "python.linting.enabled": false,
+  "python.linting.flake8Enabled": true,
+  "python.linting.pydocstyleEnabled": false,
+  "python.jediEnabled": false,
+  "yaml.format.enable": true,
+  "yaml.hover": true,
+  "git.removedSign.text": "> ",
+  "git.addedSign.text": "+ ",
+  "git.changedSign.text": "~ "
+}
