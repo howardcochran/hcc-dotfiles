@@ -680,6 +680,63 @@ if has_key(get(g:, "plugs", {}), "coc.nvim")
   autocmd User CocNvimInit call s:hccCocSetup()
 endif
 
+"====[ nerdtree customization ]======================= {{{1
+
+if has_key(get(g:, "plugs", {}), "nerdtree")
+  let g:NERDTreeGitStatusWithFlags = 1
+  let g:NERDTreeIgnore = ['\~$', '\.o$', '\.so$', '\.a', '\.pyc']
+
+  " Single-click to expand directories, double click to open file
+  let g:NERDTreeMouseMode = 2
+  "
+  " sync open file with NERDTree
+  " " Check if NERDTree is open or active
+  function s:isCurrentWindowNERDTree()
+    return bufname('%') =~# '^NERD_tree_'
+  endfunction
+
+  function! s:isNERDTreeOpen()
+    return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+  endfunction
+
+  " Whenever we switch to any window (other than the NERDTree window),
+  " if NERDTree is open in this tab, Move NERDTree's selection to the
+  " buffer's file.
+  function! s:syncNERDTree()
+    if &modifiable && s:isNERDTreeOpen() && strlen(expand('%')) > 0 && !s:isCurrentWindowNERDTree() && !&diff
+      NERDTreeFind
+      wincmd p
+    endif
+  endfunction
+
+  " s:syncNERDTree can't do the sync when NERDTree is first being opened
+  " (calling NERDTreeFind from within the event triggered by initial opening
+  " of NERDTree causes it to open two NERDTree windows!)
+  " But I still want the sync behavior on initial open. So this function
+  " will use NERDTreeFind to do the open when appropriate.
+  " A good reference for debugging these events is:
+  " https://vi.stackexchange.com/questions/4292/why-nerdtree-doesnt-trigger-the-autocommand-bufenter
+  function! s:myNERDTreeToggle()
+    if !s:isNERDTreeOpen()
+      NERDTreeFind
+    else
+      NERDTreeToggle
+    endif
+  endfunction
+
+  " Highlight currently open buffer in NERDTree
+  augroup hcc_nerd_tree
+    autocmd!
+    autocmd BufEnter * call s:syncNERDTree()
+  augroup end
+
+  nnoremap <C-n> :call <SID>myNERDTreeToggle()<CR>
+
+  " The default for these was ]c,[c (for chunk), but I like [g (for git)
+  let g:NERDTreeMapNextHunk = ']g'
+  let g:NERDTreeMapPrevHunk = '[g'
+endif " have nerdtree
+
 "====[ Experimental / Broken ]========================================== {{{1
 
 " Filter current buffer to a new temporary buffer (i.e current buffer grep)

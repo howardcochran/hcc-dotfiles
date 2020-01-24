@@ -22,4 +22,6 @@ Plug 'vim-airline/vim-airline'
 " I just autoload my own theme directoy, so I don't need this repo of themes:
 " Plug 'vim-airline/vim-airline-themes'
 
+Plug 'preservim/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
