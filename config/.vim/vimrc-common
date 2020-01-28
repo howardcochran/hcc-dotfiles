@@ -27,8 +27,6 @@ set modelines=5    " number of lines from top and bottom of file
 filetype on        " Detect file types
 set showfulltag    " Insert mode completion of tag shows whole funct prototype!
 set hidden         " Allow a modified buffer to be not displayed in a window
-colorscheme hcc
-syntax on
 set laststatus=2   " Always show a status line, even when only 1 window
 " silent! suppresses error message for older Vim's that lack the option
 silent! set colorcolumn=81 " Make the 81st column stand out (ColorColumn highlight)
@@ -419,7 +417,7 @@ if exists("*matchadd")
     " https://github.com/peterlundgren/.home/blob/master/_vim/.vimrc
     function! EnableTrailingWhitespaceMatch(is_enable)
         if a:is_enable && !exists('w:trailing_whitespace_match')
-            let w:trailing_whitespace_match = matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
+            let w:trailing_whitespace_match = matchadd('WhitespaceError', '\s\+$\| \+\ze\t', -1)
         else
             if exists('w:trailing_whitespace_match')
                 call matchdelete(w:trailing_whitespace_match)
@@ -736,6 +734,100 @@ if has_key(get(g:, "plugs", {}), "nerdtree")
   let g:NERDTreeMapNextHunk = ']g'
   let g:NERDTreeMapPrevHunk = '[g'
 endif " have nerdtree
+
+"====[ color ]======================= {{{1
+
+" TODO: For now, not enabling termguicolors (24-bit color) until I get
+" my tmux config to support it and work out how to test for too-old
+" tmux version.
+
+" Colors here that are indented one extra level are ones that I modified.
+" Mostly I made them brighter to increase contrast with dark background
+let g:onedark_color_overrides = {
+    \ "red": { "gui": "#ff0000", "cterm": "161", "cterm16": "9" },
+  \ "dark_red": { "gui": "#BE5046", "cterm": "196", "cterm16": "9" },
+  \ "green": { "gui": "#98C379", "cterm": "114", "cterm16": "2" },
+    \ "yellow": { "gui": "#f0f000", "cterm": "226", "cterm16": "11" },
+  \ "dark_yellow": { "gui": "#D19A66", "cterm": "173", "cterm16": "11" },
+    \ "blue": { "gui": "#00d7ff", "cterm": "45", "cterm16": "6" },
+    \ "purple": { "gui": "#ff87ff", "cterm": "213", "cterm16": "13" },
+    \ "cyan": { "gui": "#57ffff", "cterm": "27", "cterm16": "14" },
+    \ "white": { "gui": "#ffffff", "cterm": "255", "cterm16": "15" },
+  \ "black": { "gui": "#282C34", "cterm": "235", "cterm16": "0" },
+  \ "visual_black": { "gui": "NONE", "cterm": "NONE", "cterm16": "0" },
+    \ "comment_grey": { "gui": "#afafff", "cterm": "147", "cterm16": "15" },
+    \ "gutter_fg_grey": { "gui": "#c0c0c0", "cterm": "250", "cterm16": "15" },
+    \ "cursor_grey": { "gui": "#000087", "cterm": "18", "cterm16": "4" },
+    \ "visual_grey": { "gui": "#004296", "cterm": "20", "cterm16": "15" },
+  \ "menu_grey": { "gui": "#3E4452", "cterm": "237", "cterm16": "8" },
+  \ "special_grey": { "gui": "#3B4048", "cterm": "238", "cterm16": "15" },
+    \ "vertsplit": { "gui": "#d70000", "cterm": "160", "cterm16": "9" },
+\}
+
+let g:hcc_other_colors = {
+    \ "vertsplit_bg": { "gui": "#afffff", "cterm": "159", "cterm16": "14" },
+    \ "search_bg": { "gui": "#E5C07B", "cterm": "180", "cterm16": "3" },
+    \ "normal_bg": { "gui": "#00005f", "cterm": "17", "cterm16": "0" },
+    \ "folded_bg": { "gui": "#005faf", "cterm": "25", "cterm16": "0" },
+\}
+
+function! HccCustomizeOnedark()
+  highlight WhitespaceError guifg=#000000 guibg=#ff0000 guisp=NONE gui=NONE ctermfg=0 ctermbg=196
+  " Default CocWarningSign was to dull:
+  highlight CocWarningSign guifg=#ffaf00 ctermfg=214 ctermbg=NONE
+
+  if g:colors_name != 'onedark'
+    return
+  endif
+  call onedark#extend_highlight("Normal", { "bg": g:hcc_other_colors["normal_bg"] })
+
+  call onedark#extend_highlight("Function", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("cssFunctionName", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("goFunctionCall", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("javaScriptFunction", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("jsFunction", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("perlFunction", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("phpFunction", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("phpFunctions", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("rubyFunction", { "fg": g:onedark_color_overrides["purple"] })
+
+  call onedark#extend_highlight("String", { "fg": g:onedark_color_overrides["red"], "cterm": "bold" })
+  call onedark#extend_highlight("jsonString", { "fg": g:onedark_color_overrides["red"], "cterm": "bold" })
+  call onedark#extend_highlight("jsonKeyword", { "fg": g:onedark_color_overrides["red"], "cterm": "bold" })
+  call onedark#extend_highlight("rubyStringDelimiter", { "fg": g:onedark_color_overrides["red"], "cterm": "bold" })
+
+  call onedark#extend_highlight("Number", { "fg": g:onedark_color_overrides["red"] })
+  call onedark#extend_highlight("javaScriptNumber", { "fg": g:onedark_color_overrides["red"] })
+  call onedark#extend_highlight("jsonNumber", { "fg": g:onedark_color_overrides["red"] })
+
+  call onedark#extend_highlight("Statement", { "fg": g:onedark_color_overrides["yellow"] })
+
+  call onedark#extend_highlight("VertSplit", { "bg": g:hcc_other_colors["vertsplit_bg"] })
+  call onedark#extend_highlight("SignColumn", { "bg": g:onedark_color_overrides["black"] })
+  call onedark#extend_highlight("Folded",
+    \ { "bg": g:hcc_other_colors["folded_bg"],
+    \   "fg": g:onedark_color_overrides["white"] })
+
+  call onedark#extend_highlight("Todo",
+    \ { "fg": g:onedark_color_overrides["white"],
+    \   "bg": g:onedark_color_overrides["red"]})
+
+  call onedark#extend_highlight("Search",
+    \ { "fg": g:onedark_color_overrides["black"],
+    \   "bg": g:hcc_other_colors["search_bg"] })
+endfunction
+
+augroup colorextend
+  autocmd!
+  autocmd ColorScheme * call HccCustomizeOnedark()
+augroup end
+
+syntax on
+try
+  colorscheme onedark
+catch /^Vim\%((\a\+)\)\=:E185/
+  colorscheme hcc
+endtry
 
 "====[ Experimental / Broken ]========================================== {{{1
 

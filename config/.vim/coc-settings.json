@@ -9,7 +9,7 @@
   // Used in the gutter for errors.
   "diagnostic.errorSign": "✖",
   // Used in the gutter for warnings.
-  "diagnostic.warningSign": "⚠",
+  "diagnostic.warningSign": "W ",
   // Used in the gutter for Info messages.
   "diagnostic.infoSign": "ℹ",
   // Used in the gutter for Info messages.
