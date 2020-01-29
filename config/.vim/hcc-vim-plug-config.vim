@@ -25,5 +25,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'joshdick/onedark.vim'   " Color scheme
+Plug 'liuchengxu/vista.vim'
 
 call plug#end()

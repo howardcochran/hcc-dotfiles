@@ -829,6 +829,25 @@ catch /^Vim\%((\a\+)\)\=:E185/
   colorscheme hcc
 endtry
 
+"====[ Vista customization ]======================= {{{1
+if has_key(get(g:, "plugs", {}), "vista.vim")
+
+  let g:vista_default_executive = 'coc'  " Default: 'ctags'
+  let g:vista_finder_alternative_executives = ['ctags']
+  let g:vista_sidebar_width = 50
+  let g:vista#renderer#enable_icon = 0
+
+  nnoremap <leader>v  :Vista!!<CR>
+
+  " TODO:
+  " - When switch to the vista window, make it move cursor to highlighted symbol
+  " - Fix folding inside vista. Or quick filtering by type. Ah, according to
+  "   docs, this works only for ctags executive for now (I use coc)
+  " - Fix color of highlighted symbol in vista window
+  " - Make pretty icons work (airline font?)
+
+endif  " have vista.vim
+
 "====[ Experimental / Broken ]========================================== {{{1
 
 " Filter current buffer to a new temporary buffer (i.e current buffer grep)
