@@ -169,6 +169,16 @@ upgrade_pip() {
     hash -r  # Teach this shell about the new pip
 }
 
+inst_nodejs() {
+    local script_name=$(mktemp /tmp/nodejs-install-script.XXXXXX)
+    curl -Ls install-node.now.sh/lts >> ${script_name}
+    chmod +x ${script_name}
+    local yes_arg=''
+    is_yes && yes_arg='--yes'
+    local prefix=~/.local   # Put in temp variable to cause tilde expansion
+    ${script_name} --prefix=${prefix} ${yes_arg}
+}
+
 inst_nvim() {
     local neovim_version=v0.4.3
     echo Installing Neovim ${neovim_version} AppImage in ~/.local/bin
@@ -214,6 +224,10 @@ fi
 
 if is_yes || promptyn "Do you want to install tmux plugins?" Y; then
     ~/.tmux/plugins/tpm/bin/install_plugins
+fi
+
+if is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by coc.nvim Neovim plugin)' Y; then
+    inst_nodejs
 fi
 
 if is_yes || promptyn 'Do you want to install & configure Neovim AppImage?' Y; then
