@@ -203,7 +203,6 @@ inst_neovim_stuff_in_virtualenv() {
     (
         source $virtualenv_path/bin/activate
         pip install --upgrade pynvim
-        pip install --upgrade 'python-language-server[pycodestyle, pyflakes, yapf]'
     )
 }
 
