@@ -38,10 +38,12 @@
   // 🐓 🐔 Set this for LanguageServer symbol instead of LS once possible.
 
   // COC EXTENSION OPTIONS
-  "python.linting.enabled": false,
+  "python.linting.enabled": true,
   "python.linting.flake8Enabled": true,
   "python.linting.pydocstyleEnabled": false,
   "python.jediEnabled": false,
+  "python.formatting.provider": "yapf",
+
   "yaml.format.enable": true,
   "yaml.hover": true,
   "git.removedSign.text": "> ",
