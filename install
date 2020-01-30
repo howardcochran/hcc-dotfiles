@@ -89,7 +89,8 @@ promptyn() {
     fi
     local REPLY=unset
     while [[ -n "${REPLY}" && "${REPLY^^}" != [YN] ]]; do
-        read -p "$prompt $prompt_yn " -n 1
+        echo
+        read -p "$prompt $prompt_yn "
     done
     [[ -z "$REPLY" ]] && REPLY="$default"
     [[ "${REPLY^^}" == Y ]]  # This expression is the return value
