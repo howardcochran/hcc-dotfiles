@@ -1,0 +1,19 @@
+# These either require something special to install, such as a PPA, or need
+# more research or consideration before going onto my install list.
+clang
+docker-ce
+google-chrome-stable
+obs-studio
+resilio-sync
+ROS
+virtualbox
+xpra
+
+# From Snaps:
+anbox
+google-play-music-desktop-player
+multipass
+slack
+syncthing
+ubuntu-make
+vidcutter
