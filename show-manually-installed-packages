@@ -1,3 +1,4 @@
 #!/bin/bash
+# url="http://cdimage.ubuntu.com/ubuntu-gnome/releases/16.04.5/release/ubuntu-gnome-16.04.5-desktop-amd64.manifest"
 url="http://cdimage.ubuntu.com/kubuntu/releases/18.04/release/kubuntu-18.04.4-desktop-amd64.manifest"
 comm -23 <(apt-mark showmanual | sort) <(curl "${url}" | cut -f 1 | sort)

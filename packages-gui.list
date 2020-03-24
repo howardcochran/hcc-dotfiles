@@ -1,5 +1,6 @@
 audacity
 cheese
+ghex
 gimp
 gimp-help-en
 git-gui
@@ -7,11 +8,18 @@ gitk
 gparted
 inkscape
 kdenlive
+kernelshark
 meld
 mpv
 multisystem
+openshot
+openshot-doc
+pavucontrol
+projectm-pulseaudio
 remmina
 simplescreenrecorder
+unison-gtk
+vidcutter
 vinagre
 virt-manager
 wireshark
@@ -19,5 +27,8 @@ wireshark-doc
 x11vnc
 x2goclient
 xautomation
+xclip
+xdotool
+xsel
 xpra
 xterm

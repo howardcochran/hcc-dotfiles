@@ -3,7 +3,13 @@
 clang
 docker-ce
 google-chrome-stable
+gtkwave
+meshlab
 obs-studio
+octave
+octave-doc
+octave-htmldoc
+redshift-gtk
 resilio-sync
 ROS
 virtualbox
