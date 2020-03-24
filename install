@@ -89,7 +89,8 @@ promptyn() {
     fi
     local REPLY=unset
     while [[ -n "${REPLY}" && "${REPLY^^}" != [YN] ]]; do
-        read -p "$prompt $prompt_yn " -n 1
+        echo
+        read -p "$prompt $prompt_yn "
     done
     [[ -z "$REPLY" ]] && REPLY="$default"
     [[ "${REPLY^^}" == Y ]]  # This expression is the return value
@@ -168,12 +169,22 @@ upgrade_pip() {
     hash -r  # Teach this shell about the new pip
 }
 
+inst_nodejs() {
+    local script_name=$(mktemp /tmp/nodejs-install-script.XXXXXX)
+    curl -Ls install-node.now.sh/lts >> ${script_name}
+    chmod +x ${script_name}
+    local yes_arg=''
+    is_yes && yes_arg='--yes'
+    local prefix=~/.local   # Put in temp variable to cause tilde expansion
+    ${script_name} --prefix=${prefix} ${yes_arg}
+}
+
 inst_nvim() {
-    local neovim_version=0.4.2
+    local neovim_version=v0.4.3
     echo Installing Neovim ${neovim_version} AppImage in ~/.local/bin
     mkdir -p ~/.local/bin/
     curl -L -o ~/.local/bin/nvim-${neovim_version}.appimage \
-        "https://github.com/neovim/neovim/releases/download/v${neovim_version}/nvim.appimage"
+        "https://github.com/neovim/neovim/releases/download/${neovim_version}/nvim.appimage"
     chmod +x ~/.local/bin/nvim-${neovim_version}.appimage
     ln -s nvim-${neovim_version}.appimage ~/.local/bin/nvim
 }
@@ -192,7 +203,6 @@ inst_neovim_stuff_in_virtualenv() {
     (
         source $virtualenv_path/bin/activate
         pip install --upgrade pynvim
-        pip install --upgrade 'python-language-server[pycodestyle, pyflakes, yapf]'
     )
 }
 
@@ -213,6 +223,10 @@ fi
 
 if is_yes || promptyn "Do you want to install tmux plugins?" Y; then
     ~/.tmux/plugins/tpm/bin/install_plugins
+fi
+
+if is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by coc.nvim Neovim plugin)' Y; then
+    inst_nodejs
 fi
 
 if is_yes || promptyn 'Do you want to install & configure Neovim AppImage?' Y; then

@@ -27,8 +27,6 @@ set modelines=5    " number of lines from top and bottom of file
 filetype on        " Detect file types
 set showfulltag    " Insert mode completion of tag shows whole funct prototype!
 set hidden         " Allow a modified buffer to be not displayed in a window
-colorscheme hcc
-syntax on
 set laststatus=2   " Always show a status line, even when only 1 window
 " silent! suppresses error message for older Vim's that lack the option
 silent! set colorcolumn=81 " Make the 81st column stand out (ColorColumn highlight)
@@ -51,6 +49,7 @@ set formatoptions+=j " Delete comment char when joining commented lines
 set formatoptions-=o " (don't) Insert the comment leader after hitting 'o' etc.
 set formatoptions+=c " Auto-format comments in insert mode
 set textwidth=78
+set updatetime=300   " Vim's hover timeout. Default 4000. Want this low for more reactive coc plugins
 
 " Tighter X server clipboard integration. Of these unnamed and unnamedplus
 " are added to the defaults.
@@ -98,10 +97,10 @@ autocmd!
 " hard tabs are special in makefiles, don't expand them
 autocmd FileType make set noexpandtab shiftwidth=8 nowrap
 autocmd FileType c set noexpandtab shiftwidth=8 nowrap
-autocmd FileType xml set expandtab shiftwidth=2 textwidth=0 colorcolumn=99 nowrap
+autocmd FileType xml,cpp set expandtab shiftwidth=2 textwidth=0 colorcolumn=99 nowrap
 autocmd FileType gitcommit set expandtab shiftwidth=4 textwidth=72 colorcolumn=72 wrap
-autocmd FileType md,txt set expandtab shiftwidth=4 wrap
-autocmd FileType python,sh,perl,cpp set expandtab shiftwidth=4 textwidth=99 colorcolumn=99 nowrap
+autocmd FileType md,txt set expandtab shiftwidth=4 textwidth=79 wrap
+autocmd FileType python,sh,perl set expandtab shiftwidth=4 textwidth=0 colorcolumn=99 nowrap
 augroup END
 
 " Make PgUp and PgDn keep the cursor on the same line of the screen
@@ -418,7 +417,7 @@ if exists("*matchadd")
     " https://github.com/peterlundgren/.home/blob/master/_vim/.vimrc
     function! EnableTrailingWhitespaceMatch(is_enable)
         if a:is_enable && !exists('w:trailing_whitespace_match')
-            let w:trailing_whitespace_match = matchadd('ErrorMsg', '\s\+$\| \+\ze\t', -1)
+            let w:trailing_whitespace_match = matchadd('WhitespaceError', '\s\+$\| \+\ze\t', -1)
         else
             if exists('w:trailing_whitespace_match')
                 call matchdelete(w:trailing_whitespace_match)
@@ -557,152 +556,6 @@ map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans
 "====[ DiffOrig: Diff file with on-disk version ]======================= {{{1
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 
-"====[ vim-fugitive customization ]======================= {{{1
-
-augroup hcc_fugitive
-    autocmd!
-    " When viewing a tree or blob, map .. to "move up a directory level"
-    autocmd User fugitive  if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' | nnoremap <buffer> .. :edit %:h<CR> | endif
-    autocmd BufReadPost fugitive://* set bufhidden=delete
-augroup END
-
-"====[ YouCompleteMe customization ]======================= {{{1
-
-" The default highlight for this red background but leave foreground color
-" alone. That combination can be unreadable sometimes.
-" Here, we use Maroon background w/ NavyBlue foreground (the Maroon looks red
-" to me)
-highlight YcmErrorSection ctermbg=1 ctermfg=17 guibg=#800000 guifg=#00005f
-
-" When this option is set, YCM will populate the location list automatically
-" every time it gets new diagnostic data. Default: 0
-let g:ycm_always_populate_location_list = 1
-
-" Defines where GoTo* commands result should be opened. Can take one of the
-" following values: [ 'same-buffer', 'horizontal-split', 'vertical-split',
-" 'new-tab', 'new-or-existing-tab' ]
-" Default: 'same-buffer'
-let g:ycm_goto_buffer_command = 'horizontal-split'
-
-nnoremap <leader>f :YcmCompleter FixIt<CR>
-
-"====[ LanguageClient-neovim customization ]======================= {{{1
-if has_key(get(g:, "plugs", {}), "LanguageClient-neovim")
-  " used on CTRL-X CTRL-U on insert mode
-  " set completefunc=LanguageClient#complete
-
-  let g:LanguageClient_autoStart = 1 " Automatically start language servers.
-  let g:LanguageClient_serverCommands = {
-    \ 'c': ['/usr/bin/clangd-9'],
-    \ 'cpp': ['/usr/bin/clangd-9'],
-    \ 'python': ['~/ve/py2neovim/bin/pyls'],
-    \ }
-
-  " Activate range formatting using standard gq key.
-  set formatexpr=LanguageClient_textDocument_rangeFormatting_sync()
-
-  nnoremap <silent> <leader>ga :call LanguageClient_textDocument_codeAction()<CR>
-  nnoremap <silent> <leader>gd :call LanguageClient_textDocument_definition()<CR>
-  nnoremap <silent> <leader>ge :call LanguageClient#explainErrorAtPoint()<CR>
-  nnoremap <silent> <leader>gf :call LanguageClient_textDocument_formatting()<CR>
-  vnoremap <silent> <leader>gf :call LanguageClient_textDocument_rangeFormatting()<CR>
-  nnoremap <silent> <leader>gg :call LanguageClient_contextMenu()<CR>
-  nnoremap <silent> <leader>gh :call LanguageClient_textDocument_hover()<CR>
-  nnoremap <silent> <leader>gi :call LanguageClient_textDocument_implementation()<CR>
-  nnoremap <silent> <leader>gr :call LanguageClient_textDocument_references()<CR>
-  nnoremap <silent> <leader>gR :call LanguageClient_textDocument_rename()<CR>
-  nnoremap <silent> <leader>gs :call LanguageClient_textDocument_documentSymbol()<CR>
-  nnoremap <silent> <leader>gt :call LanguageClient_textDocument_typeDefinition()<CR>
-  nnoremap <silent> <leader>gw :call LanguageClient_textDocument_workspace_symbol()<CR>
-  " This is almost same as default. Just changed the waring signText to be more
-  " visible
-  "Test some symbols: ≋ ♒   ⚑  ☣  ☢  ⚠  ✗  ✖
-  let g:LanguageClient_diagnosticsDisplay = {
-    \   1: {
-    \       "name": "Error",
-    \       "texthl": "ALEError",
-    \       "signText": "✖",
-    \       "signTexthl": "ALEErrorSign",
-    \   },
-    \   2: {
-    \       "name": "Warning",
-    \       "texthl": "ALEWarning",
-    \       "signText": "≋",
-    \       "signTexthl": "ALEWarningSign",
-    \   },
-    \   3: {
-    \       "name": "Information",
-    \       "texthl": "ALEInfo",
-    \       "signText": "ℹ",
-    \       "signTexthl": "ALEInfoSign",
-    \   },
-    \   4: {
-    \       "name": "Hint",
-    \       "texthl": "ALEInfo",
-    \       "signText": "➤",
-    \       "signTexthl": "ALEInfoSign",
-    \   },
-    \}
-
-  " The cursor hold delay is governed by updatetime (default 4000ms), but
-  " appears to be about double the configured value, so set it to 500 for ~1 sec
-  set updatetime=600
-
-  " Don't display code errors inline, overlaying the buffer, because this can
-  " be visually annoying. They echo as a message instead.
-  " NOTE: I want to make a hotkey to toggle this, but changes to this variable
-  " do not seem to be honored by LanguageClient without :LanguageClientStop |
-  " :LanguageClientStart, which is pretty drastic.
-  let g:LanguageClient_useVirtualText = 0
-
-  function! DoNothingHandler(output)
-  endfunction
-
-  function! LspIsDifferentHoverPosFromLast()
-    if !exists('b:last_hover_line')
-      return 1
-    endif
-
-    return b:last_hover_line !=# line('.') || b:last_hover_col !=# col('.')
-  endfunction
-
-  function! LspMaybeHover(is_running) abort
-    if a:is_running.result && mode() == 'n' && LspIsDifferentHoverPosFromLast()
-      let b:last_hover_line = line('.')
-      let b:last_hover_col = col('.')
-      call LanguageClient_textDocument_hover({'handle': v:true}, 'DoNothingHandler')
-    endif
-  endfunction
-
-  function! LspMaybeHighlight(is_running) abort
-    if a:is_running.result
-      call LanguageClient_textDocument_documentHighlight()
-    endif
-  endfunction
-
-  augroup lsp_aucommands
-    au!
-    au CursorHold * silent! call LanguageClient#isAlive(function('LspMaybeHover'))
-    au CursorMoved * silent! call LanguageClient#isAlive(function('LspMaybeHighlight'))
-  augroup END
-
-endif
-
-"====[ ncm2 customization ]======================= {{{1
-if has_key(get(g:, "plugs", {}), "ncm2")
-  augroup ncm2
-    autocmd!
-    autocmd BufEnter * :silent! call ncm2#enable_for_buffer()
-  augroup end
-
-  " IMPORTANT: :help Ncm2PopupOpen for more information
-  set completeopt=noinsert,menuone,noselect
-
-  " Use <TAB> to select the popup menu:
-  inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-endif
-
 "====[ vim-airline customization ]======================= {{{1
 if has_key(get(g:, "plugs", {}), "vim-airline")
   let g:airline_theme="cool_hcc"
@@ -710,6 +563,290 @@ if has_key(get(g:, "plugs", {}), "vim-airline")
   let g:airline_exclude_preview = 1
   let g:airline#parts#ffenc#skip_expected_string="utf-8[unix]"
 endif
+
+"====[ coc customization ]======================= {{{1
+if has_key(get(g:, "plugs", {}), "coc.nvim")
+  let g:coc_node_path = expand('~/.local/bin/node')
+  let g:coc_global_extensions = [
+    \ 'coc-git',
+    \ 'coc-json',
+    \ 'coc-python',
+    \ 'coc-markdownlint',
+    \ 'coc-vimlsp',
+    \ 'coc-yaml',
+    \ ]
+
+  " Don't define autocommands and mappings unless really gets fully going
+  " (User CocNvimInit event). Avoids errors on CursorHold when it's not
+  " running. It can fail to init, for e.g. if node.js is not installed.
+  function! s:hccCocSetup()
+    augroup hcc_coc_nvim
+      autocmd!
+        " Highlight symbol under cursor on CursorHold
+        autocmd CursorHold * silent call CocActionAsync('highlight')
+        """" autocmd User CocNvimInit CocCommand python.setInterpreter '/usr/bin/python'
+    augroup end
+
+    " Use tab for trigger completion with characters ahead and navigate.
+    " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    " Use <c-space> to trigger completion.
+    inoremap <silent><expr> <c-space> coc#refresh()
+
+    " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+    " Coc only does snippet and additional edit on confirm.
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+    " Or use `complete_info` if your vim support it, like:
+    " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+
+    " Navigate diagnostics
+    nmap <silent> [e <Plug>(coc-diagnostic-prev)    " e for error
+    nmap <silent> ]e <Plug>(coc-diagnostic-next)
+
+    " Navigate git diff chunks. This maatches g:NERDTreeMapNextHunk
+    nmap <silent> [g <Plug>(coc-git-prevchunk)
+    nmap <silent> ]g <Plug>(coc-git-nextchunk)
+
+    " git text objects
+    omap ig <Plug>(coc-git-chunk-inner)
+    xmap ig <Plug>(coc-git-chunk-inner)
+    omap ag <Plug>(coc-git-chunk-outer)
+    xmap ag <Plug>(coc-git-chunk-outer)
+
+    " More git stuff
+    nmap <silent> <leader>gc <Plug>(coc-git-commit)
+    nmap <silent> <leader>gi <Plug>(coc-git-chunkinfo)
+    nnoremap <silent> <leader>gs :CocCommand git.chunkStage<CR>
+    nnoremap <silent> <leader>gu :CocCommand git.chunkUndo<CR>
+    nnoremap <silent> <leader>gf :CocCommand git.foldUnchanged<CR>
+
+    " Remap keys for gotos
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
+
+    " Use K to show documentation in preview window
+    nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+    function! s:show_documentation()
+      if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+      else
+        call CocAction('doHover')
+      endif
+    endfunction
+
+    " Remap for rename current word
+    nmap <F2> <Plug>(coc-rename)
+
+    " Remap for format selected region
+    xmap <leader>f  <Plug>(coc-format-selected)
+    nmap <leader>f  <Plug>(coc-format-selected)
+
+    " Remap for do codeAction of current line
+    nmap <leader>ac  <Plug>(coc-codeaction)
+    " Fix autofix problem of current line
+    nmap <leader>qf  <Plug>(coc-fix-current)
+
+    " select selections ranges, needs server support, like: coc-tsserver, coc-python
+    nmap <silent> ]r <Plug>(coc-range-select)
+    xmap <silent> ]r <Plug>(coc-range-select)
+    nmap <silent> [r <Plug>(coc-range-select-backward)
+    xmap <silent> [r <Plug>(coc-range-select-backward)
+
+    " Use `:Format` to format current buffer
+    command! -nargs=0 Format :call CocAction('format')
+
+    " Use `:Fold` to fold current buffer
+    command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+    " use `:OR` for organize import of current buffer
+    command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+  endfunction
+
+  autocmd User CocNvimInit call s:hccCocSetup()
+endif
+
+"====[ nerdtree customization ]======================= {{{1
+
+if has_key(get(g:, "plugs", {}), "nerdtree")
+  let g:NERDTreeGitStatusWithFlags = 1
+  let g:NERDTreeIgnore = ['\~$', '\.o$', '\.so$', '\.a', '\.pyc']
+
+  " Single-click to expand directories, double click to open file
+  let g:NERDTreeMouseMode = 2
+  "
+  " sync open file with NERDTree
+  " " Check if NERDTree is open or active
+  function s:isCurrentWindowNERDTree()
+    return bufname('%') =~# '^NERD_tree_'
+  endfunction
+
+  function! s:isNERDTreeOpen()
+    return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+  endfunction
+
+  " Whenever we switch to any window (other than the NERDTree window),
+  " if NERDTree is open in this tab, Move NERDTree's selection to the
+  " buffer's file.
+  function! s:syncNERDTree()
+    if &modifiable && s:isNERDTreeOpen() && strlen(expand('%')) > 0 && !s:isCurrentWindowNERDTree() && !&diff
+      NERDTreeFind
+      wincmd p
+    endif
+  endfunction
+
+  " s:syncNERDTree can't do the sync when NERDTree is first being opened
+  " (calling NERDTreeFind from within the event triggered by initial opening
+  " of NERDTree causes it to open two NERDTree windows!)
+  " But I still want the sync behavior on initial open. So this function
+  " will use NERDTreeFind to do the open when appropriate.
+  " A good reference for debugging these events is:
+  " https://vi.stackexchange.com/questions/4292/why-nerdtree-doesnt-trigger-the-autocommand-bufenter
+  function! s:myNERDTreeToggle()
+    if !s:isNERDTreeOpen()
+      NERDTreeFind
+    else
+      NERDTreeToggle
+    endif
+  endfunction
+
+  " Highlight currently open buffer in NERDTree
+  augroup hcc_nerd_tree
+    autocmd!
+    autocmd BufEnter * call s:syncNERDTree()
+  augroup end
+
+  nnoremap <C-n> :call <SID>myNERDTreeToggle()<CR>
+
+  " The default for these was ]c,[c (for chunk), but I like [g (for git)
+  let g:NERDTreeMapNextHunk = ']g'
+  let g:NERDTreeMapPrevHunk = '[g'
+endif " have nerdtree
+
+"====[ color ]======================= {{{1
+
+" TODO: For now, not enabling termguicolors (24-bit color) until I get
+" my tmux config to support it and work out how to test for too-old
+" tmux version.
+
+" Colors here that are indented one extra level are ones that I modified.
+" Mostly I made them brighter to increase contrast with dark background
+let g:onedark_color_overrides = {
+    \ "red": { "gui": "#ff0000", "cterm": "161", "cterm16": "9" },
+  \ "dark_red": { "gui": "#BE5046", "cterm": "196", "cterm16": "9" },
+  \ "green": { "gui": "#98C379", "cterm": "114", "cterm16": "2" },
+    \ "yellow": { "gui": "#f0f000", "cterm": "226", "cterm16": "11" },
+  \ "dark_yellow": { "gui": "#D19A66", "cterm": "173", "cterm16": "11" },
+    \ "blue": { "gui": "#00d7ff", "cterm": "45", "cterm16": "6" },
+    \ "purple": { "gui": "#ff87ff", "cterm": "213", "cterm16": "13" },
+    \ "cyan": { "gui": "#57ffff", "cterm": "27", "cterm16": "14" },
+    \ "white": { "gui": "#ffffff", "cterm": "255", "cterm16": "15" },
+  \ "black": { "gui": "#282C34", "cterm": "235", "cterm16": "0" },
+  \ "visual_black": { "gui": "NONE", "cterm": "NONE", "cterm16": "0" },
+    \ "comment_grey": { "gui": "#afafff", "cterm": "147", "cterm16": "15" },
+    \ "gutter_fg_grey": { "gui": "#c0c0c0", "cterm": "250", "cterm16": "15" },
+    \ "cursor_grey": { "gui": "#000087", "cterm": "18", "cterm16": "4" },
+    \ "visual_grey": { "gui": "#004296", "cterm": "20", "cterm16": "15" },
+  \ "menu_grey": { "gui": "#3E4452", "cterm": "237", "cterm16": "8" },
+  \ "special_grey": { "gui": "#3B4048", "cterm": "238", "cterm16": "15" },
+    \ "vertsplit": { "gui": "#d70000", "cterm": "160", "cterm16": "9" },
+\}
+
+let g:hcc_other_colors = {
+    \ "vertsplit_bg": { "gui": "#afffff", "cterm": "159", "cterm16": "14" },
+    \ "search_bg": { "gui": "#E5C07B", "cterm": "180", "cterm16": "3" },
+    \ "normal_bg": { "gui": "#00005f", "cterm": "17", "cterm16": "0" },
+    \ "folded_bg": { "gui": "#005faf", "cterm": "25", "cterm16": "0" },
+\}
+
+function! HccCustomizeOnedark()
+  highlight WhitespaceError guifg=#000000 guibg=#ff0000 guisp=NONE gui=NONE ctermfg=0 ctermbg=196
+  " Default CocWarningSign was to dull:
+  highlight CocWarningSign guifg=#ffaf00 ctermfg=214 ctermbg=NONE
+
+  if g:colors_name != 'onedark'
+    return
+  endif
+  call onedark#extend_highlight("Normal", { "bg": g:hcc_other_colors["normal_bg"] })
+
+  call onedark#extend_highlight("Function", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("cssFunctionName", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("goFunctionCall", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("javaScriptFunction", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("jsFunction", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("perlFunction", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("phpFunction", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("phpFunctions", { "fg": g:onedark_color_overrides["purple"] })
+  call onedark#extend_highlight("rubyFunction", { "fg": g:onedark_color_overrides["purple"] })
+
+  call onedark#extend_highlight("String", { "fg": g:onedark_color_overrides["red"], "cterm": "bold" })
+  call onedark#extend_highlight("jsonString", { "fg": g:onedark_color_overrides["red"], "cterm": "bold" })
+  call onedark#extend_highlight("jsonKeyword", { "fg": g:onedark_color_overrides["red"], "cterm": "bold" })
+  call onedark#extend_highlight("rubyStringDelimiter", { "fg": g:onedark_color_overrides["red"], "cterm": "bold" })
+
+  call onedark#extend_highlight("Number", { "fg": g:onedark_color_overrides["red"] })
+  call onedark#extend_highlight("javaScriptNumber", { "fg": g:onedark_color_overrides["red"] })
+  call onedark#extend_highlight("jsonNumber", { "fg": g:onedark_color_overrides["red"] })
+
+  call onedark#extend_highlight("Statement", { "fg": g:onedark_color_overrides["yellow"] })
+
+  call onedark#extend_highlight("VertSplit", { "bg": g:hcc_other_colors["vertsplit_bg"] })
+  call onedark#extend_highlight("SignColumn", { "bg": g:onedark_color_overrides["black"] })
+  call onedark#extend_highlight("Folded",
+    \ { "bg": g:hcc_other_colors["folded_bg"],
+    \   "fg": g:onedark_color_overrides["white"] })
+
+  call onedark#extend_highlight("Todo",
+    \ { "fg": g:onedark_color_overrides["white"],
+    \   "bg": g:onedark_color_overrides["red"]})
+
+  call onedark#extend_highlight("Search",
+    \ { "fg": g:onedark_color_overrides["black"],
+    \   "bg": g:hcc_other_colors["search_bg"] })
+endfunction
+
+augroup colorextend
+  autocmd!
+  autocmd ColorScheme * call HccCustomizeOnedark()
+augroup end
+
+syntax on
+try
+  colorscheme onedark
+catch /^Vim\%((\a\+)\)\=:E185/
+  colorscheme hcc
+endtry
+
+"====[ Vista customization ]======================= {{{1
+if has_key(get(g:, "plugs", {}), "vista.vim")
+
+  let g:vista_default_executive = 'coc'  " Default: 'ctags'
+  let g:vista_finder_alternative_executives = ['ctags']
+  let g:vista_sidebar_width = 50
+  let g:vista#renderer#enable_icon = 0
+
+  nnoremap <leader>v  :Vista!!<CR>
+
+  " TODO:
+  " - When switch to the vista window, make it move cursor to highlighted symbol
+  " - Fix folding inside vista. Or quick filtering by type. Ah, according to
+  "   docs, this works only for ctags executive for now (I use coc)
+  " - Fix color of highlighted symbol in vista window
+  " - Make pretty icons work (airline font?)
+
+endif  " have vista.vim
 
 "====[ Experimental / Broken ]========================================== {{{1
 
