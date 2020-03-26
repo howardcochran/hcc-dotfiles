@@ -21,15 +21,20 @@ if is-at-least 5.1.1; then  # Not compatible with older
     )
 fi
 
-# ==== zsh-syntax-highlighting config ====
+# ==== fast-syntax-highlighting config ====
 # NOTE: This plugin must come LAST cuz it wraps all the other ZLE widgets
 # NOTE: Prevent reloading of it if we re-source zsh dotfiles because this
 #       leads to buildup of zle wrapper widgets so that each re-source
 #       takes exponentially longer!
-if [[ -z $ZSH_HIGHLIGHT_VERSION ]]; then
-    source $ZSH_PLUGDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -z "${FAST_BASE_DIR}" ]]; then
+    FAST_WORK_DIR=XDG  # i.e. ~/.config/fsh. Must set before loding plugin
+    source ${ZSH_PLUGDIR}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
-ZSH_HIGHLIGHT_STYLES[arg0]='fg=green,bold'
-ZSH_HIGHLIGHT_STYLES[globbing]='fg=blue,bold'
-ZSH_HIGHLIGHT_STYLES[comment]='fg=cyan,bold'
+
+if [[ ! -r ${FAST_WORK_DIR}/current_theme.zsh ]]; then
+    # First-time initialization of fast-syntax-highlighting
+    # Results are cached in $FAST_WORK_DIR
+    mkdir -p ${FAST_WORK_DIR}
+    fast-theme default
+    fast-theme ${ZSH_PLUGDIR}/highlighting-theme-overlay.ini
+fi

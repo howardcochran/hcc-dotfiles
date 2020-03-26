@@ -7,9 +7,9 @@
 [submodule "config/.zsh/plugins/zsh-autosuggestions"]
 	path = config/.zsh/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions.git
-[submodule "config/.zsh/plugins/zsh-syntax-highlighting"]
-	path = config/.zsh/plugins/zsh-syntax-highlighting
-	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule "config/.zsh/plugins/z"]
 	path = config/.zsh/plugins/z
 	url = https://github.com/rupa/z.git
+[submodule "config/.zsh/plugins/fast-syntax-highlighting"]
+	path = config/.zsh/plugins/fast-syntax-highlighting
+	url = https://github.com/zdharma/fast-syntax-highlighting.git
