@@ -32,7 +32,7 @@ iftop
 iotop
 iperf
 iperf3
-ipython
+ipython3
 jq
 lame
 lame-doc
@@ -55,17 +55,9 @@ python3-ipdb
 python3-pip
 python3-pyaudio
 python3-scipy
+python3-setuptools
 python3-virtualenv
 python3-yaml
-python-dev
-python-future
-python-ipdb
-python-pip
-python-pyaudio
-python-scipy
-python-setuptools
-python-virtualenv
-python-yaml
 ranger
 reptyr
 slurm
@@ -91,7 +83,7 @@ traceroute
 tree
 ubuntu-restricted-extras
 vim-doc
-vim-gnome
+vim-gtk3
 youtube-dl
 zenity
 zsh
