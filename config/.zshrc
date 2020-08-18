@@ -244,7 +244,7 @@ export GREP_COLOR='1;32'
 # let's set them explicitly. In particular, -R is needed to get color
 # output to look correctly (which was on by default, but became OFF if
 # $LESS was set to any string that did not include it!)
-export LESS='-R --ignore-case --quit-if-one-screen'
+export LESS='-R --ignore-case'
 
 if [[ "$(lsb_release --id -s)" == "Ubuntu" ]]; then
 	# (Ubuntu-only) Use my wrapper script for less,

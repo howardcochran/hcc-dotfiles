@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# The below workaround is no longer needed for recent versions of less.
+# It is indeed harmful, because it causes two copies of the output to appear
+# whenever it would have fit on one screen. So just run less directly when
+# it is new enough. As of this writing, I do not know the exact version number
+# when the bug was fixed but I know it was still broken in version 487
+# (Ubuntu 18.04) but fixed in version 551 (Ubuntu 20.04).
+
+less_version=$(command less --version | sed -n '1,1 s/^less \([0-9]\+\).*/\1/p')
+if [[ $less_version -gt 487 ]]; then
+    exec less --quit-if-one-screen "$@"
+fi
+
 # Downloaded from:
 # https://raw.githubusercontent.com/johnmellor/scripts/master/bin/least
 # With slight change to $LESS options and a tiny efficiency improvement.
