@@ -731,8 +731,8 @@ if has_key(get(g:, "plugs", {}), "nerdtree")
   nnoremap <C-n> :call <SID>myNERDTreeToggle()<CR>
 
   " The default for these was ]c,[c (for chunk), but I like [g (for git)
-  let g:NERDTreeMapNextHunk = ']g'
-  let g:NERDTreeMapPrevHunk = '[g'
+  let g:NERDTreeGitStatusMapNextHunk = ']g'
+  let g:NERDTreeGitStatusMapPrevHunk = '[g'
 endif " have nerdtree
 
 "====[ color ]======================= {{{1
