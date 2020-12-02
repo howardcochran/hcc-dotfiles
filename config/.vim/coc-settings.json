@@ -50,16 +50,19 @@
   "git.addedSign.text": "+ ",
   "git.changedSign.text": "~ ",
 
-  "languageserver": {
-    "ccls": {
-      "command": "ccls",
-      "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
-      "rootPatterns": [".ccls-root", "compile_commands.json", ".git"],
-      "initializationOptions": {
-         "cache": {
-           "directory": "/tmp/ccls-cache"
-         }
-       }
-    }
-  }
+  "clangd.enabled": true,
+  "clangd.path": "/usr/bin/clangd-9"
+
+  // "languageserver": {
+  //   "ccls": {
+  //     "command": "ccls",
+  //     "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
+  //     "rootPatterns": [".ccls-root", "compile_commands.json", ".git"],
+  //     "initializationOptions": {
+  //        "cache": {
+  //          "directory": "/tmp/ccls-cache"
+  //        }
+  //      }
+  //   }
+  // }
 }
