@@ -27,4 +27,8 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'joshdick/onedark.vim'   " Color scheme
 Plug 'liuchengxu/vista.vim'
 
+" Workaround until this is fixed: https://github.com/neovim/neovim/issues/1496
+Plug 'lambdalisue/suda.vim'
+cnoremap w!! execute 'silent! write suda://%'
+
 call plug#end()
