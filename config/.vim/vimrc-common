@@ -113,11 +113,15 @@ imap <silent> <PageDown> <C-b>1000<C-D>
 
 set tags=tags,../tags,../../tags,../../../tags,../../../../tags
 
-" Detect file changes in a timely manner
+" Detect file changes in a timely manner using the checktime command
+" Excluding mode 'c' prevents its execution in command mode, which would cause
+" error. However, it also causes error in a command window, whose mode can be
+" normal or insert or whatever but whose buftype is 'nofile'. It doesn't make
+" sense to try to check for on-disk changes if the buffer lacks a file anyway
 set autoread
 augroup hcc_do_checktime
   autocmd!
-  autocmd CursorHold * if mode() != 'c' | checktime | endif
+  autocmd CursorHold * if mode() != 'c' && &buftype != 'nofile' | checktime | endif
 augroup END
 
 " Be a little bit more Common User Interface-like
@@ -185,7 +189,7 @@ map <F5> :norm zz<CR>:redraw!<CR>:nohl<CR>
 map <leader>c :bp<CR>:bd#<CR>
 
 " Enable / Disable Mouse mode (for use when running in terminal)
-" Makes resizing splits mucc less painful
+" Makes resizing splits much less painful
 map <F9> :set mouse=a
 map <S-F9> :set mouse=
 set mouse=a  " Let's default to mouse On
@@ -221,15 +225,15 @@ nnoremap ;  :
 " However, the "repeat last motion" command is useful, so make Enter do that
 " BUT, we want <Enter> to do it's normal thing in the QuickFix window, so
 " we have to use a helper function
-function! Repeat_last_motion_except_in_quickfix()
-  if &buftype ==# 'quickfix'
+function! Repeat_last_motion_except_in_quickfix_or_cmdwin()
+  if &buftype ==# 'quickfix' || getcmdwintype() != ''
     execute "normal! \<CR>"
   else
     normal! ;
   endif
 endfunction
 
-nnoremap <silent> <CR> :call Repeat_last_motion_except_in_quickfix()<CR>
+nnoremap <silent> <CR> :call Repeat_last_motion_except_in_quickfix_or_cmdwin()<CR>
 
 " Analogous to C or D; easier to type
 nnoremap Y y$
