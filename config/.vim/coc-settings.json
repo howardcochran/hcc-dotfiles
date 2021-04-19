@@ -51,7 +51,7 @@
   "git.changedSign.text": "~ ",
 
   "clangd.enabled": true,
-  "clangd.path": "/usr/bin/clangd-9",
+  "clangd.path": "/usr/bin/clangd-10",
 
   // "languageserver": {
   //   "ccls": {
