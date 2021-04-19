@@ -573,8 +573,8 @@ if has_key(get(g:, "plugs", {}), "coc.nvim")
   let g:coc_node_path = expand('~/.local/bin/node')
   let g:coc_global_extensions = [
     \ 'coc-git',
+    \ 'coc-jedi',
     \ 'coc-json',
-    \ 'coc-python',
     \ 'coc-markdownlint',
     \ 'coc-vimlsp',
     \ 'coc-yaml',
