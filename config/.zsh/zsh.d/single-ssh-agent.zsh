@@ -16,10 +16,14 @@ is_tmx_agent_forwarded() {
 }
 is_tmx_agent_forwarded && return 0
 
-# Stash away the original, in case user wants to restore it.
-if [ -n "$SSH_AUTH_SOCK" -a -z "$ORIG_SSH_AUTH_SOCK" ] ; then
-	ORIG_SSH_AUTH_SOCK="$SSH_AUTH_SOCK"
-fi
+# Skip starting the agent if user suppresses it with env var.
+# This is used by hcc-dotfile's install script
+if [[ -z $NO_SSH_AGENT ]]; then
+	# Stash away the original, in case user wants to restore it.
+	if [ -n "$SSH_AUTH_SOCK" -a -z "$ORIG_SSH_AUTH_SOCK" ] ; then
+		ORIG_SSH_AUTH_SOCK="$SSH_AUTH_SOCK"
+	fi
 
-unset SSH_AGENT_LAUNCHER  # Typically this was "upstart"
-eval $($HOME/bin/single-ssh-agent)
+	unset SSH_AGENT_LAUNCHER  # Typically this was "upstart"
+	eval $($HOME/bin/single-ssh-agent)
+fi

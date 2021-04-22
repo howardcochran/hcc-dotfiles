@@ -247,9 +247,19 @@ inst_neovim_remote() {
     pip3 install --user neovim-remote
 }
 
+zsh_first_run() {
+    echo "Running zsh to complete one-time setup. May produce messages that"
+    echo "Look like errors, but you can ignore these."
+    echo
+    touch ~/.z  # Keep .fzf from complaining
+    NO_SSH_AGENT=1 zsh -i -c exit
+}
+
 # After upgrading pip in ~/.local/bin, we want to use it, so make sure the
 # .local dirs are in the path for this script
 export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
+
+zsh_first_run
 
 if [[ $ubuntu_ver == "xenial" ]]; then
     if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04 xenial)?" Y; then
