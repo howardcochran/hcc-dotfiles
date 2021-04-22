@@ -114,7 +114,20 @@ promptyn() {
 opt_verbose=1
 opt_force=0
 opt_yes=0
-while getopts ":fy" opt; do
+opt_eatmydata=''
+# Transform long options to short ones because getopts builtin is dumb and we don't
+# want to rely on external getopt.
+for arg in "$@"; do
+    shift
+    case "$arg" in
+        "--force")     set -- "$@" "-f" ;;
+        "--yes")       set -- "$@" "-y" ;;
+        "--eatmydata") set -- "$@" "-e" ;;
+        "--help")      set -- "$@" "-h" ;;
+        *)             set -- "$@" $arg ;;
+    esac
+done
+while getopts "fyeh" opt; do
     case ${opt} in
         f)
             opt_force=1
@@ -122,10 +135,16 @@ while getopts ":fy" opt; do
         y)
             opt_yes=1
             ;;
-        \?)
-            echo "Usage: $0 [-f] [-y]"
-            echo "    -f  Force creation of symlinks, overwriting existing"
-            echo "    -y  Answer Yes to all questions"
+        e)
+            eatmydata true || sudo apt install -y eatmydata
+            eatmydata true && opt_eatmydata=eatmydata
+            ;;
+        h|\?)
+            echo "Usage: $0 options"
+            echo "    -f, --force     Force creation of symlinks, overwriting existing"
+            echo "    -y, --yes       Answer Yes to all questions"
+            echo "    -e, --eatmydata Run apt installs under eatmydata for speed"
+            echo "    -h, --help      Print this message"
             exit 1
     esac
 done
@@ -159,16 +178,19 @@ install_packages() {
     apt list -qq "$@"
     echo
     if is_yes || promptyn 'Install any packages in the above list that are missing?' Y; then
-        sudo apt install -y "$@"
+        sudo ${opt_eatmydata} apt install -y "$@"
     fi
 }
 
 cd "${scriptdir}"
 pwd
 
+sudo ${opt_eatmydata} apt update
+[[ -n ${opt_eatmydata} ]] && sync
 install_packages "${required_packages_common[@]}"
 ubuntu_ver=$(get_ubuntu_version)
 [[ $ubuntu_ver == "xenial" ]] && install_packages "${required_packages_xenial[@]}"
+[[ -n ${opt_eatmydata} ]] && sync
 
 setup_locale() {
     sudo locale-gen en_US.UTF-8
