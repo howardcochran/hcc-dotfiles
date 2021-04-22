@@ -2,6 +2,21 @@
 
 scriptdir=$(realpath $(dirname "$0"))
 
+get_ubuntu_version() {
+    local ver=$(lsb_release -cs)
+    if [[ -z $ver ]]; then
+        echo >&2 'WARNING: Unable to determine Ubuntu version. Asuming it is "focal"'
+        echo >&2 ''
+        local ver='focal'
+    elif [[ $ver != "focal" && $ver != "xenial" ]]; then
+        echo >&2 'WARNING: This script is tested only for Ubuntu 20.04 "focal" and 16.04 "xenial"'
+        echo >&2 'Unknown Ubuntu version "'$ver'" detected. Behaving as if it is "focal".'
+        echo >&2 ''
+        local ver='focal'
+    fi
+    echo $ver
+}
+
 mklink() {
     local real_src="$(realpath $1)"
 
@@ -21,7 +36,7 @@ mklink() {
         # real_dest="$(realpath --canonicalize-missing $2)"
     fi
 
-    local relative_src=$(python -c "import os.path; print os.path.relpath('${real_src}', '$(realpath $(dirname ${real_dest}))')")
+    local relative_src=$(python3 -c "import os.path; print(os.path.relpath('${real_src}', '$(realpath $(dirname ${real_dest}))'))")
 
     if [[ -h "${real_dest}" ]]; then
         local existing_src="$(readlink ${real_dest})"
@@ -118,20 +133,25 @@ is_yes() {
     [[ "$opt_yes" == "1" ]]
 }
 
-required_packages=(
+required_packages_common=(
+    lsb-release
     git
     curl
+    fuse  # Needed by nvim, since it is an AppImage
+    tmux
     apt-utils
-    python-dev
     python3-dev
-    python-pip
     python3-pip
     python3-virtualenv
+    python3-setuptools
+)
+
+# NOTE: These packages do not exist on focal & later
+required_packages_xenial=(
+    python-dev
+    python-pip
     python-virtualenv
     python-setuptools
-    python3-setuptools
-    build-essential     # cquery nvim plugin
-    cmake               # cquery nvim plugin
 )
 
 install_packages() {
@@ -145,7 +165,9 @@ install_packages() {
 cd "${scriptdir}"
 pwd
 
-install_packages "${required_packages[@]}"
+install_packages "${required_packages_common[@]}"
+ubuntu_ver=$(get_ubuntu_version)
+[[ $ubuntu_ver == "xenial" ]] && install_packages "${required_packages_xenial[@]}"
 
 git submodule update --init --recursive
 mklink config/.zsh                ~/.zsh
@@ -163,9 +185,11 @@ mklink config/.terminfo           ~/.terminfo
 mklink config/.gitconfig          ~/.gitconfig
 echo
 
+# Only needed for xenial
 upgrade_pip() {
-    pip install --upgrade pip
-    pip3 install --upgrade pip
+    # Last version of pip that runs in Python 2.7 and 3.5
+    pip install --user --upgrade pip==20.3.4
+    pip3 install --user --upgrade pip==20.3.4
     hash -r  # Teach this shell about the new pip
 }
 
@@ -191,10 +215,12 @@ inst_nvim() {
 
 inst_virtualenv() {
     mkdir  -p ~/ve
-    python3 -m virtualenv --python=python2 ~/ve/py2neovim
     python3 -m virtualenv --python=python3 ~/ve/py3neovim
-    inst_neovim_stuff_in_virtualenv ~/ve/py2neovim
     inst_neovim_stuff_in_virtualenv ~/ve/py3neovim
+    if [[ $ubuntu_ver == "xenial" ]]; then
+        python3 -m virtualenv --python=python2 ~/ve/py2neovim
+        inst_neovim_stuff_in_virtualenv ~/ve/py2neovim
+    fi
 }
 
 inst_neovim_stuff_in_virtualenv() {
@@ -217,8 +243,10 @@ inst_neovim_remote() {
 # .local dirs are in the path for this script
 export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 
-if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04)?" Y; then
-    upgrade_pip
+if [[ $ubuntu_ver == "xenial" ]]; then
+    if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04 xenial)?" Y; then
+        upgrade_pip
+    fi
 fi
 
 if is_yes || promptyn "Do you want to install tmux plugins?" Y; then
