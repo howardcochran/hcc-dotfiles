@@ -201,6 +201,7 @@ upgrade_pip() {
 }
 
 inst_nodejs() {
+    mkdir -p ~/.local
     local script_name=$(mktemp /tmp/nodejs-install-script.XXXXXX)
     curl -Ls install-node.now.sh/lts >> ${script_name}
     chmod +x ${script_name}
