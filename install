@@ -257,7 +257,8 @@ if [[ $ubuntu_ver == "xenial" ]]; then
 fi
 
 if is_yes || promptyn "Do you want to install tmux plugins?" Y; then
-    ~/.tmux/plugins/tpm/bin/install_plugins
+    # Clear $TMUX in case we're running nested. We want our own instance for plugin install.
+    TMUX= ~/.tmux/plugins/tpm/bin/install_plugins
 fi
 
 if is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by coc.nvim Neovim plugin)' Y; then
