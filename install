@@ -2,6 +2,21 @@
 
 scriptdir=$(realpath $(dirname "$0"))
 
+get_ubuntu_version() {
+    local ver=$(lsb_release -cs)
+    if [[ -z $ver ]]; then
+        echo >&2 'WARNING: Unable to determine Ubuntu version. Asuming it is "focal"'
+        echo >&2 ''
+        local ver='focal'
+    elif [[ $ver != "focal" && $ver != "xenial" ]]; then
+        echo >&2 'WARNING: This script is tested only for Ubuntu 20.04 "focal" and 16.04 "xenial"'
+        echo >&2 'Unknown Ubuntu version "'$ver'" detected. Behaving as if it is "focal".'
+        echo >&2 ''
+        local ver='focal'
+    fi
+    echo $ver
+}
+
 mklink() {
     local real_src="$(realpath $1)"
 
@@ -21,7 +36,7 @@ mklink() {
         # real_dest="$(realpath --canonicalize-missing $2)"
     fi
 
-    local relative_src=$(python -c "import os.path; print os.path.relpath('${real_src}', '$(realpath $(dirname ${real_dest}))')")
+    local relative_src=$(python3 -c "import os.path; print(os.path.relpath('${real_src}', '$(realpath $(dirname ${real_dest}))'))")
 
     if [[ -h "${real_dest}" ]]; then
         local existing_src="$(readlink ${real_dest})"
@@ -99,7 +114,20 @@ promptyn() {
 opt_verbose=1
 opt_force=0
 opt_yes=0
-while getopts ":fy" opt; do
+opt_eatmydata=''
+# Transform long options to short ones because getopts builtin is dumb and we don't
+# want to rely on external getopt.
+for arg in "$@"; do
+    shift
+    case "$arg" in
+        "--force")     set -- "$@" "-f" ;;
+        "--yes")       set -- "$@" "-y" ;;
+        "--eatmydata") set -- "$@" "-e" ;;
+        "--help")      set -- "$@" "-h" ;;
+        *)             set -- "$@" $arg ;;
+    esac
+done
+while getopts "fyeh" opt; do
     case ${opt} in
         f)
             opt_force=1
@@ -107,10 +135,16 @@ while getopts ":fy" opt; do
         y)
             opt_yes=1
             ;;
-        \?)
-            echo "Usage: $0 [-f] [-y]"
-            echo "    -f  Force creation of symlinks, overwriting existing"
-            echo "    -y  Answer Yes to all questions"
+        e)
+            eatmydata true || sudo apt install -y eatmydata
+            eatmydata true && opt_eatmydata=eatmydata
+            ;;
+        h|\?)
+            echo "Usage: $0 options"
+            echo "    -f, --force     Force creation of symlinks, overwriting existing"
+            echo "    -y, --yes       Answer Yes to all questions"
+            echo "    -e, --eatmydata Run apt installs under eatmydata for speed"
+            echo "    -h, --help      Print this message"
             exit 1
     esac
 done
@@ -118,34 +152,51 @@ is_yes() {
     [[ "$opt_yes" == "1" ]]
 }
 
-required_packages=(
+required_packages_common=(
+    lsb-release
+    locales
     git
     curl
+    fuse  # Needed by nvim, since it is an AppImage
+    tmux
     apt-utils
-    python-dev
     python3-dev
-    python-pip
     python3-pip
     python3-virtualenv
+    python3-setuptools
+)
+
+# NOTE: These packages do not exist on focal & later
+required_packages_xenial=(
+    python-dev
+    python-pip
     python-virtualenv
     python-setuptools
-    python3-setuptools
-    build-essential     # cquery nvim plugin
-    cmake               # cquery nvim plugin
 )
 
 install_packages() {
     apt list -qq "$@"
     echo
     if is_yes || promptyn 'Install any packages in the above list that are missing?' Y; then
-        sudo apt install -y "$@"
+        sudo ${opt_eatmydata} apt install -y "$@"
     fi
 }
 
 cd "${scriptdir}"
 pwd
 
-install_packages "${required_packages[@]}"
+sudo ${opt_eatmydata} apt update
+[[ -n ${opt_eatmydata} ]] && sync
+install_packages "${required_packages_common[@]}"
+ubuntu_ver=$(get_ubuntu_version)
+[[ $ubuntu_ver == "xenial" ]] && install_packages "${required_packages_xenial[@]}"
+[[ -n ${opt_eatmydata} ]] && sync
+
+setup_locale() {
+    sudo locale-gen en_US.UTF-8
+    sudo update-locale LANG=en_US.UTF-8
+}
+setup_locale
 
 git submodule update --init --recursive
 mklink config/.zsh                ~/.zsh
@@ -163,13 +214,16 @@ mklink config/.terminfo           ~/.terminfo
 mklink config/.gitconfig          ~/.gitconfig
 echo
 
+# Only needed for xenial
 upgrade_pip() {
-    pip install --upgrade pip
-    pip3 install --upgrade pip
+    # Last version of pip that runs in Python 2.7 and 3.5
+    pip install --user --upgrade pip==20.3.4
+    pip3 install --user --upgrade pip==20.3.4
     hash -r  # Teach this shell about the new pip
 }
 
 inst_nodejs() {
+    mkdir -p ~/.local
     local script_name=$(mktemp /tmp/nodejs-install-script.XXXXXX)
     curl -Ls install-node.now.sh/lts >> ${script_name}
     chmod +x ${script_name}
@@ -180,7 +234,7 @@ inst_nodejs() {
 }
 
 inst_nvim() {
-    local neovim_version=v0.4.3
+    local neovim_version=nightly
     echo Installing Neovim ${neovim_version} AppImage in ~/.local/bin
     mkdir -p ~/.local/bin/
     curl -L -o ~/.local/bin/nvim-${neovim_version}.appimage \
@@ -191,10 +245,12 @@ inst_nvim() {
 
 inst_virtualenv() {
     mkdir  -p ~/ve
-    python3 -m virtualenv --python=python2 ~/ve/py2neovim
     python3 -m virtualenv --python=python3 ~/ve/py3neovim
-    inst_neovim_stuff_in_virtualenv ~/ve/py2neovim
     inst_neovim_stuff_in_virtualenv ~/ve/py3neovim
+    if [[ $ubuntu_ver == "xenial" ]]; then
+        python3 -m virtualenv --python=python2 ~/ve/py2neovim
+        inst_neovim_stuff_in_virtualenv ~/ve/py2neovim
+    fi
 }
 
 inst_neovim_stuff_in_virtualenv() {
@@ -213,16 +269,29 @@ inst_neovim_remote() {
     pip3 install --user neovim-remote
 }
 
+zsh_first_run() {
+    echo "Running zsh to complete one-time setup. May produce messages that"
+    echo "Look like errors, but you can ignore these."
+    echo
+    touch ~/.z  # Keep .fzf from complaining
+    NO_SSH_AGENT=1 zsh -i -c exit
+}
+
 # After upgrading pip in ~/.local/bin, we want to use it, so make sure the
 # .local dirs are in the path for this script
 export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:$PATH
 
-if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04)?" Y; then
-    upgrade_pip
+zsh_first_run
+
+if [[ $ubuntu_ver == "xenial" ]]; then
+    if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04 xenial)?" Y; then
+        upgrade_pip
+    fi
 fi
 
 if is_yes || promptyn "Do you want to install tmux plugins?" Y; then
-    ~/.tmux/plugins/tpm/bin/install_plugins
+    # Clear $TMUX in case we're running nested. We want our own instance for plugin install.
+    TMUX= ~/.tmux/plugins/tpm/bin/install_plugins
 fi
 
 if is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by coc.nvim Neovim plugin)' Y; then
