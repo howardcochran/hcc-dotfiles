@@ -153,17 +153,18 @@ is_yes() {
 }
 
 required_packages_common=(
-    lsb-release
+    apt-utils
     locales
+    lsb-release
     git
     curl
     fuse  # Needed by nvim, since it is an AppImage
-    tmux
-    apt-utils
     python3-dev
     python3-pip
     python3-virtualenv
     python3-setuptools
+    tmux
+    zsh
 )
 
 # NOTE: These packages do not exist on focal & later
@@ -183,7 +184,6 @@ install_packages() {
 }
 
 cd "${scriptdir}"
-pwd
 
 sudo ${opt_eatmydata} apt update
 [[ -n ${opt_eatmydata} ]] && sync
