@@ -457,11 +457,7 @@ function! HeaderGuard ()
 endfunction
 :command! HeaderGuard :call HeaderGuard()<CR>
 
-if has('nvim')
-    source ~/.config/nvim/hcc-vim-plug-config.vim
-else
-    source ~/.vim/hcc-vundle-conf.vim
-endif
+source ~/.config/nvim/hcc-vim-plug-config.vim
 
 "====[ QuickFix Window ]================================================ {{{1
 "====[ Toggle QuickFix Window ]========================================= {{{2
