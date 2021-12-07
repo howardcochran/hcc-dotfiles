@@ -299,12 +299,6 @@ alias psg='ps -Af | grep '
 
 alias sdis='export DISPLAY=$(cat ~/.DISPLAY)'
 
-# 256-color support with Tmux compatibility:
-# We need $TERM to be xterm-256color outside of Tmux but don't override
-# Tmux's setting of screen-256color inside Tmux
-[[ "$TERM" =~ "screen*" ]] || TERM=xterm-256color
-
-## the vars I set do not persist (treated as local no matter what I do). Grr!
 # function periodic() {
 #     #typeset -g periodic_cur periodic_prev
 #     #export periodic_cur
