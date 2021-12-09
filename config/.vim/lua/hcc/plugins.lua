@@ -112,6 +112,7 @@ require('packer').startup(function(use)
 --   -- NOTYET: use { "akinsho/toggleterm.nvim", ext = load "toggleterm", cmd = "ToggleTerm" }
 --   -- NOTYET: use { "folke/trouble.nvim", cmd = { "Trouble" }, ext = load "trouble", module = "trouble" }
   use { "folke/which-key.nvim", config = "require'hcc/plugins-config/which-key'" }
+  use { "ThePrimeagen/harpoon", config = "require'hcc/plugins-config/harpoon'" }
 -- 
 --   -- Commenter & Colorizer
 --   -- NOTYET: use { "norcalli/nvim-colorizer.lua", event = "BufRead", ext = load "colorizer" }

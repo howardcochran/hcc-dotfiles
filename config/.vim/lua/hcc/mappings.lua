@@ -119,5 +119,21 @@ map("n", "svo", ":Telescope vim_options<cr>")
 -- See Syntax Highlight under Cursor in a pop-up windows
 map("n", "<F12>", ":TSHighlightCapturesUnderCursor<cr>")
 
+-- [Harpoon Mappings]
+map("n", "<leader>m", ":lua require('harpoon.mark').add_file()<CR>")
+map("n", "<A-m>", ":lua require('harpoon.ui').toggle_quick_menu()<CR>")
+map("n", "<A-j>", ":lua require('harpoon.ui').nav_next()<CR>")
+map("n", "<A-k>", ":lua require('harpoon.ui').nav_prev()<CR>")
+map("n", "<leader>0", ":lua require('harpoon.ui').nav_file(0)<CR>")
+map("n", "<leader>1", ":lua require('harpoon.ui').nav_file(1)<CR>")
+map("n", "<leader>2", ":lua require('harpoon.ui').nav_file(2)<CR>")
+map("n", "<leader>3", ":lua require('harpoon.ui').nav_file(3)<CR>")
+map("n", "<leader>4", ":lua require('harpoon.ui').nav_file(4)<CR>")
+map("n", "<leader>5", ":lua require('harpoon.ui').nav_file(5)<CR>")
+map("n", "<leader>6", ":lua require('harpoon.ui').nav_file(6)<CR>")
+map("n", "<leader>7", ":lua require('harpoon.ui').nav_file(7)<CR>")
+map("n", "<leader>8", ":lua require('harpoon.ui').nav_file(8)<CR>")
+map("n", "<leader>9", ":lua require('harpoon.ui').nav_file(9)<CR>")
+
 -- [Gitsigns Mappingsa]
 -- These are mapped in gitsigns.lua because they use a gitsigns-specific interface to define them
