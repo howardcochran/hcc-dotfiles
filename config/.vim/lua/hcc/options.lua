@@ -95,3 +95,18 @@ vim.o.cinoptions = vim.o.cinoptions .. ',m1'
 
 -- Align with case label instead of the statement after it
 vim.o.cinoptions = vim.o.cinoptions .. ',l1'
+
+-- Specify some per-filetype options:
+vim.cmd([[
+  augroup hcc_indents
+  autocmd!
+    " hard tabs are special in makefiles, don't expand them
+    autocmd FileType make set noexpandtab shiftwidth=8 nowrap
+    autocmd FileType c set noexpandtab shiftwidth=8 nowrap
+    autocmd FileType xml,cpp set expandtab shiftwidth=2 textwidth=0 colorcolumn=99 nowrap
+    autocmd FileType gitcommit set expandtab shiftwidth=4 textwidth=72 colorcolumn=72 wrap
+    autocmd FileType md,txt set expandtab shiftwidth=4 textwidth=79 wrap
+    autocmd FileType python,sh,perl set expandtab shiftwidth=4 textwidth=0 colorcolumn=99 nowrap
+    autocmd FileType lua set expandtab shiftwidth=2 textwidth=0 colorcolumn=99 nowrap
+  augroup END
+]])
