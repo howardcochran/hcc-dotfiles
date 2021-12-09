@@ -1,11 +1,17 @@
 local cmp = require('cmp')
 local types = require('cmp.types')
 local lspkind = require('lspkind')
+local luasnip = require('luasnip')
+
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
 
 cmp.setup({
   snippet = {
     expand = function(args)
-      require('luasnip').lsp_expand(args.body)
+      luasnip.lsp_expand(args.body)
     end,
   },
   mapping = {
@@ -21,19 +27,55 @@ cmp.setup({
     ['<Down>'] = cmp.mapping({i = cmp.mapping.select_next_item()}),
     ['<Up>'] = cmp.mapping({i = cmp.mapping.select_prev_item()}),
     -- - ['<Tab>'] = function(fallback)
-    -- -     if require('luasnip').jumpable() then
-    -- -         vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
-    -- -     else
-    -- -         cmp.select_next_item()
-    -- -     end
+    -- -   cmp.select_next_item()
     -- - end,
-    -- - ['<S-Tab>'] = function(fallback)
-    -- -     if require('luasnip').jumpable(-1) then
-    -- -         vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
-    -- -     else
-    -- -         cmp.select_prev_item()
-    -- -     end
-    -- - end,
+    --['<Tab>'] = cmp.mapping(
+    --  function(fallback)
+    --    if cmp.visible() then
+    --      if cmp.core.view:get_selected_entry() then
+    --        cmp.core.view:_select(1, cmp.SelectBehavior.Insert)
+    --        -- cmp.select_next_item()
+    --      else
+    --        cmp.core.view:_select(1, cmp.SelectBehavior.Insert)
+    --      end
+    --    elseif luasnip.expand_or_jumpable() then
+    --      luasnip.expand_or_jump()
+    --    elseif has_words_before() then
+    --      cmp.complete()
+    --    else
+    --      fallback()
+    --    end
+    --  end,
+    --  { 'i', 's' }
+    --),
+    ['<Tab>'] = cmp.mapping(
+      function(fallback)
+        if cmp.visible() then
+          --I don't really like cycling through with <Tab>. Just accept current (or first) entry
+          --cmp.select_next_item()
+          cmp.confirm({select = false})
+        elseif luasnip.expand_or_jumpable() then
+          luasnip.expand_or_jump()
+        elseif has_words_before() then
+          cmp.complete()
+        else
+          fallback()
+        end
+      end,
+      { 'i', 's' }
+    ),
+    ['<S-Tab>'] = cmp.mapping(
+      function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif luasnip.jumpable(-1) then
+          luasnip.jump(-1)
+        else
+          fallback()
+        end
+      end,
+      { 'i', 's' }
+    ),
   },
   sources = {
     { name = 'path' },
