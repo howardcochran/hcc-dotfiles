@@ -21,8 +21,11 @@ map('c', 'jk', '<ESC>')
 map('c', 'kj', '<ESC>')
 map('o', 'jk', '<ESC>')
 map('o', 'kj', '<ESC>')
-map('x', 'jk', '<ESC>')
-map('x', 'kj', '<ESC>')
+-- Ugh, disable for visual because it makes vertical movements delayed, by timeoutlen,
+-- which makes it hard to select the right number of lines.
+-- map('x', 'jk', '<ESC>')
+-- map('x', 'kj', '<ESC>')
+
 -- I like typing the "colon" without shift!
 map('n', ';', ':')
 -- But I sometimes want what ; did originally, i.e. Repeat the last motion.
