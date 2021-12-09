@@ -118,3 +118,6 @@ map("n", "svo", ":Telescope vim_options<cr>")
 
 -- See Syntax Highlight under Cursor in a pop-up windows
 map("n", "<F12>", ":TSHighlightCapturesUnderCursor<cr>")
+
+-- [Gitsigns Mappingsa]
+-- These are mapped in gitsigns.lua because they use a gitsigns-specific interface to define them
