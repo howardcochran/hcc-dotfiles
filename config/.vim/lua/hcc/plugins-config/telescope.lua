@@ -4,6 +4,7 @@
 --         require "plugins.config.telescope.settings"
 --     end,
 -- }
+local actions = require("telescope.actions")
 
 require("telescope").setup {
     defaults = {
@@ -35,6 +36,15 @@ require("telescope").setup {
             prompt_position = "bottom",
             preview_cutoff = 120,
             width = 0.95,
+        },
+        mappings = {
+            n = {
+                -- My "jk = <ESC>" mapping isn't present for Normal mode since
+                -- that would be a no-op. But when in Telescope's Normal mode,
+                -- <Esc> would close Telescope. So make that work:
+                ["jk"] = actions.close,
+                ["kj"] = actions.close,
+            },
         },
         file_sorter = require("telescope.sorters").get_fuzzy_file,
         file_ignore_patterns = {},
