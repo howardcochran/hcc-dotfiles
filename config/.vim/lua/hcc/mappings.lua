@@ -169,3 +169,81 @@ map("n", "<leader>9", ":lua require('harpoon.ui').nav_file(9)<CR>")
 
 -- [Gitsigns Mappingsa]
 -- These are mapped in gitsigns.lua because they use a gitsigns-specific interface to define them
+
+-- [Mappings Tap Pages]
+map("n", "gh", ":tabprev<CR>")
+map("n", "gl", ":tabnext<CR>")
+
+map("n", "gH", ":tabfirst<CR>")
+map("n", "gL", ":tablast<CR>")
+-- Don't want to override gn
+map("n", "g<Enter>", ":tabnew<CR>")
+map("n", "gc", ":tabclose<CR>")
+
+-- Override start Select mode blockwise)
+map("n", "g<C-H>", ":tabmove -1<CR>")
+map("n", "g<C-L>", ":tabmove +1<CR>")
+
+-- Functions to move current window to next / prev tab, since not built-in
+-- From: http://vim.wikia.com/wiki/Move_current_window_between_tabs
+-- TODO: Rewrite in Lua?
+vim.cmd([[
+function! MoveToPrevTab()
+  "there is only one window
+  if tabpagenr('$') == 1 && winnr('$') == 1
+    return
+  endif
+  "preparing new window
+  let l:tab_nr = tabpagenr('$')
+  let l:cur_buf = bufnr('%')
+  if tabpagenr() != 1
+    close!
+    if l:tab_nr == tabpagenr('$')
+      tabprev
+    endif
+    sp
+    wincmd j
+  else
+    close!
+    exe "0tabnew"
+  endif
+  "opening current buffer in new window
+  exe "b".l:cur_buf
+endfunc
+
+function! MoveToNextTab()
+  "there is only one window
+  if tabpagenr('$') == 1 && winnr('$') == 1
+    return
+  endif
+  "preparing new window
+  let l:tab_nr = tabpagenr('$')
+  let l:cur_buf = bufnr('%')
+  if tabpagenr() < l:tab_nr
+    close!
+    if l:tab_nr == tabpagenr('$')
+      tabnext
+    endif
+    sp
+    wincmd j
+  else
+    close!
+    tabnew
+  endif
+  "opening current buffer in new window
+  exe "b".l:cur_buf
+endfunc
+]])
+
+-- Previous mapping for move tab is hard to enter fast enough due to timeoutlen
+-- being short. TODO: Seems that which-key should effectively make the delay
+-- for g+any key indefinite. But, although it recognizes and displays these
+-- mappings, it doesn't recognize them. Dunno why.
+map("n", "g<M-l>", ":call MoveToNextTab()<CR>")
+map("n", "g<M-h>", ":call MoveToPrevTab()<CR>")
+-- For now, we'll also add mappings that start with <M-g>. This still seems to
+-- confuse which-key which displays the same hints as for ordinary 'g'.
+-- However, this is much easier to type fast, so it's not a big promlem in
+-- practice.
+map("n", "<M-g><M-l>", ":call MoveToNextTab()<CR>")
+map("n", "<M-g><M-h>", ":call MoveToPrevTab()<CR>")
