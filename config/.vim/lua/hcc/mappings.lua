@@ -60,6 +60,35 @@ map('n', '<C-j>', '<C-W>j')
 map('n', '<C-k>', '<C-W>k')
 map('n', '<C-l>', '<C-W>l')
 
+-- Move current line or selection up/down
+map('n', "<M-Down>", ":m .+1<CR>==")
+map('n', "<M-Up>",   ":m .-2<CR>==")
+
+map('x', "<M-Down>", ":move '>+1<CR>gv-gv")
+map('x', "<M-Up>",   ":move '<-2<CR>gv-gv")
+
+map('i', "<M-Down>", "<Esc>:m .+1<CR>==gi")
+map('i', "<M-Up>",   "<Esc>:m .-2<CR>==gi")
+
+-- Keep the current search hit line centered. TODO: Do I really want this?
+-- Also open any fold necessary to see the line containing the current search hit.
+map('n', 'n', 'nzzzv')
+map('n', 'N', 'Nzzzv')
+
+-- Keep cursor on current column when joining lines. TODO: Do I really want this?
+map('n', 'J', 'mzJ`z')
+
+-- If I go up or down with a large count, add the starting point to jumplist
+map('n', 'k', [[(v:count > 8 ? "m'" . v:count : "") . "k"]], { expr = true })
+map('n', 'j', [[(v:count > 8 ? "m'" . v:count : "") . "j"]], { expr = true })
+
+-- Add quotes, parens, etc around selection
+map('v', [[<leader>']], [[<esc>`>a'<esc>`<i'<esc>]])
+map('v', [[<leader>"]], [[<esc>`>a"<esc>`<i"<esc>]])
+map('v', [[<leader>(]], [[<esc>`>a)<esc>`<i(<esc>]])
+map('v', [[<leader>[]], [[<esc>`>a]<esc>`<i[<esc>]])
+map('v', [[<leader>{]], [[<esc>`>a}<esc>`<i{<esc>]])
+
 -- [Telescope Mappings]
 -- All start with 's' as in teleScope, since s is just an alias for cl.
 map("n", "s", "<nop>")
