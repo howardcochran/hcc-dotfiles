@@ -54,28 +54,11 @@ map('n', 'qq', 'q')
 map('v', '>', '>gv')
 map('v', '<', '<gv')
 
--- Preserve height of QuickFix when maximizing other windows
--- From: https://gist.github.com/dahu/3344530
--- TODO: Convert this to Lua. Or maybe get rid of it
-vim.cmd([[
-function! MaximizeWithoutResizingQuickfix()
-    let l:qfwnr = get(get(filter(map(range(1,winnr('$')), '[v:val, getwinvar(v:val, "&buftype")]'), 'v:val[1] =~ "quickfix"'), 0, []), 0, -1)
-    if (l:qfwnr !=# winnr())
-        let l:qfh = winheight(qfwnr)
-        wincmd _
-        if qfwnr != -1
-            exe qfwnr . "wincmd w"
-            exe "resize " . qfh
-            wincmd p
-        endif
-    endif
-endfunction
-]])
-
--- Howard's mappings for the above
--- Quickly move up & down between split windows using ^j and ^k
-map('n', '<C-J>', '<C-W>j:call MaximizeWithoutResizingQuickfix()<CR>')
-map('n', '<C-K>', '<C-W>k:call MaximizeWithoutResizingQuickfix()<CR>')
+-- Move between windows.
+map('n', '<C-h>', '<C-W>h')
+map('n', '<C-j>', '<C-W>j')
+map('n', '<C-k>', '<C-W>k')
+map('n', '<C-l>', '<C-W>l')
 
 -- Telescope Mappings
 map("n", "<C-F>", "<nop>")
