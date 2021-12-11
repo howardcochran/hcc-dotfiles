@@ -94,12 +94,12 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- Enable the following language servers
 local servers = {
-  "bashls",  -- TODO: Make zsh filetype use this
-  "clangd",
+  -- "bashls",  # Custom below
+  -- "clangd",  # Custom below
   "cssls",
   "dockerls",
   "dotls",
-  --"rust_analyzer",
+  --"rust_analyzer",  # Not Yet
   "html",
   "jsonls",
   "pyright",
@@ -111,6 +111,20 @@ for _, lsp in ipairs(servers) do
     capabilities = capabilities,
   })
 end
+
+nvim_lsp['clangd'].setup({
+  on_attach = common_on_attach,
+  capabilities = capabilities,
+  cmd = { "clangd-11", "--background-index" }
+})
+
+nvim_lsp['bashls'].setup({
+  on_attach = common_on_attach,
+  capabilities = capabilities,
+  filetypes = { "sh", "zsh" },  -- Added "zsh" here. This gets it working.
+  -- Added .zsh to default GLOB_PATTERN. Not sure wht this is for.
+  cmd_env = { GLOB_PATTERN = "*@(.sh|.inc|.bash|.command|.zsh)" }
+})
 
 -- -require("lsp/tsserver")
 -- -require("lsp/null-ls")
