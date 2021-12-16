@@ -1,0 +1,86 @@
+#!/bin/bash
+
+inst_dir=~/.local/bin
+tmp_nvim="${inst_dir}/new-nvim.appimage"
+symlink_name="${inst_dir}/nvim"
+
+nominal_version="$1"
+[[ -z "${nominal_version}" ]] && nominal_version="nightly"
+
+promptyn() {
+    local prompt="$1"
+    local default="Y"
+    local prompt_yn="[Yn]"
+    if [[ "${2^^}" == N ]]; then
+        default='N'
+        prompt_yn="[yN]"
+    fi
+    local REPLY=unset
+    while [[ -n "${REPLY}" && "${REPLY^^}" != [YN] ]]; do
+        echo
+        read -p "$prompt $prompt_yn "
+    done
+    [[ -z "$REPLY" ]] && REPLY="$default"
+    [[ "${REPLY^^}" == Y ]]  # This expression is the return value
+}
+
+die() {
+    msg="$1"
+    echo
+    echo >&2 "Error: $msg"
+    exit 1
+}
+
+download_it() {
+    local downloaded_file="$1"
+
+    curl -L -o ${downloaded_file} "https://github.com/neovim/neovim/releases/download/${nominal_version}/nvim.appimage" || return $?
+    # Curl command may have successful exit status but produce a tiny file that says "Not Found".
+    # So treat small file size as failure.
+    if [[ $(stat --printf='%s' ${downloaded_file}) -lt 1000000 ]] ; then
+        return 1
+    fi
+    chmod +x ${downloaded_file}
+}
+
+get_version() {
+    local nvim_app="$1"
+
+    ${nvim_app} --version | sed -n '1,1 s/NVIM //p'
+}
+
+rename_with_version() {
+    local orig_name="$1"
+    local version=$(get_version "${orig_name}")
+    local new_name="${inst_dir}/nvim-${version}.appimage"
+    mv "${orig_name}" "${new_name}"
+    echo "${new_name}"
+}
+
+ask_confirmation() {
+    local new_nvim="$1"
+    local old_ver=$(get_version "${symlink_name}")
+    local new_ver=$(get_version "${new_nvim}")
+
+    echo "Upgrading Neovim"
+    echo "  from: ${old_ver}"
+    echo "    to: ${new_ver}"
+    promptyn "Continue? " Y
+}
+
+main() {
+    download_it ${tmp_nvim} || die "Download failed"
+    local new_nvim=$(rename_with_version "${tmp_nvim}")
+    if ask_confirmation "${new_nvim}"; then
+        ln -sf "${new_nvim}"  "${symlink_name}"
+        echo
+        echo "nvim symlink updated to: ${new_nvim}"
+    else
+        echo
+        echo "Symlink update canceled."
+        echo "However, if download was successful, new Nvim is still available at"
+        echo "${new_nvim}"
+    fi
+}
+
+main
