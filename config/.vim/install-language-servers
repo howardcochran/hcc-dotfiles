@@ -1,12 +1,21 @@
 #!/bin/bash
 # Install the language servers used by my NeoVim config
 
-sudo apt install clangd-11
-npm install -g bash-language-server
-npm install -g dockerfile-language-server-nodejs
-pip install -U cmake-language-server
-npm install -g dot-language-server
-npm install -g pyright
-pip install -U jedi-language-server
-npm install -g vscode-langservers-extracted   # html, cssls
-npm install -g yaml-language-server
+function run_verbosely() {
+    echo
+    echo "*** Running:" "${@}"
+    "${@}"
+}
+
+# ripgrep is not really a language server, but it's needed for Telescope live grep to work
+run_verbosely sudo apt install clangd-11 ripgrep            # C++
+
+run_verbosely pip install -U jedi-language-server
+run_verbosely pip install -U cmake-language-server
+
+run_verbosely npm install -g bash-language-server
+run_verbosely npm install -g dockerfile-language-server-nodejs
+run_verbosely npm install -g dot-language-server
+run_verbosely npm install -g pyright
+run_verbosely npm install -g vscode-langservers-extracted   # html, cssls
+run_verbosely npm install -g yaml-language-server
