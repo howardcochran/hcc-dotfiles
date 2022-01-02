@@ -92,6 +92,13 @@ map('v', [[<leader>(]], [[<esc>`>a)<esc>`<i(<esc>]])
 map('v', [[<leader>[]], [[<esc>`>a]<esc>`<i[<esc>]])
 map('v', [[<leader>{]], [[<esc>`>a}<esc>`<i{<esc>]])
 
+-- Next, prev buffer
+map('n', ']b', ':bnext<CR>')
+map('n', '[b', ':bprev<CR>')
+-- Next, prev file in arg list
+map('n', ']a', ':next<CR>')
+map('n', '[a', ':Next<CR>')
+
 -- [Telescope Mappings]
 -- All start with 's' as in teleScope, since s is just an alias for cl.
 map("n", "s", "<nop>")
