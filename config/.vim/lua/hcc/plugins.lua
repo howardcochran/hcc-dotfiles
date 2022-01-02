@@ -37,7 +37,7 @@ require('packer').startup(function(use)
 --   use { 'Xuyuanp/nerdtree-git-plugin' }
 --   use { 'joshdick/onedark.vim' }   -- Color scheme
 --   use { 'liuchengxu/vista.vim' }
---   use { 'lambdalisue/suda.vim' }
+  use { 'lambdalisue/suda.vim' }
 -- 
 --   use { "nvim-lua/plenary.nvim" }
 --   use { "nvim-lua/popup.nvim" }
