@@ -1,6 +1,7 @@
 require('hcc/options')
 require('hcc/plugins')
 require('hcc/mappings')
+require('hcc/highlight-trailing-whitespace')
 
 -- DiffOrig: Diff file with on-disk version
 -- TODO: Rewrite in Lua?  Do it better?
