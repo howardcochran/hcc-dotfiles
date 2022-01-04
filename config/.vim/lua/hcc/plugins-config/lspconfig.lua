@@ -3,14 +3,29 @@ local nvim_lsp = require('lspconfig')
 -- -vim.cmd([[autocmd ColorScheme * highlight NormalFloat guibg=#1f2335]])
 -- -vim.cmd([[autocmd ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]])
 
+local diag_config = {
+  virtual_text = true,
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+}
+
+local M = {}
+function M.ToggleDiagnosticVirtualText()
+  diag_config.virtual_text = not diag_config.virtual_text
+  -- Refresh diagnostic display:
+  for client_id, _ in pairs(vim.lsp.get_active_clients()) do
+    for _, buffer_id in ipairs(vim.lsp.get_buffers_by_client_id(client_id)) do
+      for ns, _ in pairs(vim.diagnostic.get_namespaces()) do
+        vim.diagnostic.show(ns, buffer_id, nil, diag_config)
+      end
+    end
+  end
+end
+
 function common_on_attach(client, bufnr)
   -- Customize diagnostics
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = true,
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-  })
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, diag_config)
 
   -- Keymaps
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
@@ -67,6 +82,9 @@ function common_on_attach(client, bufnr)
   bufmap('<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
   bufmap('<leader>ca', '<cmd>Lspsaga code_action<CR>')
   vbufmap('<leader>ca', '<cmd>Lspsaga range_code_action<CR>')
+
+  bufmap('<leader>te', '<cmd>lua require("hcc/plugins-config/lspconfig").ToggleDiagnosticVirtualText()<CR>')
+
   -- NO! I don't like format-on-save:
   -- if client.resolved_capabilities.document_formatting then
   -- 	vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()')
