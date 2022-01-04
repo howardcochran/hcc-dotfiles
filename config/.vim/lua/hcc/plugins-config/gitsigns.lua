@@ -21,12 +21,15 @@ require('gitsigns').setup({
     ['n <leader>hS'] = '<cmd>Gitsigns stage_buffer<CR>',
     ['n <leader>hU'] = '<cmd>Gitsigns reset_buffer_index<CR>',
 
+    ['n <leader>tb'] = '<cmd>Gitsigns toggle_current_line_blame<CR>',
+
     -- Text objects
     ['o ih'] = ':<C-U>Gitsigns select_hunk<CR>',
     ['x ih'] = ':<C-U>Gitsigns select_hunk<CR>'
   },
   current_line_blame_opts = {
     delay = 250,
+    ignore_whitespace = true,
   },
   preview_config = {
     row = 1, -- Default is 0. Offset down one line so doesn't block view of cursor line
