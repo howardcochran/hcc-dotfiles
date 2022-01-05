@@ -30,6 +30,17 @@ map('o', 'kj', '<ESC>')
 map('n', ';', ':')
 -- But I sometimes want what ; did originally, i.e. Repeat the last motion.
 map('n', '<CR>', ';')
+-- But I need <CR> to do what its normal action in quickfix or loclist, so use
+-- an autocmd to undo this locally to the each quickfix & loclist buffer. Initially,
+-- I tried to remove the <CR> mapping for the buffer, but that just made it fall back
+-- to the non-buffer-specific mapping of <CR> to ';' seen above. Instead I want <CR>
+-- do whatever it s builtin function is, so map it to itself with nnoremap.
+vim.cmd([[
+augroup UnmapCRInQuickfixOrLocList
+  autocmd!
+  autocmd BufWinEnter quickfix,loclist nnoremap <buffer> <CR> <CR>
+augroup END
+]])
 
 -- Prevent accidental write when capslock is ON
 map('n', 'ZZ', 'zz')
@@ -250,7 +261,7 @@ map("n", "g<M-l>", ":call MoveToNextTab()<CR>")
 map("n", "g<M-h>", ":call MoveToPrevTab()<CR>")
 -- For now, we'll also add mappings that start with <M-g>. This still seems to
 -- confuse which-key which displays the same hints as for ordinary 'g'.
--- However, this is much easier to type fast, so it's not a big promlem in
+-- However, this is much easier to type fast, so it's not a big problem in
 -- practice.
 map("n", "<M-g><M-l>", ":call MoveToNextTab()<CR>")
 map("n", "<M-g><M-h>", ":call MoveToPrevTab()<CR>")
