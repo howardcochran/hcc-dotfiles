@@ -1,6 +1,6 @@
 local onedarkpro = require('onedarkpro')
 local utils = require('onedarkpro.utils')
-local config = config or require("onedarkpro.config").options
+local config = config or require("onedarkpro.config").config
 
 -- See http://neovimcraft.com/plugin/olimorris/onedark.nvim/index.html
 local colors = {
