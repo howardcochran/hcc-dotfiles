@@ -47,15 +47,15 @@ require('packer').startup(function(use)
   -- Auto-complete
   -- NOTE: I don't actually use Snippits, but some kind of snippit handler
   -- must be present for nvim-cmp to work.
+  use { "onsails/lspkind-nvim", opt = false }
   use { "rafamadriz/friendly-snippets", event = "InsertEnter" }
-  use { "hrsh7th/nvim-cmp", config = "require'hcc/plugins-config/cmp'", after = "friendly-snippets" }
+  use { "hrsh7th/nvim-cmp", config = "require'hcc/plugins-config/cmp'", after = {"friendly-snippets", "lspkind-nvim"} }
   use { "L3MON4D3/LuaSnip", wants = "friendly-snippets", after = "nvim-cmp", module = "luasnip" }
   use { "saadparwaiz1/cmp_luasnip", after = "LuaSnip" }
   use { "hrsh7th/cmp-buffer", after = "nvim-cmp" }    -- TODO: Maybe add Locality bonus comparitor (README)
   use { "hrsh7th/cmp-nvim-lsp", after = "nvim-cmp", opt = false }
   use { "hrsh7th/cmp-nvim-lua", after = "nvim-cmp" }
   use { "hrsh7th/cmp-path", after = "nvim-cmp" }
-  use { "onsails/lspkind-nvim", after = "nvim-cmp", opt = false }
 --
 --   -- UI Helpers
   use {
@@ -89,5 +89,3 @@ require('packer').startup(function(use)
     require('packer').sync()
   end
 end)
-
-vim.cmd("packadd lspkind-nvim")  -- Don't really know why this has to be done manually
