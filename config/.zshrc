@@ -325,6 +325,17 @@ source ~/.zsh/plugins/plugins.zsh
 autoload -U zmv            # zmv '(*)-(*).mp3' '$2_$1.mp3'
 alias mmv='noglob zmv -W'  # mmv *.JPG *.jpg
 
+# Clear out inherited $TMUX env var if we can't actually talk to a tmux server.
+# Failure to do this prevents new tmux from starting and causes ranger to fail
+# if you enter a snap or chroot environment that preserves this variable but
+# in which the the tmux server is not reachable.
+if tmux info >/dev/null 2>/dev/null; then
+    unset TMUX
+    unset TMUX_PANE   # These other TMUX_ vars don't actually matter, but be tidy.
+    unset TMUX_PLUGIN_MANAGER_PATH
+    unset TMUX_VERSION
+fi
+
 # Put any local / machine-specific settings into the following file:
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
 
