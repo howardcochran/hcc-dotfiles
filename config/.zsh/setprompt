@@ -72,10 +72,15 @@ function hccprompt {
 
 
     # Count of background jobs and "vim" flag.
-    # If the only BG jobs are vim, don't show count.
+    # If the only BG jobs are vim/nvim, don't show count.
     local jobcnt=${#jobtexts}
-    # Filter jobs to those that start with "vim" or contain " vim "
-    local -a vims=( ${(@M)${(v)jobtexts[@]}#* vim} ${(@M)${(v)jobtexts[@]}#vim} )
+    # Filter jobs to those that start with "vim" or contain " vim" (or nvim)
+    local -a vims=(
+        ${(@M)${(v)jobtexts[@]}#* vim}
+        ${(@M)${(v)jobtexts[@]}#* nvim}
+        ${(@M)${(v)jobtexts[@]}#vim}
+        ${(@M)${(v)jobtexts[@]}#nvim}
+        )
     if (( jobcnt - ${#vims} > 0 )); then
         # There are some non-vim background jobs. Show total count of BG jobs
         PS1+=" ${bgjobscolor}J:${#jobtexts}"
