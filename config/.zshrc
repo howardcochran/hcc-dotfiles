@@ -246,7 +246,7 @@ export GREP_COLOR='1;32'
 # $LESS was set to any string that did not include it!)
 export LESS='-R --ignore-case'
 
-if [[ "$(lsb_release --id -s)" == "Ubuntu" ]]; then
+if [[ "$(lsb_release --id -s)" == "Ubuntu" && -e ~/bin/pager ]]; then
 	# (Ubuntu-only) Use my wrapper script for less,
 	# which fixes --quit-if-one-screen behavior.
 	# Since less itself works correctly on Fedora, this workaround
@@ -329,14 +329,15 @@ alias mmv='noglob zmv -W'  # mmv *.JPG *.jpg
 # Failure to do this prevents new tmux from starting and causes ranger to fail
 # if you enter a snap or chroot environment that preserves this variable but
 # in which the the tmux server is not reachable.
-if tmux info >/dev/null 2>/dev/null; then
+if ! tmux info >/dev/null 2>/dev/null; then
     unset TMUX
     unset TMUX_PANE   # These other TMUX_ vars don't actually matter, but be tidy.
     unset TMUX_PLUGIN_MANAGER_PATH
     unset TMUX_VERSION
+    [[ $TERM =~ "tmux-*" ]] && TERM='xterm-256color'
 fi
 
 # Put any local / machine-specific settings into the following file:
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh || true
