@@ -9,11 +9,25 @@ setopt PROMPT_SUBST
 _can_i_sudo() {
     sudo -n true 2>/dev/null
 }
-# Let user disable the SUDO flag in prompt by touching a flag file because it
-# is annoying in "classic mode" of Ubuntu Core because the shell always has
-# password-less sudo access.
-enable_sudo_flag_in_prompt=1
-[[ -e ~/.config/no_sudo_flag_in_prompt ]] && enable_sudo_flag_in_prompt=0
+
+_prompt_has() {
+    local flag="$1"  # Should be only one character
+    [[ "$prompt_flags" =~ "$flag" ]]
+}
+
+# Default is for prompt to show everything:
+# u: Show username@
+# s: Shows SUDO in red if current shell has sudo access
+# g: Show git info
+# The following test equiv to [[ ! -v prompt_flags ]] but is compatible with
+# zsh older than 5.3 (e.g. Ubuntu 16.04)
+if (( ! ${+prompt_flags} )); then
+    prompt_flags='usg'
+fi
+
+# Lagacy interface: Let user disable the SUDO flag in prompt by touching
+# a flag file. Removes 's' from prompt_flags
+[[ -e ~/.config/no_sudo_flag_in_prompt ]] && prompt_flags=${prompt_flags/s/}
 
 # Options for the gitfast/git-prompt plugin from oh-my-zsh
 GIT_PS1_SHOWDIRTYSTATE=1
@@ -30,6 +44,7 @@ function hccprompt {
     local hostcolor="%F{69}"       # A bright blue
     local bgjobscolor="%F{128}"    # purple
     local sudocolor="%F{red}"
+    local usercolor=$hostcolor
 
     # Opening and Time of Day
     PS1="%B${maincolor}===[%T"
@@ -44,8 +59,16 @@ function hccprompt {
         PS1+=" ${ptagcolor}${ptag}"
     fi
 
+    PS1+=" "
+
+    # Username
+    if _prompt_has 'u'; then
+        [[ $(id -u) -eq 0 ]] && usercolor=$sudocolor
+        PS1+="${usercolor}%n${maincolor}@"
+    fi
+
     # Hostname, up to first dot
-    PS1+=" ${hostcolor}%m${maincolor}"
+    PS1+="${hostcolor}%m${maincolor}"
 
 
     # Count of background jobs and "vim" flag.
@@ -64,7 +87,7 @@ function hccprompt {
 
 
     # Show a flag if this shell has cached Sudo permission
-    if (( $enable_sudo_flag_in_prompt > 0 )) && _can_i_sudo; then
+    if _prompt_has 's' && _can_i_sudo; then
         PS1+=" ${sudocolor}SUDO"
     fi
 
@@ -79,8 +102,10 @@ function hccprompt {
     # "default color" of my prompt is not white, so do a replacement. I could
     # probably change the shell's default color instead, but this would make
     # command text be that color, which is not what I want.
-    local git_info="$(__git_ps1)"
-    PS1+="${git_info//\%f/${maincolor}}"
+    if _prompt_has 'g'; then
+        local git_info="$(__git_ps1)"
+        PS1+="${git_info//\%f/${maincolor}}"
+    fi
 
     # Current directory and newline
     PS1+="${maincolor} %~/
