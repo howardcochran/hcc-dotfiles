@@ -1,5 +1,9 @@
 # Fix $SHELL, since we often inherited csh's idea of $SHELL
-export SHELL=/bin/zsh
+# Only do this if it doesn't already end with /zsh, in case zsh is at a
+# non-standard path.
+if [[ ! "$SHELL" =~ ".*/zsh" ]]; then
+    export SHELL=/bin/zsh
+fi
 
 # Do this early as some setup files use whence to test for the existance
 # of things normally in ~/.local/bin
