@@ -33,7 +33,9 @@ if [[ -z "${FAST_BASE_DIR}" ]] && [[ -f ${ZSH_PLUGDIR}/fast-syntax-highlighting/
         # First-time initialization of fast-syntax-highlighting
         # Results are cached in $FAST_WORK_DIR
         mkdir -p ${FAST_WORK_DIR}
-        fast-theme default
-        fast-theme ${ZSH_PLUGDIR}/highlighting-theme-overlay.ini
+        # The first time the following commands are run for a user, they
+        # produce noisy output, so redirect /dev/null
+        fast-theme default > /dev/null
+        fast-theme ${ZSH_PLUGDIR}/highlighting-theme-overlay.ini > /dev/null
     fi
 fi
