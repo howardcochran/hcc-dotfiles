@@ -30,7 +30,8 @@ hi Include guifg=#d75fd7 guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE
 hi StatusLineNC guifg=#000000 guibg=#b2b2b2 guisp=#000000 gui=bold ctermfg=0 ctermbg=249 cterm=bold
 "ORIG: hi StatusLineNC guifg=#004443 guibg=#067C7B guisp=#067C7B gui=bold ctermfg=23 ctermbg=6 cterm=bold
 "hi CTagsMember -- no settings --
-hi NonText guifg=NONE guibg=#000000 guisp=#334C75 gui=NONE ctermfg=NONE ctermbg=0 cterm=NONE
+hi NonText guifg=NONE guibg=#000000 guisp=#334C75 gui=NONE ctermfg=NONE ctermbg=16 cterm=NONE
+hi SignColumn ctermbg=17
 "ORIG: hi NonText guifg=#9FADC5 guibg=#334C75 guisp=#334C75 gui=NONE ctermfg=146 ctermbg=60 cterm=NONE
 "hi CTagsGlobalConstant -- no settings --
 "hi DiffText -- no settings --

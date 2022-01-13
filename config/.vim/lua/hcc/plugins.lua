@@ -6,8 +6,23 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.cmd('packadd packer.nvim')
 end
 
+local packer = require('packer')
+
+local old_packer_compiled_path = vim.fn.stdpath('config') .. '/plugin/packer_compiled.lua'
+if vim.fn.filereadable(old_packer_compiled_path) > 0 then
+  vim.fn.delete(old_packer_compiled_path)
+  error('PLEASE RESTART NVIM: A packer_compiled.nvim was found and deleted at the old path.')
+  return
+end
+
+packer.init({
+  -- I prefer this generated file to be under ~/.local rather than ~/.config/nvim since it is
+  -- messy to put a generated file in the user's config area, which is usually version-controlled.
+  compile_path = vim.fn.stdpath('data') .. '/site/plugin/packer_compiled.lua',
+})
+
 -- List of Plugins
-require('packer').startup(function(use)
+packer.startup(function(use)
   use { 'wbthomason/packer.nvim' }
   use { 'tpope/vim-eunuch' }
   use { 'lambdalisue/suda.vim' }
