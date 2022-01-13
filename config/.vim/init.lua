@@ -1,5 +1,9 @@
 require('hcc/options')
-require('hcc/plugins')
+if vim.env['NVIM_BASIC_CONFIG'] then
+  require('hcc/plugins-basic')
+else
+  require('hcc/plugins')
+end
 require('hcc/mappings')
 require('hcc/highlight-trailing-whitespace')
 require('hcc/toggle-background-in-insert-mode')

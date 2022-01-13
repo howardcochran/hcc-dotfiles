@@ -30,7 +30,8 @@ hi Include guifg=#d75fd7 guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE
 hi StatusLineNC guifg=#000000 guibg=#b2b2b2 guisp=#000000 gui=bold ctermfg=0 ctermbg=249 cterm=bold
 "ORIG: hi StatusLineNC guifg=#004443 guibg=#067C7B guisp=#067C7B gui=bold ctermfg=23 ctermbg=6 cterm=bold
 "hi CTagsMember -- no settings --
-hi NonText guifg=NONE guibg=#000000 guisp=#334C75 gui=NONE ctermfg=NONE ctermbg=0 cterm=NONE
+hi NonText guifg=NONE guibg=#000000 guisp=#334C75 gui=NONE ctermfg=NONE ctermbg=16 cterm=NONE
+hi SignColumn ctermbg=17
 "ORIG: hi NonText guifg=#9FADC5 guibg=#334C75 guisp=#334C75 gui=NONE ctermfg=146 ctermbg=60 cterm=NONE
 "hi CTagsGlobalConstant -- no settings --
 "hi DiffText -- no settings --
@@ -45,7 +46,7 @@ hi SpecialChar guifg=#ff5fff guibg=NONE guisp=NONE gui=bold ctermfg=207 ctermbg=
 hi Conditional guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
 hi StorageClass guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=NONE cterm=bold
 hi Todo guifg=#FFFFFF guibg=#FF0000 guisp=#FF0000 gui=NONE ctermfg=15 ctermbg=196 cterm=NONE
-hi Special guifg=#A9EE8A guibg=NONE guisp=NONE gui=NONE ctermfg=156 ctermbg=NONE cterm=NONE
+hi Special guifg=#A9EE8A guibg=NONE guisp=NONE gui=NONE ctermfg=156 ctermbg=18 cterm=NONE
 "hi LineNr -- no settings --
 "hi StatusLine -- no settings -- guifg=#c0ffff guibg=#004443 guisp=#004443 gui=NONE ctermfg=159 ctermbg=23 cterm=NONE
 hi Normal guifg=#ffffff guibg=#00005f guisp=#00005f gui=NONE ctermfg=15 ctermbg=17 cterm=NONE
@@ -87,7 +88,7 @@ hi FoldColumn guifg=#d2b48c guibg=#800080 guisp=#800080 gui=NONE ctermfg=180 cte
 hi PreProc guifg=#d75fd7 guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
 "ORIG: hi PreProc guifg=#F9449A guibg=NONE guisp=NONE gui=NONE ctermfg=201 ctermbg=NONE cterm=NONE
 "hi EnumerationName -- no settings --
-hi Visual guifg=black guibg=#C0FFC0 guisp=#C0FFC0 gui=bold ctermfg=black ctermbg=157 cterm=bold
+hi Visual guifg=black guibg=#C0FFC0 guisp=#C0FFC0 gui=bold ctermfg=16 ctermbg=27 cterm=bold
 "ORIG: hi Visual guifg=#000000 guibg=#C0FFC0 guisp=#C0FFC0 gui=bold ctermfg=NONE ctermbg=157 cterm=bold
 hi MoreMsg guifg=#00ced1 guibg=#188F90 guisp=#188F90 gui=NONE ctermfg=44 ctermbg=30 cterm=NONE
 hi VertSplit guifg=#075554 guibg=#C0FFFF guisp=#C0FFFF gui=NONE ctermfg=23 ctermbg=159 cterm=NONE
@@ -97,7 +98,7 @@ hi Type guifg=#55AAFF guibg=NONE guisp=NONE gui=bold,italic ctermfg=75 ctermbg=N
 "hi DiffChange -- no settings --
 hi Cursor guifg=#e3e3e3 guibg=#D74141 guisp=#D74141 gui=NONE ctermfg=254 ctermbg=167 cterm=NONE
 "hi Error -- no settings --
-hi PMenu guifg=#004443 guibg=#067C7B guisp=#067C7B gui=NONE ctermfg=23 ctermbg=6 cterm=NONE
+hi PMenu guifg=#004443 guibg=#067C7B guisp=#067C7B gui=NONE ctermfg=159 ctermbg=236 cterm=NONE
 hi SpecialKey guifg=#BF9261 guibg=NONE guisp=NONE gui=NONE ctermfg=137 ctermbg=NONE cterm=NONE
 hi Constant guifg=#afff00 guibg=NONE guisp=NONE gui=bold ctermfg=154 ctermbg=NONE cterm=bold
 "ORIG: hi Constant guifg=#A9EE5A guibg=NONE guisp=NONE gui=bold,italic ctermfg=155 ctermbg=NONE cterm=bold
