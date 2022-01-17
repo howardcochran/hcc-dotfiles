@@ -27,14 +27,17 @@ map('o', 'kj', '<ESC>')
 -- map('x', 'kj', '<ESC>')
 
 -- I like typing the "colon" without shift!
-map('n', ';', ':')
+vim.cmd([[nnoremap ; :]])
+-- NOTE: Lua equivalent mapping doesn't update screen, so you don't see the : even though
+-- it works functionally: map('n', ';', ':')
+
 -- But I sometimes want what ; did originally, i.e. Repeat the last motion.
 map('n', '<CR>', ';')
 -- But I need <CR> to do what its normal action in quickfix or loclist, so use
 -- an autocmd to undo this locally to the each quickfix & loclist buffer. Initially,
 -- I tried to remove the <CR> mapping for the buffer, but that just made it fall back
 -- to the non-buffer-specific mapping of <CR> to ';' seen above. Instead I want <CR>
--- do whatever it s builtin function is, so map it to itself with nnoremap.
+-- do whatever its builtin function is, so map it to itself with nnoremap.
 vim.cmd([[
 augroup UnmapCRInQuickfixOrLocList
   autocmd!
@@ -188,7 +191,7 @@ map("n", "<leader>9", ":lua require('harpoon.ui').nav_file(9)<CR>")
 -- [Gitsigns Mappingsa]
 -- These are mapped in gitsigns.lua because they use a gitsigns-specific interface to define them
 
--- [Mappings Tap Pages]
+-- [Mappings Tab Pages]
 map("n", "gh", ":tabprev<CR>")
 map("n", "gl", ":tabnext<CR>")
 
