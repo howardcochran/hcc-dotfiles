@@ -17,6 +17,7 @@ local colors = {
   -- Extra colors not in theme. Reference below.
   blacker = "#0a0a0a",
   brightred = "#f04040",
+  brightwhite = '#ffffff',
 }
 colors.color_column = utils.lighten(colors.bg, 0.97)
 colors.cursorline = utils.lighten(colors.bg, 0.95)
@@ -32,15 +33,32 @@ onedarkpro.setup({
     CursorColumn = { bg = colors.cursorline }, -- NOTE: {link = 'CursorLine'} doesn't work because the original bg= key is still present after the table merge!
     IncSearch = { fg = colors.bg, bg = colors.red },
     Search = { fg = colors.bg, bg = colors.green },
+
+    -- Make the Diagnostics signs stand out more
     SignColumn = { bg = colors.blacker },
-    Error = { fg = colors.brightred },
---    LspDiagnosticsDefaultError = { fg = "#0000FF", bg = "#800000" },
-    LspDiagnosticsSignError = { fg = "#FFFFFF", bg = "#800000", style="bold" },
-    LspDiagnosticsSignWarning = { fg = "#FFFFFF", bg = utils.darken(colors.yellow, 0.5) },
-    LspDiagnosticsSignInformation = { fg = "#FFFFFF", bg = utils.darken(colors.blue, 0.5) },
-    LspDiagnosticsSignHint = { fg = "#FFFFFF", bg = utils.darken(colors.cyan, 0.5) },
---    LspDiagnosticsVirtualTextError = { fg="#FFFFFF", bg="#FF0000" },
-    MatchParen = { fg = "#FFFFFF", style = "bold,underline" }, -- The character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
+    LspDiagnosticsSignError = { fg = c.brightwhite, bg = "#800000", style="bold" },
+    LspDiagnosticsSignWarning = { fg = c.brightwhite, bg = utils.darken(colors.yellow, 0.5) },
+    LspDiagnosticsSignInformation = { fg = c.brightwhite, bg = utils.darken(colors.blue, 0.5) },
+    LspDiagnosticsSignHint = { fg = c.brightwhite, bg = utils.darken(colors.cyan, 0.5) },
+
+    -- These match the theme except the theme doesn't set a background for them.
+    -- Set it to a dark black to make it clear that it's not normal code:
+    LspDiagnosticsVirtualTextError = { fg = colors.brightred, bg = c.blacker },
+    LspDiagnosticsVirtualTextWarning = { fg = c.yellow, bg = c.blacker },
+    LspDiagnosticsVirtualTextHint = { fg = c.cyan, bg = c.blacker },
+    LspDiagnosticsVirtualTextInformation = { fg = c.blue, bg = c.blacker },
+
+    -- This theme's highlight for matching parenthesis doesn't stand out enough.
+    MatchParen = { fg = c.brightwhite, style = "bold,underline" },
+
+    -- This theme highlights active Tab page in an unreadable way (purple on light gray!). Fix:
+    TabLineFill = { bg = c.blacker },        -- Empty part of tab line (to left of last tab)
+    TabLine = { bg = c.black },              -- Unselected tab
+    TabLineSel = { fg = c.bg, bg = c.cyan }, -- Selected tab
+
+    -- This theme italicises operators by default, but that makes OR ('|') look like DIVIDE ('/').
+    -- Let's make 'em bold instead, so they stand out a little bit.
+    Operator = { style = "bold" },
 
     -- This theme has too much red by default, so let's swap some of the red & blue items
     -- Switch these from blue->red:
@@ -74,6 +92,7 @@ onedarkpro.setup({
   },
   options = {
     cursorline = true,
+    transparency = false,
   },
 })
 onedarkpro.load()
