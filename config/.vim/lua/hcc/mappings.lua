@@ -61,6 +61,22 @@ map('n', 'cu',  'ct_')
 map('n', 'yu',  'yt_')
 map('n', 'du',  'dt_')
 
+-- Make the wildmenu behave sanely. The default mappings assume your wildmenu
+-- is layed out horizontally. But we have it configured vertically (by including 'pum'
+-- in wildoptions), so the default bindings are very confusing. Fix that:
+vim.cmd([[
+  cnoremap <expr> <Up>    pumvisible() ? "\<Left>"  : "\<Up>"
+  cnoremap <expr> <Down>  pumvisible() ? "\<Right>" : "\<Down>"
+  cnoremap <expr> <Left>  pumvisible() ? "\<Up>"    : "\<Left>"
+  cnoremap <expr> <Right> pumvisible() ? "\<Down>"  : "\<Right>"
+]])
+-- NOTE: Due to probable bug as of Nvim v0.6.1, the equivalent Lua mappings,
+-- listed here, work functionally but cause rendering problems, so stick to Vim syntax for now:
+-- map('c', '<Up>',    'pumvisible() ? "\\<Left>"  : "\\<Up>"',    {expr = true})
+-- map('c', '<Down>',  'pumvisible() ? "\\<Right>" : "\\<Down>"',  {expr = true})
+-- map('c', '<Left>',  'pumvisible() ? "\\<Up>"    : "\\<Left>"',  {expr = true})
+-- map('c', '<Right>', 'pumvisible() ? "\\<Down>"  : "\\<Right>"', {expr = true})
+
 -- Really tired of accidentally starting macro recording, so let's make you
 -- have to press it twice, like you really mean it!
 -- NOTE: I didn't use Q for this because I make that toggle quickfix window
