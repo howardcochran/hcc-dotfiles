@@ -1,14 +1,22 @@
 " Configuration of Plugins managed by vim-plug:
 
 " Auto-install vim-plug and all the plugins on first run
-if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  source ~/.local/share/nvim/site/autoload/plug.vim
+if has('nvim')
+  let s:plug_script = '~/.local/share/nvim/site/autoload/plug.vim'
+  let s:plug_dir = '~/.local/share/nvim/plugged'
+else
+  let s:plug_script = '~/.vim/autoload/plug.vim'
+  let s:plug_dir = '~/.local/share/vim/plugged'
+endif
+
+if empty(glob(s:plug_script))
+  silent exe '!curl -fLo ' . s:plug_script . ' --create-dirs ' .
+    \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  silent exe 'source ' . s:plug_script
   autocmd VimEnter * PlugInstall --sync | sleep 2 | :qa
 endif
 
-call plug#begin('~/.local/share/nvim/plugged')
+call plug#begin(s:plug_dir)
 
 "" Plug 'tpope/vim-unimpaired'
 "" Plug 'tpope/vim-fugitive'

@@ -1,5 +1,9 @@
 # Fix $SHELL, since we often inherited csh's idea of $SHELL
-export SHELL=/bin/zsh
+# Only do this if it doesn't already end with /zsh, in case zsh is at a
+# non-standard path.
+if [[ ! "$SHELL" =~ ".*/zsh" ]]; then
+    export SHELL=/bin/zsh
+fi
 
 # Do this early as some setup files use whence to test for the existance
 # of things normally in ~/.local/bin
@@ -246,7 +250,7 @@ export GREP_COLOR='1;32'
 # $LESS was set to any string that did not include it!)
 export LESS='-R --ignore-case'
 
-if [[ "$(lsb_release --id -s)" == "Ubuntu" ]]; then
+if [[ "$(lsb_release --id -s)" == "Ubuntu" && -e ~/bin/pager ]]; then
 	# (Ubuntu-only) Use my wrapper script for less,
 	# which fixes --quit-if-one-screen behavior.
 	# Since less itself works correctly on Fedora, this workaround
@@ -299,12 +303,6 @@ alias psg='ps -Af | grep '
 
 alias sdis='export DISPLAY=$(cat ~/.DISPLAY)'
 
-# 256-color support with Tmux compatibility:
-# We need $TERM to be xterm-256color outside of Tmux but don't override
-# Tmux's setting of screen-256color inside Tmux
-[[ "$TERM" =~ "screen*" ]] || TERM=xterm-256color
-
-## the vars I set do not persist (treated as local no matter what I do). Grr!
 # function periodic() {
 #     #typeset -g periodic_cur periodic_prev
 #     #export periodic_cur
@@ -331,7 +329,19 @@ source ~/.zsh/plugins/plugins.zsh
 autoload -U zmv            # zmv '(*)-(*).mp3' '$2_$1.mp3'
 alias mmv='noglob zmv -W'  # mmv *.JPG *.jpg
 
+# Clear out inherited $TMUX env var if we can't actually talk to a tmux server.
+# Failure to do this prevents new tmux from starting and causes ranger to fail
+# if you enter a snap or chroot environment that preserves this variable but
+# in which the the tmux server is not reachable.
+if ! tmux info >/dev/null 2>/dev/null; then
+    unset TMUX
+    unset TMUX_PANE   # These other TMUX_ vars don't actually matter, but be tidy.
+    unset TMUX_PLUGIN_MANAGER_PATH
+    unset TMUX_VERSION
+    [[ $TERM =~ "tmux-*" ]] && TERM='xterm-256color'
+fi
+
 # Put any local / machine-specific settings into the following file:
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh || true
