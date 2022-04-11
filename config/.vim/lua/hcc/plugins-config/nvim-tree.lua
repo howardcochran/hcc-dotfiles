@@ -13,7 +13,6 @@ end
 vim.api.nvim_set_keymap("n", "<C-n>", ":lua nvim_tree_smart_toggle()<CR>", { noremap = true, silent = true } )
 
 --vim.g.nvim_tree_hide_dotfiles = 0
-vim.g.nvim_tree_indent_markers = 1
 vim.g.nvim_tree_highlight_opened_files = 1
 
 local tree_cb = require("nvim-tree.config").nvim_tree_callback
@@ -38,6 +37,11 @@ require("nvim-tree").setup {
           -- TODO: Map <Right> to expand when on directory (otherwise nothing)
           -- ... and <Left> to collapse directory (Same as <BS>: tree_cb("close_node")
         },
+    },
+    renderer = {
+      indent_markers = {
+        enable = true,
+      },
     },
   },
 }
