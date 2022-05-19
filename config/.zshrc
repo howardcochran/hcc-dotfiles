@@ -341,6 +341,15 @@ if ! tmux info >/dev/null 2>/dev/null; then
     [[ $TERM =~ "tmux-*" ]] && TERM='xterm-256color'
 fi
 
+# Try to pick the best editor that is installed
+if which nvim >/dev/null; then
+    export EDITOR=nvim
+elif which vim >/dev/null; then
+    export EDITOR=vim
+elif which vi >/dev/null; then
+    export EDITOR=vi
+fi
+
 # Put any local / machine-specific settings into the following file:
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
 
