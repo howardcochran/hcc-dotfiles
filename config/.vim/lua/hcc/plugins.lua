@@ -75,8 +75,8 @@ packer.startup(function(use)
 --   -- UI Helpers
   use {
     "kyazdani42/nvim-tree.lua",
-    cmd = { "NvimTreeOpen", "NvimTreeToggle", "NvimTreeFindFile", "NvimTreeRefresh" },
-    module = "nvim-tree",
+--    cmd = { "NvimTreeOpen", "NvimTreeToggle", "NvimTreeFindFile", "NvimTreeRefresh" },
+--    module = "nvim-tree",
     requires = "kyazdani42/nvim-web-devicons",
     config = "require'hcc/plugins-config/nvim-tree'",
   }
