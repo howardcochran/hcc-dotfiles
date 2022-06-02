@@ -12,8 +12,6 @@ end
 
 vim.api.nvim_set_keymap("n", "<C-n>", ":lua nvim_tree_smart_toggle()<CR>", { noremap = true, silent = true } )
 
-vim.g.nvim_tree_highlight_opened_files = 1
-
 local tree_cb = require("nvim-tree.config").nvim_tree_callback
 
 require("nvim-tree").setup {
@@ -39,6 +37,7 @@ require("nvim-tree").setup {
             webdev_colors = true,
             git_placement = "before",
         },
+        highlight_opened_files = "icon",
     },
     update_focused_file = {
         enable = true,
@@ -55,11 +54,6 @@ require("nvim-tree").setup {
                 -- ... and <Left> to collapse directory (Same as <BS>: tree_cb("close_node")
             },
         },
-    },
-    renderer = {
-	indent_markers = {
-	    enable = true,
-	},
     },
 }
 
