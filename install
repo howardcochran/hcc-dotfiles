@@ -114,7 +114,13 @@ promptyn() {
 opt_verbose=1
 opt_force=0
 opt_yes=0
+opt_debug=0
 opt_eatmydata=''
+opt_apt=1
+opt_locale=1
+opt_nodejs=1
+opt_nvim=1
+opt_tmux=1
 # Transform long options to short ones because getopts builtin is dumb and we don't
 # want to rely on external getopt.
 for arg in "$@"; do
@@ -123,11 +129,18 @@ for arg in "$@"; do
         "--force")     set -- "$@" "-f" ;;
         "--yes")       set -- "$@" "-y" ;;
         "--eatmydata") set -- "$@" "-e" ;;
+        "--debug")     set -- "$@" "-d" ;;
+        "--no-apt")    set -- "$@" "-a" ;;
+        "--no-locale") set -- "$@" "-l" ;;
+        "--no-nodejs") set -- "$@" "-n" ;;
+        "--no-nvim")   set -- "$@" "-m" ;;
+        "--no-tmux")   set -- "$@" "-t" ;;
+        "--minimal")   set -- "$@" "-a" "-a" "-l" "-n" "-m" "-t" ;;
         "--help")      set -- "$@" "-h" ;;
         *)             set -- "$@" $arg ;;
     esac
 done
-while getopts "fyeh" opt; do
+while getopts "fyedalnmth" opt; do
     case ${opt} in
         f)
             opt_force=1
@@ -139,11 +152,38 @@ while getopts "fyeh" opt; do
             eatmydata true || sudo apt install -y eatmydata
             eatmydata true && opt_eatmydata=eatmydata
             ;;
+        d)
+            opt_debug=1
+            PS4='+${BASH_SOURCE}: ${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): } '
+            set -x
+            ;;
+        a)
+            opt_apt=0
+            ;;
+        l)
+            opt_locale=0
+            ;;
+        n)
+            opt_nodejs=0
+            ;;
+        m)
+            opt_nvim=0
+            ;;
+        t)
+            opt_tmux=0
+            ;;
         h|\?)
             echo "Usage: $0 options"
             echo "    -f, --force     Force creation of symlinks, overwriting existing"
             echo "    -y, --yes       Answer Yes to all questions"
             echo "    -e, --eatmydata Run apt installs under eatmydata for speed"
+            echo "    -d, --debug     Give debug output (shell set -x)"
+            echo "    --no-apt        Do not run any APT commands"
+            echo "    --no-locale     Do not set up locales"
+            echo "    --no-nodejs     Do not run install Node.js"
+            echo "    --no-nvim       Do not run install Nvim"
+            echo "    --no-tmux       Do not run install tmux plugins"
+            echo "    --minimal       Equiv. to  --no-apt --no-locale --no-nodejs --no-nvim --no-tmux"
             echo "    -h, --help      Print this message"
             exit 1
     esac
@@ -176,7 +216,7 @@ required_packages_xenial=(
     python-setuptools
 )
 
-install_packages() {
+do_install_packages() {
     apt list -qq "$@"
     echo
     if is_yes || promptyn 'Install any packages in the above list that are missing?' Y; then
@@ -184,20 +224,23 @@ install_packages() {
     fi
 }
 
-cd "${scriptdir}"
+install_packages() {
+    sudo ${opt_eatmydata} apt update
+    [[ -n ${opt_eatmydata} ]] && sync
+    install_packages "${required_packages_common[@]}"
+    ubuntu_ver=$(get_ubuntu_version)
+    [[ $ubuntu_ver == "xenial" ]] && install_packages "${required_packages_xenial[@]}"
+    [[ -n ${opt_eatmydata} ]] && sync
+}
 
-sudo ${opt_eatmydata} apt update
-[[ -n ${opt_eatmydata} ]] && sync
-install_packages "${required_packages_common[@]}"
-ubuntu_ver=$(get_ubuntu_version)
-[[ $ubuntu_ver == "xenial" ]] && install_packages "${required_packages_xenial[@]}"
-[[ -n ${opt_eatmydata} ]] && sync
+cd "${scriptdir}"
+[[ $opt_apt -eq 1 ]] && install_packages
 
 setup_locale() {
     sudo locale-gen en_US.UTF-8
     sudo update-locale LANG=en_US.UTF-8
 }
-setup_locale
+[[ $opt_locale -eq 1 ]] && setup_locale
 
 git submodule update --init --recursive
 mklink config/.zsh                ~/.zsh
@@ -290,16 +333,16 @@ if [[ $ubuntu_ver == "xenial" ]]; then
     fi
 fi
 
-if is_yes || promptyn "Do you want to install tmux plugins?" Y; then
+if [[ $opt_tmux == 1 ]] && (is_yes || promptyn "Do you want to install tmux plugins?" Y); then
     # Clear $TMUX in case we're running nested. We want our own instance for plugin install.
     TMUX= ~/.tmux/plugins/tpm/bin/install_plugins
 fi
 
-if is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by coc.nvim Neovim plugin)' Y; then
+if [[ $opt_nodejs == 1 ]] && (is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by coc.nvim Neovim plugin)' Y); then
     inst_nodejs
 fi
 
-if is_yes || promptyn 'Do you want to install & configure Neovim AppImage?' Y; then
+if [[ $opt_nvim == 1 ]] && (is_yes || promptyn 'Do you want to install & configure Neovim AppImage?' Y); then
     inst_nvim
     inst_virtualenv
     inst_neovim_remote
