@@ -6,6 +6,13 @@
 # Purpose: To make it convenient to use the same ssh-agent in
 # different sessions on the same machine (e.g. console and ssh)
 
+
+# Silently do nothing if ssh-agent is not installed on this machine,
+# to avoid annoying message on the start of every shell.
+if ! command -v ssh-agent >/dev/null; then
+    return 0
+fi
+
 SINGLE_SA_SOCK_CONF="$HOME/.config/.single-sa-sock"
 DEFAULT_SA_SOCK="/tmp/.jgeisj${USER}ijwkdjy/auaghgigijaua"
 
