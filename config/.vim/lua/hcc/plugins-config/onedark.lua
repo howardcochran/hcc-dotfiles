@@ -20,7 +20,7 @@ local colors = {
   brightwhite = '#ffffff',
 }
 colors.color_column = utils.lighten(colors.bg, 0.97)
-colors.cursorline = utils.lighten(colors.bg, 0.95)
+colors.cursorline = utils.lighten(colors.bg, 0.90)
 local c = colors   -- For brevity
 
 local styles = {
@@ -29,7 +29,7 @@ local styles = {
 
 onedarkpro.setup({
   colors = colors,
-  hlgroups = {
+  highlights = {
     CursorColumn = { bg = colors.cursorline }, -- NOTE: {link = 'CursorLine'} doesn't work because the original bg= key is still present after the table merge!
     IncSearch = { fg = colors.bg, bg = colors.red },
     Search = { fg = colors.bg, bg = colors.green },
