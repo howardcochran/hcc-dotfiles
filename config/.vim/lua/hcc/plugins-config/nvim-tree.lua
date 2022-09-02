@@ -1,17 +1,3 @@
-function _G.nvim_tree_smart_toggle()
-    local buftype = vim.api.nvim_buf_get_option(0, "filetype")
-    if buftype == "" then
-        vim.cmd "NvimTreeOpen"
-    elseif buftype ~= "NvimTree" then
-        vim.cmd "NvimTreeFindFile"
-    else
-        vim.cmd "NvimTreeRefresh"
-        vim.cmd "NvimTreeToggle"
-    end
-end
-
-vim.api.nvim_set_keymap("n", "<C-n>", ":lua nvim_tree_smart_toggle()<CR>", { noremap = true, silent = true } )
-
 local tree_cb = require("nvim-tree.config").nvim_tree_callback
 
 require("nvim-tree").setup {
@@ -60,3 +46,6 @@ require("nvim-tree").setup {
 require("nvim-tree.events").on_nvim_tree_ready(function()
     vim.cmd "NvimTreeRefresh"
 end)
+
+-- Key binding to open & close NvimTree:
+vim.api.nvim_set_keymap("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true, silent = true } )
