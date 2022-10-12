@@ -96,6 +96,17 @@ vim.o.cinoptions = vim.o.cinoptions .. ',m1'
 -- Align with case label instead of the statement after it
 vim.o.cinoptions = vim.o.cinoptions .. ',l1'
 
+-- Use new LUA filetype detection
+vim.g.do_filetype_lua = 1
+
+-- Treat .bb and .bbappend files like bash (Not perfect, but reasonable)
+vim.filetype.add({
+  extension = {
+    bb = "bash",
+    bbappend = "bash",
+  },
+})
+
 -- Specify some per-filetype options:
 vim.cmd([[
   augroup hcc_indents
