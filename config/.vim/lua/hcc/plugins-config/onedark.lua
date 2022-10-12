@@ -1,5 +1,5 @@
 local onedarkpro = require('onedarkpro')
-local utils = require('onedarkpro.utils')
+local libcolor = require('onedarkpro.lib.color')
 local config = config or require("onedarkpro.config").config
 
 -- See http://neovimcraft.com/plugin/olimorris/onedark.nvim/index.html
@@ -19,8 +19,8 @@ local colors = {
   brightred = "#f04040",
   brightwhite = '#ffffff',
 }
-colors.color_column = utils.lighten(colors.bg, 0.97)
-colors.cursorline = utils.lighten(colors.bg, 0.90)
+colors.color_column = libcolor.lighten(colors.bg, 0.97)
+colors.cursorline = libcolor.lighten(colors.bg, 0.90)
 local c = colors   -- For brevity
 
 local styles = {
@@ -37,9 +37,9 @@ onedarkpro.setup({
     -- Make the Diagnostics signs stand out more
     SignColumn = { bg = colors.blacker },
     LspDiagnosticsSignError = { fg = c.brightwhite, bg = "#800000", style="bold" },
-    LspDiagnosticsSignWarning = { fg = c.brightwhite, bg = utils.darken(colors.yellow, 0.5) },
-    LspDiagnosticsSignInformation = { fg = c.brightwhite, bg = utils.darken(colors.blue, 0.5) },
-    LspDiagnosticsSignHint = { fg = c.brightwhite, bg = utils.darken(colors.cyan, 0.5) },
+    LspDiagnosticsSignWarning = { fg = c.brightwhite, bg = libcolor.darken(colors.yellow, 0.5) },
+    LspDiagnosticsSignInformation = { fg = c.brightwhite, bg = libcolor.darken(colors.blue, 0.5) },
+    LspDiagnosticsSignHint = { fg = c.brightwhite, bg = libcolor.darken(colors.cyan, 0.5) },
 
     -- These match the theme except the theme doesn't set a background for them.
     -- Set it to a dark black to make it clear that it's not normal code:
