@@ -194,7 +194,10 @@ map("n", "<F12>", ":TSHighlightCapturesUnderCursor<cr>")
 
 -- [Harpoon Mappings]
 map("n", "<leader>m", ":lua require('harpoon.mark').add_file()<CR>")
-map("n", "<A-m>", ":lua require('harpoon.ui').toggle_quick_menu()<CR>")
+require('harpoon')  -- required to call harpoon_setup() below
+-- this first calls harpoon_setup() to ensure that the harpoon window will is
+-- the right size and then it toggles the window
+map("n", "<A-m>", ":lua harpoon_setup()<CR>:lua require('harpoon.ui').toggle_quick_menu()<CR>")
 map("n", "<A-j>", ":lua require('harpoon.ui').nav_next()<CR>")
 map("n", "<A-k>", ":lua require('harpoon.ui').nav_prev()<CR>")
 map("n", "<leader>0", ":lua require('harpoon.ui').nav_file(0)<CR>")
