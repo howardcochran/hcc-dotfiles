@@ -281,7 +281,7 @@ inst_nodejs() {
 }
 
 inst_nvim() {
-    local neovim_version=nightly
+    local neovim_version=stable
     echo Installing Neovim ${neovim_version} AppImage in ~/.local/bin
     mkdir -p ~/.local/bin/
     curl -L -o ~/.local/bin/nvim-${neovim_version}.appimage \
