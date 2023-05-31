@@ -43,9 +43,5 @@ require("nvim-tree").setup {
     },
 }
 
-require("nvim-tree.events").on_nvim_tree_ready(function()
-    vim.cmd "NvimTreeRefresh"
-end)
-
 -- Key binding to open & close NvimTree:
 vim.api.nvim_set_keymap("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true, silent = true } )
