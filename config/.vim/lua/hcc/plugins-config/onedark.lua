@@ -34,13 +34,6 @@ onedarkpro.setup({
     IncSearch = { fg = colors.bg, bg = colors.red },
     Search = { fg = colors.bg, bg = colors.green },
 
-    -- Make the Diagnostics signs stand out more
-    SignColumn = { bg = colors.blacker },
-    LspDiagnosticsSignError = { fg = c.brightwhite, bg = "#800000", style="bold" },
-    LspDiagnosticsSignWarning = { fg = c.brightwhite, bg = libcolor.darken(colors.yellow, 0.5) },
-    LspDiagnosticsSignInformation = { fg = c.brightwhite, bg = libcolor.darken(colors.blue, 0.5) },
-    LspDiagnosticsSignHint = { fg = c.brightwhite, bg = libcolor.darken(colors.cyan, 0.5) },
-
     -- These match the theme except the theme doesn't set a background for them.
     -- Set it to a dark black to make it clear that it's not normal code:
     LspDiagnosticsVirtualTextError = { fg = colors.brightred, bg = c.blacker },
