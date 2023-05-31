@@ -55,9 +55,10 @@ vim.o.clipboard = 'unnamed,unnamedplus'
 
 vim.o.backspace = 'indent,eol,start' -- allow backspacing over everything in insert mode
 
--- make the completion mode behave more like bash -- complete the longest
--- string, then list the alternatives in a popup menu.
-vim.o.wildmode = 'longest:full'
+-- make command line completion work nicely -- complete the longest common
+-- string, then list the alternatives in a popup menu, allowing you to cycle
+-- between siblings with tab/shift-tab or arrow keys.
+vim.o.wildmode = 'longest:full,full'
 vim.o.wildmenu = true
 vim.o.wildoptions = 'pum,tagfile'  -- pum = Make the wild menu vertical
 
