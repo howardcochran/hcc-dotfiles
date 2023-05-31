@@ -1,5 +1,5 @@
 local onedarkpro = require('onedarkpro')
-local libcolor = require('onedarkpro.lib.color')
+local helpers = require('onedarkpro.helpers')
 local config = config or require("onedarkpro.config").config
 
 -- See http://neovimcraft.com/plugin/olimorris/onedark.nvim/index.html
@@ -19,8 +19,8 @@ local colors = {
   brightred = "#f04040",
   brightwhite = '#ffffff',
 }
-colors.color_column = libcolor.lighten(colors.bg, 0.97)
-colors.cursorline = libcolor.lighten(colors.bg, 0.90)
+colors.color_column = helpers.lighten(colors.bg, 2.5)
+colors.cursorline = helpers.lighten(colors.bg, 5)
 local c = colors   -- For brevity
 
 local styles = {
