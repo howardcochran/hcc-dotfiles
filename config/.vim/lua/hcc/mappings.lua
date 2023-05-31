@@ -63,12 +63,16 @@ map('n', 'du',  'dt_')
 
 -- Make the wildmenu behave sanely. The default mappings assume your wildmenu
 -- is layed out horizontally. But we have it configured vertically (by including 'pum'
--- in wildoptions), so the default bindings are very confusing. Fix that:
+-- in wildoptions), so the default bindings are very confusing.
+-- Also, while the wildmenu is visibile, remap enter to down so that enter can
+-- be used to advance to the next submenu (rather than open the selected
+-- file/directory).
 vim.cmd([[
   cnoremap <expr> <Up>    pumvisible() ? "\<Left>"  : "\<Up>"
   cnoremap <expr> <Down>  pumvisible() ? "\<Right>" : "\<Down>"
   cnoremap <expr> <Left>  pumvisible() ? "\<Up>"    : "\<Left>"
   cnoremap <expr> <Right> pumvisible() ? "\<Down>"  : "\<Right>"
+  cnoremap <expr> <CR> pumvisible() ? "\<Down>"  : "\<CR>"
 ]])
 -- NOTE: Due to probable bug as of Nvim v0.6.1, the equivalent Lua mappings,
 -- listed here, work functionally but cause rendering problems, so stick to Vim syntax for now:
