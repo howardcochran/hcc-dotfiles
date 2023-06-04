@@ -1,5 +1,8 @@
 #!/bin/bash
 
+PS4='+${BASH_SOURCE}: ${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): } '
+set -x
+
 scriptdir=$(realpath $(dirname "$0"))
 
 get_ubuntu_version() {
@@ -227,7 +230,7 @@ do_install_packages() {
 install_packages() {
     sudo ${opt_eatmydata} apt update
     [[ -n ${opt_eatmydata} ]] && sync
-    install_packages "${required_packages_common[@]}"
+    do_install_packages "${required_packages_common[@]}"
     ubuntu_ver=$(get_ubuntu_version)
     [[ $ubuntu_ver == "xenial" ]] && install_packages "${required_packages_xenial[@]}"
     [[ -n ${opt_eatmydata} ]] && sync
