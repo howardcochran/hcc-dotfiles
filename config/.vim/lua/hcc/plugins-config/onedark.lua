@@ -1,5 +1,5 @@
 local onedarkpro = require('onedarkpro')
-local libcolor = require('onedarkpro.lib.color')
+local helpers = require('onedarkpro.helpers')
 local config = config or require("onedarkpro.config").config
 
 -- See http://neovimcraft.com/plugin/olimorris/onedark.nvim/index.html
@@ -19,8 +19,8 @@ local colors = {
   brightred = "#f04040",
   brightwhite = '#ffffff',
 }
-colors.color_column = libcolor.lighten(colors.bg, 0.97)
-colors.cursorline = libcolor.lighten(colors.bg, 0.90)
+colors.color_column = helpers.lighten(colors.bg, 2.5)
+colors.cursorline = helpers.lighten(colors.bg, 5)
 local c = colors   -- For brevity
 
 local styles = {
@@ -33,13 +33,6 @@ onedarkpro.setup({
     CursorColumn = { bg = colors.cursorline }, -- NOTE: {link = 'CursorLine'} doesn't work because the original bg= key is still present after the table merge!
     IncSearch = { fg = colors.bg, bg = colors.red },
     Search = { fg = colors.bg, bg = colors.green },
-
-    -- Make the Diagnostics signs stand out more
-    SignColumn = { bg = colors.blacker },
-    LspDiagnosticsSignError = { fg = c.brightwhite, bg = "#800000", style="bold" },
-    LspDiagnosticsSignWarning = { fg = c.brightwhite, bg = libcolor.darken(colors.yellow, 0.5) },
-    LspDiagnosticsSignInformation = { fg = c.brightwhite, bg = libcolor.darken(colors.blue, 0.5) },
-    LspDiagnosticsSignHint = { fg = c.brightwhite, bg = libcolor.darken(colors.cyan, 0.5) },
 
     -- These match the theme except the theme doesn't set a background for them.
     -- Set it to a dark black to make it clear that it's not normal code:
