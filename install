@@ -227,24 +227,24 @@ do_install_packages() {
     fi
 }
 
-install_packages() {
-    sudo ${opt_eatmydata} apt update
-    [[ -n ${opt_eatmydata} ]] && sync
-    do_install_packages "${required_packages_common[@]}"
-    ubuntu_ver=$(get_ubuntu_version)
-    [[ $ubuntu_ver == "xenial" ]] && install_packages "${required_packages_xenial[@]}"
-    [[ -n ${opt_eatmydata} ]] && sync
-}
-
-cd "${scriptdir}"
-[[ $opt_apt -eq 1 ]] && install_packages
-
-setup_locale() {
-    sudo locale-gen en_US.UTF-8
-    sudo update-locale LANG=en_US.UTF-8
-}
-[[ $opt_locale -eq 1 ]] && setup_locale
-
+## install_packages() {
+##     sudo ${opt_eatmydata} apt update
+##     [[ -n ${opt_eatmydata} ]] && sync
+##     do_install_packages "${required_packages_common[@]}"
+##     ubuntu_ver=$(get_ubuntu_version)
+##     [[ $ubuntu_ver == "xenial" ]] && install_packages "${required_packages_xenial[@]}"
+##     [[ -n ${opt_eatmydata} ]] && sync
+## }
+## 
+## cd "${scriptdir}"
+## [[ $opt_apt -eq 1 ]] && install_packages
+## 
+## setup_locale() {
+##     sudo locale-gen en_US.UTF-8
+##     sudo update-locale LANG=en_US.UTF-8
+## }
+## [[ $opt_locale -eq 1 ]] && setup_locale
+## 
 git submodule update --init --recursive
 mklink config/.zsh                ~/.zsh
 mklink config/.zshrc              ~/.zshrc
