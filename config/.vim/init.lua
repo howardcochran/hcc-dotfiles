@@ -2,7 +2,7 @@ require('hcc/options')
 if vim.env['NVIM_BASIC_CONFIG'] then
   require('hcc/plugins-basic')
 else
-  require('hcc/plugins')
+  require('hcc/lazy')
 end
 require('hcc/mappings')
 require('hcc/highlight-trailing-whitespace')
