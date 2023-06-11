@@ -14,9 +14,10 @@ local function map(mode, lhs, rhs, opts)
 end
 
 vim.g.mapleader = ' '
--- Quick way to get to Normal mode without moving off home row
-map('i', 'jk', '<ESC>')
-map('i', 'kj', '<ESC>')
+-- -- Quick way to get to Normal mode without moving off home row
+-- Disable for Insert mode cuz better-escape plugin handles that.
+-- map('i', 'jk', '<ESC>')
+-- map('i', 'kj', '<ESC>')
 map('c', 'jk', '<ESC>')
 map('c', 'kj', '<ESC>')
 map('o', 'jk', '<ESC>')
