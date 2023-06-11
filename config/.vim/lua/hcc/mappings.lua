@@ -220,7 +220,7 @@ map("n", "gH", ":tabfirst<CR>")
 map("n", "gL", ":tablast<CR>")
 -- Don't want to override gn
 map("n", "g<Enter>", ":tabnew<CR>")
-map("n", "gc", ":tabclose<CR>")
+map("n", "gC", ":tabclose<CR>")  -- Not 'gc' cuz Comment.nvim has mapping that start with 'gc'
 
 -- Override start Select mode blockwise)
 map("n", "g<C-H>", ":tabmove -1<CR>")
