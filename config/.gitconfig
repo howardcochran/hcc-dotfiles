@@ -62,7 +62,7 @@
 	# FIXME: Trying to print the submodule name on each line, but the quoting is just too hard!
 	#sgrep2 = "!f() { git grep \"$1\"; git submodule foreach 'git grep SRCREV_m $foo | awk -v name=$name '\''{ print name, ":",$0; }'\''; echo '$path' ----------- ; true' }; f"
 
-	sui = submodule update --init -j 48
+	sui = submodule update --init -j 48 --recursive
         f = fetch -j 48 --prune
 
 [gitmls]
