@@ -43,14 +43,14 @@ function M.config()
       }),
       ['<Esc>'] = cmp.mapping({
         i = function(fallback)
-          if cmp.visible() then
+          if cmp.visible() and cmp.get_active_entry() then
             cmp.abort()
           else
             fallback()
           end
         end,
         c = function(fallback)
-          if cmp.visible() then
+          if cmp.visible() and cmp.get_active_entry() then
             cmp.close()
           else
             fallback()
@@ -60,11 +60,15 @@ function M.config()
       ['<Up>'] = cmp.mapping({i = cmp.mapping.select_prev_item()}),
       -- Special function needed to keep <Down> from skipping first entry when no selection yet.
       ['<Down>'] = cmp.mapping(
-        function(callback)
-          if cmp.get_active_entry() then
-            cmp.select_next_item()
+        function(fallback)
+          if cmp.visible() then
+            if cmp.get_active_entry() then
+              cmp.select_next_item()
+            else
+              cmp.select_next_item({count = 0})
+            end
           else
-            cmp.select_next_item({count = 0})
+            fallback()
           end
         end,
         { 'i', 'c', 's' }
