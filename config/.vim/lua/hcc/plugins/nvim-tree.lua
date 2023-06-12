@@ -26,6 +26,11 @@ function M.config()
 --      on_attach = on_attach,
     hijack_cursor = true,
     update_cwd = true,
+    actions = {
+      open_file = {
+        resize_window = false,  -- Do not restore tree width to default when you open a file - that is ANNOYING!
+      },
+    },
     diagnostics = {
       enable = true,
       show_on_dirs = true,
