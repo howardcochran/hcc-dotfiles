@@ -284,3 +284,7 @@ nmap("g<M-h>", ":call MoveToPrevTab()<CR>")
 -- practice.
 nmap("<M-g><M-l>", ":call MoveToNextTab()<CR>")
 nmap("<M-g><M-h>", ":call MoveToPrevTab()<CR>")
+
+-- Map Ctrl-/, a common IDE comment mapping, to Comment.nvim's comment mappings
+nmap("<C-_>", "gcc", { noremap = false })
+vmap("<C-_>", "gc", { noremap = false })
