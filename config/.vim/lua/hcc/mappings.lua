@@ -57,6 +57,9 @@ nmap('cu',  'ct_')
 nmap('yu',  'yt_')
 nmap('du',  'dt_')
 
+-- Dont' let single-character deletions clobber the last cut (i.e. " register)
+nmap('x', '"-x')
+
 -- Make the wildmenu behave sanely. The default mappings assume your wildmenu
 -- is layed out horizontally. But we have it configured vertically (by including 'pum'
 -- in wildoptions), so the default bindings are very confusing.
