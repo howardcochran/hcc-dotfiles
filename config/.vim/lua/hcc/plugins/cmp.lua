@@ -119,6 +119,19 @@ function M.config()
       { name = 'buffer', keyword_length = 3 },
     },
     completion = { completeopt = 'menu,menuone,noinsert' },
+
+    window = {
+      completion = {
+        border = 'rounded',
+      },
+      documentation = {
+        -- documentation popup window normally has colors that blend with background.
+        -- Make it use the Pmenu colors, just like the completion popup does by default.
+        winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu',
+        border = 'rounded',
+      },
+    },
+
     formatting = {
       format = lspkind.cmp_format({
         -- with_text = false,
