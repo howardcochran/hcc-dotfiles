@@ -41,6 +41,9 @@ onedarkpro.setup({
     IncSearch = { fg = colors.bg, bg = colors.red },
     Search = { fg = colors.bg, bg = colors.green },
 
+    Pmenu = { bg = "#202020" },
+    PmenuSel = { fg = colors.brightwhite, bg = "#0040a0" },
+
     -- These match the theme except the theme doesn't set a background for them.
     -- Set it to a dark black to make it clear that it's not normal code:
     LspDiagnosticsVirtualTextError = { fg = colors.brightred, bg = c.blacker },
