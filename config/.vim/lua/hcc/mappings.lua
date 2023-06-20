@@ -187,6 +187,10 @@ nmap("<leader>ss]", ":Telescope tags<cr>")
 --map("n", "", ":Telescope tagstack<cr>")
 nmap("<leader>sts", ":Telescope treesitter<cr>")
 nmap("<leader>svo", ":Telescope vim_options<cr>")
+-- Clipboard history:  mnemonic: ' has to do with registers
+nmap("<leader>s'", ":Telescope neoclip default extra=star,plus<cr>")
+-- Macro history: mnemonic: 2 is un-shifted @, which has to do with macros. Prefer q, but was taken by quickfix
+nmap("<leader>s2", ":Telescope macroscope<cr>")
 
 -- See Syntax Highlight under Cursor in a pop-up windows
 nmap("<F12>", ":TSHighlightCapturesUnderCursor<cr>")
