@@ -34,24 +34,16 @@ function M.config()
       end,
     },
     mapping = {
-      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }), -- Start manual completion
+      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i' }),
+      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i' }),
+      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i' }), -- Start manual completion
       ['<C-e>'] = cmp.mapping({
         i = cmp.mapping.abort(),
-        c = cmp.mapping.close(),
       }),
       ['<Esc>'] = cmp.mapping({
         i = function(fallback)
           if cmp.visible() and cmp.get_active_entry() then
             cmp.abort()
-          else
-            fallback()
-          end
-        end,
-        c = function(fallback)
-          if cmp.visible() and cmp.get_active_entry() then
-            cmp.close()
           else
             fallback()
           end
@@ -71,7 +63,7 @@ function M.config()
             fallback()
           end
         end,
-        { 'i', 'c', 's' }
+        { 'i', 's' }
       ),
       ['<CR>'] = cmp.mapping({
         -- Only complete the item if explicitly selected (typ. via <Down> or <Tab>)
@@ -86,7 +78,6 @@ function M.config()
           end
         end,
         s = cmp.mapping.confirm({ select = true }),
-        c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
       }),
       ['<Tab>'] = cmp.mapping(
         function(fallback)
