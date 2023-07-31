@@ -303,6 +303,8 @@ alias psg='ps -Af | grep '
 
 alias sdis='export DISPLAY=$(cat ~/.DISPLAY)'
 
+alias jf='sudo journalctl -n 9999 -fu'
+
 # function periodic() {
 #     #typeset -g periodic_cur periodic_prev
 #     #export periodic_cur
