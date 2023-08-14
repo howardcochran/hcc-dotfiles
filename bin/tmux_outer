@@ -1,0 +1,26 @@
+#!/usr/bin/sh
+
+BOT=${1:-"barXXX"}
+IP=$(ip addr show enp62s0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+
+tmux has-session -t "outer"
+if [ $? != 0 ]; then
+
+    tmux new-session -d -s "outer" -n "source" -c ~/src/bar_truck/ros/common
+    tmux send "v" Enter
+    tmux split-window -v -c ~/src/bar_truck/ros/common
+    tmux new-window -n "yocto" -c ~/src/bar_truck/yocto/
+    tmux send "source ./yocto-setup" Enter
+    tmux new-window -n "${BOT}"
+    if [ ${BOT} != "barXXX" ]; then
+        tmux send "sshbar ${BOT}" Enter
+        tmux send "tmx charles" Enter
+    fi
+    tmux new-window -n "docs" -c ~/Documents
+    tmux new-window -n "rviz"
+    tmux send "export ROS_MASTER_URI=http://${BOT}:11311; export ROS_HOSTNAME=${IP}" Enter
+    tmux send "~/src/ros-chrt/ros zsh"
+    tmux select-window -t "outer":"source"
+    tmux select-pane -U
+fi
+tmux attach-session -d -t "outer"
