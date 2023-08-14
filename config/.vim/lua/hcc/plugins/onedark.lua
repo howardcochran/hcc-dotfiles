@@ -12,7 +12,7 @@ local config = config or require("onedarkpro.config").config
 -- See http://neovimcraft.com/plugin/olimorris/onedark.nvim/index.html
 local colors = {
   -- Unless otherwise noted, these are same as the theme. Copied here so can reference below.
-  bg = "#000038",     -- Darker and bluer than the theme
+  bg = "#060e1f", -- super dark blue
   -- red = "#e06c75", (Orig)
   red = "#ff4060",
   yellow = "#e5c07b",
@@ -20,14 +20,14 @@ local colors = {
   cyan = "#56b6c2",
   blue = "#61afff",
   black = "#1e1e1e",
-  selection = "#002080", -- Much Bluer than the medium gray in the theme
+  selection = "#2d3c52", -- light "translucent" gray
   -- Extra colors not in theme. Reference below.
   blacker = "#0a0a0a",
   brightred = "#f04040",
   brightwhite = '#ffffff',
 }
-colors.color_column = helpers.lighten(colors.bg, 2.5)
 colors.cursorline = helpers.lighten(colors.bg, 5)
+colors.color_column = colors.cursorline
 local c = colors   -- For brevity
 
 local styles = {
