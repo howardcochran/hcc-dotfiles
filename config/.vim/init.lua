@@ -8,6 +8,7 @@ require('hcc/mappings')
 require('hcc/highlight-trailing-whitespace')
 require('hcc/toggle-background-in-insert-mode')
 require('hcc/shell-like-mappings').setup()
+require('hcc/install-all-plugins-sync')
 
 -- DiffOrig: Diff file with on-disk version
 -- TODO: Rewrite in Lua?  Do it better?
