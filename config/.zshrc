@@ -340,6 +340,15 @@ elif which vi >/dev/null; then
     export EDITOR=vi
 fi
 
+# LANG needs to be set to some *.UTF-8 value in order for UTF-8 characters
+# to show up correctly in tmux (e.g. line drawing characters used in the
+# output of `systemcl status` and in pop-up borders in nvim).
+# On Ubuntu, LANG is set this way by default, but not in many other
+# environments, like Docker containers, debootstrap chroots, or Yocto.
+if [[ -z $LANG ]]; then
+    export LANG='en_US.UTF-8'
+fi
+
 # Put any local / machine-specific settings into the following file:
 [ -f ~/.zshrc-local ] && source ~/.zshrc-local || true
 
