@@ -32,11 +32,6 @@ function M.config()
     ui = {
       border = 'rounded',
       check_outdated_packages_on_open = true,
---      icons = {
---        package_installed = '◍',
---        package_pending = '◍',
---        package_uninstalled = '◍',
---      },
     },
     log_level = vim.log.levels.INFO,
     max_concurrent_installers = 8,
@@ -51,9 +46,16 @@ function M.config()
       'dotls',
       --'rust_analyzer',  # Not Yet
       'html',
+      'jqls',
       'jsonls',
+      -- 'ltex',      -- LaTeX: Too big to turn on by default for now (>230MiB)
+      'lua_ls',
+      'marksman',  -- Markdown
+      'neocmake',
       'pyright',
-      'yamlls',  -- TODO: Add some schema support, .sls ft, etc
+      -- 'salt_ls', Fails install: /home/bar/.local/share/nvim/mason/packages/salt-lsp/venv/bin/python failed with exit code 1 and signal 0
+      'sqlls',
+      'yamlls',    -- TODO: Add some schema support, .sls ft, etc
     },
     automatic_installation = true,
 
