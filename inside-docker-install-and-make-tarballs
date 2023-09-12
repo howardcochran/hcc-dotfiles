@@ -1,0 +1,107 @@
+#!/bin/bash
+
+die() {
+    printf >&2 "\n\n%s\n" "FATAL: $@"
+    exit 1
+}
+
+is_inside_docker() {
+    # Not perfectly robust, cuz this could exist outside of docker, but it
+    # seems to be the most widely documented way nonetheless. The "see if
+    # /proc/1/cgroup contains docker" method does not work on Ubuntu 22.04
+    # because that file contains nothing but "0::/" inside Docker.
+    [[ -e /.dockerenv ]]
+}
+
+relative_symlinks_recursively() {
+    local root_dir="$1"
+    local src
+    local dst
+    local relative_dst
+
+    find "${root_dir}" -type l | while read src; do
+        dst="$(readlink $src)"
+        [[ ${dst} = /* ]] || continue
+        relative_dst="$(realpath --relative-to=$(dirname $src) $dst)"
+        echo "Relativizing symlink: ${relative_dst}"
+        ln -sf "${relative_dst}" "${src}"
+    done
+}
+
+# Hack because I'm not convinced that the headless nvim plugin
+# installation is free of race conditions.
+hack_run_interactive_shell() {
+cat <<EOF
+
+*** Starting shell so you can inspect the installation. ***
+*** Exit this shell to proceed to create the tarballs.  ***
+
+EOF
+    PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+    bash
+
+    # Run this hack again in case more relative symlinks were created during interactive bash.
+    relative_symlinks_recursively ~/.local
+}
+
+cd
+
+dotfiles_dir=./src/hcc-dotfiles
+output_dir=${dotfiles_dir}/release
+
+if ! is_inside_docker; then
+    die 'This script is meant to run inside Docker. Run `create-release-tarballs`
+       to build the Docker container and run this script therein.'
+fi
+
+if [[ -e /tmp/already-run ]]; then
+    echo "$0 has already been run in this container. Dropping to a shell."
+    exec /bin/bash
+fi
+touch /tmp/already-run
+
+${dotfiles_dir}/install -y --debug --no-locale
+
+# Hack to workaround Nvim's "mason" plugin creating a number of absolute
+# symlinks, which will be broken if this installation is extracted to a
+# different home account, so relativize them.
+relative_symlinks_recursively ~/.local
+
+hack_run_interactive_shell
+
+set -x
+
+mkdir -p ${output_dir} || die "Cannot create directory ${output_dir}"
+
+tar -I zstd -cf ${output_dir}/10-hcc-dotfiles-src.tar.zst --exclude-from=- . <<END_EXCLUDE
+.bash_logout
+.bashrc
+.bash_history
+.cache
+.cargo
+.fzf*
+.local
+.npm
+.rustup
+.tmux/plugins
+.zsh_history
+.zshenv
+go
+${output_dir#./}/*
+END_EXCLUDE
+
+[[ $? -eq 0 ]] || die "Failed to create output tarball: 10-hcc-dotfiles-src.tar.zst"
+
+tar -I zstd -cf ${output_dir}/20-hcc-dotfiles-bin.tar.zst --exclude-from=- .local go .fzf* .cargo .rustup .tmux/plugins <<END_EXCLUDE
+.local/bin/nvim*
+.cargo/registry
+.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc
+END_EXCLUDE
+
+[[ $? -eq 0 ]] || die "Failed to create output tarball: 20-hcc-dotfiles-bin.tar.zst"
+
+# Put nvim itself in a separate tarball so that user can exclude this one if just
+# using the OS's version of nvim.
+tar -I zstd -cf ${output_dir}/30-hcc-dotfiles-nvim.tar.zst .local/bin/nvim*
+
+[[ $? -eq 0 ]] || die "Failed to create output tarball: 30-hcc-dotfiles-nvim.tar.zst"

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cd $(dirname $0)
+docker rm hcc-dotfiles-release-container || true
+
+# Read Dockerfile from stdin because we don't need to overhead of build context
+docker build -t hcc-dotfiles-release - < Dockerfile
+
+# This script is not normally called with parameters, but we add "$@" to the docker run
+# invocation for some debugging scenarios, such as spcifying "bash".
+docker run --name hcc-dotfiles-release-container \
+    -v `pwd`:/home/dotbuilder/src/hcc-dotfiles \
+    --net host \
+    -it \
+    hcc-dotfiles-release \
+    "$@"
