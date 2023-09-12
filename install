@@ -206,11 +206,13 @@ required_packages_common=(
     git
     curl
     fuse          # Needed by nvim, since it is an AppImage
+    golang        # Needed by jqls nvim language server
     python3-dev
     python3-pip
     python3-virtualenv
     python3-venv  # Needed by various nvim language servers
     python3-setuptools
+    ripgrep       # Needed by nvim Telescope grep
     tmux
     zsh
 )
