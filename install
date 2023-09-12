@@ -192,6 +192,7 @@ while getopts "fyedalnmMth" opt; do
             opt_tmux=0
             ;;
         h|\?)
+            set +x
             echo "Usage: $0 options"
             echo "    -f, --force     Force creation of symlinks, overwriting existing"
             echo "    -y, --yes       Answer Yes to all questions"
@@ -199,7 +200,7 @@ while getopts "fyedalnmMth" opt; do
             echo "    -d, --debug     Give debug output (shell set -x)"
             echo "    --no-apt        Do not run any APT commands"
             echo "    --no-locale     Do not set up locales"
-            echo "    --no-nodejs     Do not run install Node.js"
+            echo "    --no-nodejs     Do not run install Node.js (for this user)"
             echo "    --no-nvim       Do not run install Nvim"
             echo "    --no-nvim-plugins Do not run install Nvim plugins"
             echo "    --no-tmux       Do not run install tmux plugins"
@@ -217,11 +218,11 @@ required_packages_common=(
     locales
     git
     curl
-    fuse  # Needed by nvim, since it is an AppImage
+    fuse          # Needed by nvim, since it is an AppImage
     python3-dev
     python3-pip
     python3-virtualenv
-    python3-venv  # Needed by coc-jedi Neovim plugin
+    python3-venv  # Needed by various nvim language servers
     python3-setuptools
     tmux
     zsh
@@ -291,10 +292,8 @@ inst_nodejs() {
     local script_name=$(mktemp /tmp/nodejs-install-script.XXXXXX)
     curl -Ls install-node.now.sh/lts >> ${script_name}
     chmod +x ${script_name}
-    local yes_arg=''
-    is_yes && yes_arg='--yes'
     local prefix=~/.local   # Put in temp variable to cause tilde expansion
-    ${script_name} --prefix=${prefix} ${yes_arg}
+    ${script_name} --prefix=${prefix} --yes
 }
 
 inst_nvim() {
@@ -358,7 +357,7 @@ if [[ $opt_tmux == 1 ]] && (is_yes || promptyn "Do you want to install tmux plug
     TMUX= ~/.tmux/plugins/tpm/bin/install_plugins
 fi
 
-if [[ $opt_nodejs == 1 ]] && (is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by coc.nvim Neovim plugin)' Y); then
+if [[ $opt_nodejs == 1 ]] && (is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by various Neovim plugins)' Y); then
     inst_nodejs
 fi
 
