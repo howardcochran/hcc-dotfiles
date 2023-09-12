@@ -1,0 +1,83 @@
+#!/bin/bash
+
+die() {
+    printf >&2 "\n\n%s\n" "FATAL: $@"
+    exit 1
+}
+
+relative_symlinks_recursively() {
+    local root_dir="$1"
+    local src
+    local dst
+    local relative_dst
+
+    find "${root_dir}" -type l | while read src; do
+        dst="$(readlink $src)"
+        [[ ${dst} = /* ]] || continue
+        relative_dst="$(realpath --relative-to=$(dirname $src) $dst)"
+        echo "Relativizing symlink: ${relative_dst}"
+        ln -sf "${relative_dst}" "${src}"
+    done
+}
+
+# Hack because I'm not convinced that the headless nvim plugin
+# installation is free of race conditions.
+hack_run_interactive_shell() {
+cat <<EOF
+
+*** Starting shell so you can inspect the installation. ***
+*** Exit this shell to proceed to create the tarballs.  ***
+
+EOF
+    PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+    bash
+
+    # Run this hack again in case more relative symlinks were created during interactive bash.
+    relative_symlinks_recursively ~/.local
+}
+
+dotfiles_dir=./src/hcc-dotfiles
+output_dir=${dotfiles_dir}/release
+
+if [[ -e /tmp/already-run ]]; then
+    echo "$0 has already been run in this container. Dropping to a shell."
+    exec /bin/bash
+fi
+touch /tmp/already-run
+
+${dotfiles_dir}/install -y --debug --no-locale
+
+# Hack to workaround Nvim's "mason" plugin creating a number of absolute
+# symlinks, which will be broken if this installation is extracted to a
+# different home account, so relativize them.
+relative_symlinks_recursively ~/.local
+
+hack_run_interactive_shell
+
+set -x
+
+mkdir -p ${output_dir} || die "Cannot create directory ${output_dir}"
+
+tar -I zstd -cf ${output_dir}/10-hcc-dotfiles-src.tar.zst --exclude-from=- . <<END_EXCLUDE
+.bash_logout
+.bashrc
+.bash_history
+.cache
+.cargo
+.local
+.npm
+.rustup
+.zsh_history
+.zshenv
+go
+${output_dir#./}/*
+END_EXCLUDE
+
+[[ $? -eq 0 ]] || die "Failed to create output tarball: 10-hcc-dotfiles-src.tar.zst"
+
+tar -I zstd -cf ${output_dir}/20-hcc-dotfiles-inst.tar.zst --exclude-from=- .local go .fzf* .cargo .rustup <<END_EXCLUDE
+.cargo/registry
+.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc
+END_EXCLUDE
+
+[[ $? -eq 0 ]] || die "Failed to create output tarball: 20-hcc-dotfiles-inst.tar.zst"

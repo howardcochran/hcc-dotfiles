@@ -6,3 +6,5 @@ config/.vim/.netrwhist
 
 # This is a symlink created by snap_dev_tools repo, so we don't track it
 config/.zsh/zsh.d/bar-develop.zsh
+
+/release/
