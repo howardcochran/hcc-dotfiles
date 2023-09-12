@@ -114,6 +114,7 @@ opt_eatmydata=''
 opt_apt=1
 opt_locale=1
 opt_nodejs=1
+opt_rust=1
 opt_nvim=1
 opt_nvim_plugins=1
 opt_tmux=1
@@ -129,6 +130,7 @@ for arg in "$@"; do
         "--no-apt")    set -- "$@" "-a" ;;
         "--no-locale") set -- "$@" "-l" ;;
         "--no-nodejs") set -- "$@" "-n" ;;
+        "--no-rust")   set -- "$@" "-r" ;;
         "--no-nvim")   set -- "$@" "-m" ;;
         "--no-nvim-plugins")   set -- "$@" "-M" ;;
         "--no-tmux")   set -- "$@" "-t" ;;
@@ -163,6 +165,9 @@ while getopts "fyedalnmth" opt; do
         n)
             opt_nodejs=0
             ;;
+        r)
+            opt_rust=0
+            ;;
         m)
             opt_nvim=0
             ;;
@@ -182,6 +187,7 @@ while getopts "fyedalnmth" opt; do
             echo "    --no-apt        Do not run any APT commands"
             echo "    --no-locale     Do not set up locales"
             echo "    --no-nodejs     Do not run install Node.js (for this user)"
+            echo "    --no-rust       Do not run install rust & cargo (for this user)"
             echo "    --no-nvim       Do not run install Nvim"
             echo "    --no-nvim-plugins Do not run install Nvim plugins"
             echo "    --no-tmux       Do not run install tmux plugins"
@@ -276,6 +282,15 @@ inst_nodejs() {
     ${script_name} --prefix=${prefix} --yes
 }
 
+inst_rust() {
+    local script_name=$(mktemp /tmp/rust-install-script.XXXXXX)
+    curl -Ls https://sh.rustup.rs >> ${script_name}
+    chmod +x ${script_name}
+    ${script_name} -y
+    # Make sure that THIS shell has cargo in $PATH so that nvim setup can work below.
+    source ~/.cargo/env
+}
+
 inst_nvim() {
     local neovim_version=stable
     echo Installing Neovim ${neovim_version} AppImage in ~/.local/bin
@@ -320,6 +335,10 @@ fi
 
 if [[ $opt_nodejs == 1 ]] && (is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by various Neovim plugins)' Y); then
     inst_nodejs
+fi
+
+if [[ $opt_rust == 1 ]] && (is_yes || promptyn 'Do you want to install rust for this user (Needed by various Neovim plugins)' Y); then
+    inst_rust
 fi
 
 if [[ $opt_nvim == 1 ]] && (is_yes || promptyn 'Do you want to install Neovim AppImage?' Y); then
