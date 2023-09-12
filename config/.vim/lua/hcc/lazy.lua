@@ -22,7 +22,7 @@ require("lazy").setup({
   ui = { wrap = "true" },
   change_detection = {
     enabled = true,
-    notify = true,
+    notify = false,
   },
   debug = false,
   performance = {
