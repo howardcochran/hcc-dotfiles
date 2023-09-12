@@ -244,21 +244,9 @@ export HISTFILE=$HOME/.zsh_history
 alias grep='grep --color=auto'
 export GREP_COLOR='1;32'
 
-# These use to be default on Ubuntu, but apparently not on Fedora 22, so
-# let's set them explicitly. In particular, -R is needed to get color
-# output to look correctly (which was on by default, but became OFF if
-# $LESS was set to any string that did not include it!)
-export LESS='-R --ignore-case'
-
-if [[ "$(lsb_release --id -s)" == "Ubuntu" && -e ~/bin/pager ]]; then
-	# (Ubuntu-only) Use my wrapper script for less,
-	# which fixes --quit-if-one-screen behavior.
-	# Since less itself works correctly on Fedora, this workaround
-	# caused duplicate output when fits on one screen!
-	export PAGER=~/bin/pager
-	export MANPAGER=~/bin/pager\ -s  # Don't use quotes so tilde expands
-	alias less=~/bin/pager
-fi
+# Default options for /bin/less:
+# -R is needed to get color output to look correct
+export LESS='-R --ignore-case --quit-if-one-screen'
 
 function ..() { cd .. }
 ## alias cd='cd -L' # This interferes with tab completion on the cd command
