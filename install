@@ -115,6 +115,7 @@ opt_apt=1
 opt_locale=1
 opt_nodejs=1
 opt_nvim=1
+opt_nvim_plugins=1
 opt_tmux=1
 # Transform long options to short ones because getopts builtin is dumb and we don't
 # want to rely on external getopt.
@@ -129,8 +130,9 @@ for arg in "$@"; do
         "--no-locale") set -- "$@" "-l" ;;
         "--no-nodejs") set -- "$@" "-n" ;;
         "--no-nvim")   set -- "$@" "-m" ;;
+        "--no-nvim-plugins")   set -- "$@" "-M" ;;
         "--no-tmux")   set -- "$@" "-t" ;;
-        "--minimal")   set -- "$@" "-a" "-a" "-l" "-n" "-m" "-t" ;;
+        "--minimal")   set -- "$@" "-a" "-a" "-l" "-n" "-m" "-M" "-t" ;;
         "--help")      set -- "$@" "-h" ;;
         *)             set -- "$@" $arg ;;
     esac
@@ -164,6 +166,9 @@ while getopts "fyedalnmth" opt; do
         m)
             opt_nvim=0
             ;;
+        M)
+            opt_nvim_plugins=0
+            ;;
         t)
             opt_tmux=0
             ;;
@@ -177,6 +182,7 @@ while getopts "fyedalnmth" opt; do
             echo "    --no-locale     Do not set up locales"
             echo "    --no-nodejs     Do not run install Node.js"
             echo "    --no-nvim       Do not run install Nvim"
+            echo "    --no-nvim-plugins Do not run install Nvim plugins"
             echo "    --no-tmux       Do not run install tmux plugins"
             echo "    --minimal       Equiv. to  --no-apt --no-locale --no-nodejs --no-nvim --no-tmux"
             echo "    -h, --help      Print this message"
@@ -336,12 +342,15 @@ if [[ $opt_nodejs == 1 ]] && (is_yes || promptyn 'Do you want to install node.js
     inst_nodejs
 fi
 
-if [[ $opt_nvim == 1 ]] && (is_yes || promptyn 'Do you want to install & configure Neovim AppImage?' Y); then
+if [[ $opt_nvim == 1 ]] && (is_yes || promptyn 'Do you want to install Neovim AppImage?' Y); then
     inst_nvim
     inst_virtualenv
     inst_neovim_remote
     echo
-    if is_yes || promptyn 'Will now launch Neovim to install plugins. Manually exit it when finished. Proceed?' Y; then
-        nvim
+    if [[ $opt_nvim_plugins == 1 ]] && (is_yes || promptyn 'Will now launch Neovim in headless mode to install plugins. Proceed?' Y); then
+        nvim --headless -c InstallAllPluginsSync -c qa
+        # nvim typically exits with status 1 even though it succeeded.
+        # Prevent whole script from exiting with failure status:
+        true
     fi
 fi

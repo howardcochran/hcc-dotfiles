@@ -1,7 +1,12 @@
 local M = {
   'williamboman/mason.nvim',
   cmd = 'Mason',
-  event = 'BufReadPre',
+
+  -- Need non-lazy to make this work: nvim --headless -c InstallAllPlginsSync -c qa
+  -- See ~/.config/nvim/lua/install-all-plugins-sync.lua
+  lazy = false,
+  -- event = 'BufReadPre',
+
   dependencies = {
     'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
