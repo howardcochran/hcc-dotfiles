@@ -286,25 +286,6 @@ inst_nvim() {
     ln -s nvim-${neovim_version}.appimage ~/.local/bin/nvim
 }
 
-inst_virtualenv() {
-    mkdir  -p ~/ve
-    python3 -m virtualenv --python=python3 ~/ve/py3neovim
-    inst_neovim_stuff_in_virtualenv ~/ve/py3neovim
-    if [[ $ubuntu_ver == "xenial" ]]; then
-        python3 -m virtualenv --python=python2 ~/ve/py2neovim
-        inst_neovim_stuff_in_virtualenv ~/ve/py2neovim
-    fi
-}
-
-inst_neovim_stuff_in_virtualenv() {
-    local virtualenv_path="$1"
-    # Do this in a subshell so I don't mess with this shell's config:
-    (
-        source $virtualenv_path/bin/activate
-        pip install --upgrade pynvim
-    )
-}
-
 inst_neovim_remote() {
     # Since this not used by nvim itself but by the user in a shell, put this
     # in ~/.local rather than a Python virtenv
@@ -343,7 +324,6 @@ fi
 
 if [[ $opt_nvim == 1 ]] && (is_yes || promptyn 'Do you want to install Neovim AppImage?' Y); then
     inst_nvim
-    inst_virtualenv
     inst_neovim_remote
     echo
     if [[ $opt_nvim_plugins == 1 ]] && (is_yes || promptyn 'Will now launch Neovim in headless mode to install plugins. Proceed?' Y); then
