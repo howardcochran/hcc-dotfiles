@@ -328,7 +328,9 @@ if ! tmux info >/dev/null 2>/dev/null; then
     unset TMUX_PANE   # These other TMUX_ vars don't actually matter, but be tidy.
     unset TMUX_PLUGIN_MANAGER_PATH
     unset TMUX_VERSION
-    [[ $TERM =~ "tmux-*" ]] && TERM='xterm-256color'
+    # We also might have inerited TERM=tmux-256color, which won't work if we're not
+    # actually inside tmux, so set it to xterm-256color.
+    TERM='xterm-256color'
 fi
 
 # Try to pick the best editor that is installed
