@@ -115,6 +115,7 @@ opt_apt=1
 opt_locale=1
 opt_nodejs=1
 opt_rust=1
+opt_fzf=1
 opt_nvim=1
 opt_nvim_plugins=1
 opt_tmux=1
@@ -131,10 +132,11 @@ for arg in "$@"; do
         "--no-locale") set -- "$@" "-l" ;;
         "--no-nodejs") set -- "$@" "-n" ;;
         "--no-rust")   set -- "$@" "-r" ;;
+        "--no-fzf")    set -- "$@" "-z" ;;
         "--no-nvim")   set -- "$@" "-m" ;;
         "--no-nvim-plugins")   set -- "$@" "-M" ;;
         "--no-tmux")   set -- "$@" "-t" ;;
-        "--minimal")   set -- "$@" "-a" "-a" "-l" "-n" "-m" "-M" "-t" ;;
+        "--minimal")   set -- "$@" "-a" "-l" "-n" "-r" "-z" "-m" "-M" "-t";;
         "--help")      set -- "$@" "-h" ;;
         *)             set -- "$@" $arg ;;
     esac
@@ -168,6 +170,9 @@ while getopts "fyedalnmth" opt; do
         r)
             opt_rust=0
             ;;
+        t)
+            opt_fzf=0
+            ;;
         m)
             opt_nvim=0
             ;;
@@ -188,6 +193,7 @@ while getopts "fyedalnmth" opt; do
             echo "    --no-locale     Do not set up locales"
             echo "    --no-nodejs     Do not run install Node.js (for this user)"
             echo "    --no-rust       Do not run install rust & cargo (for this user)"
+            echo "    --no-fzf        Do not install or upgrade fzf"
             echo "    --no-nvim       Do not run install Nvim"
             echo "    --no-nvim-plugins Do not run install Nvim plugins"
             echo "    --no-tmux       Do not run install tmux plugins"
@@ -293,6 +299,16 @@ inst_rust() {
     source ~/.cargo/env
 }
 
+inst_or_upgrade_fzf() {
+    if [[ -d ~/.fzf ]]; then
+        echo "FZF is already installed. Upgrading it."
+        (cd ~/.fzf && git pull)
+    else
+        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    fi
+    ~/.fzf/install --all
+}
+
 inst_nvim() {
     local neovim_version=stable
     echo Installing Neovim ${neovim_version} AppImage in ~/.local/bin
@@ -341,6 +357,10 @@ fi
 
 if [[ $opt_rust == 1 ]] && (is_yes || promptyn 'Do you want to install rust for this user (Needed by various Neovim plugins)' Y); then
     inst_rust
+fi
+
+if [[ $opt_fzf == 1 ]] && (is_yes || promptyn "Do you want to install (or upgrade) fzf?" Y); then
+    inst_or_upgrade_fzf
 fi
 
 if [[ $opt_nvim == 1 ]] && (is_yes || promptyn 'Do you want to install Neovim AppImage?' Y); then
