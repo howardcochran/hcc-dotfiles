@@ -54,14 +54,8 @@ function hccprompt {
         PS1+=" ${dockercolor}$DOCKER_NAME"
     fi
 
-    # ptag variable. User can set this to "tag" this shell
-    if [[ -n $ptag ]]; then
-        PS1+=" ${ptagcolor}${ptag}"
-    fi
-
-    PS1+=" "
-
     # Username
+    PS1+=" "
     if _prompt_has 'u'; then
         [[ $(id -u) -eq 0 ]] && usercolor=$sudocolor
         PS1+="${usercolor}%n${maincolor}@"
@@ -70,6 +64,17 @@ function hccprompt {
     # Hostname, up to first dot
     PS1+="${hostcolor}%m${maincolor}"
 
+    local infile
+    for infile in /etc/prompt-tag ~/.config/prompt-tag; do
+        if [[ -r ${infile} ]]; then
+            PS1+=" ${ptagcolor}$(<${infile})"
+        fi
+    done
+
+    # ptag variable. User can set this to "tag" this shell
+    if [[ -n $ptag ]]; then
+        PS1+=" ${ptagcolor}${ptag}"
+    fi
 
     # Count of background jobs and "vim" flag.
     # If the only BG jobs are vim/nvim, don't show count.
