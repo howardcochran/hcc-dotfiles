@@ -106,6 +106,25 @@ promptyn() {
     [[ "${REPLY^^}" == Y ]]  # This expression is the return value
 }
 
+# We used to make a symlink pointing from ~/.config/htop/htoprc to our
+# revision-controlled version, but because htop gratuitously rewrites this
+# file, this caused the hcc-dotfiles workspace to nearly always be dirty. So,
+# instead, we just one-time copy our revision-controlled one into place. After
+# that, any updates will have to be made manually or by re-running this install
+# script.
+fixup_htoprc() {
+    if [[ -r config/.config/htop/htoprc-default ]]; then
+        # Git rid of symlink left over from the "old way"
+        if [[ -L ~/.config/htop/htoprc ]]; then
+            rm ~/.config/htop/htoprc
+        fi
+        # Make symlink to "-default" one for convenience of of manual updating:
+        mklink config/.config/htop/htoprc-default ~/.config/htop/htoprc-default
+        # But make the active one that htop will keep modifying be a real file:
+        cp config/.config/htop/htoprc-default ~/.config/htop/htoprc
+    fi
+}
+
 opt_verbose=1
 opt_force=0
 opt_yes=0
@@ -267,11 +286,12 @@ mklink config/.vim                ~/.vim
 mklink config/.vim                ~/.config/nvim  # Neovim will share .vim config
 mklink config/.tmux.conf          ~/.tmux.conf
 mklink config/.tmux               ~/.tmux
-mklink config/.config/htop/htoprc ~/.config/htop/htoprc
 mklink .fonts                     ~/.fonts
 mklink config/.terminfo           ~/.terminfo
 mklink config/.gitconfig          ~/.gitconfig
 echo
+
+fixup_htoprc
 
 # Only needed for xenial
 upgrade_pip() {
