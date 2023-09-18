@@ -137,7 +137,6 @@ opt_rust=1
 opt_fzf=1
 opt_nvim=1
 opt_nvim_plugins=1
-opt_tmux=1
 # Transform long options to short ones because getopts builtin is dumb and we don't
 # want to rely on external getopt.
 for arg in "$@"; do
@@ -154,8 +153,8 @@ for arg in "$@"; do
         "--no-fzf")    set -- "$@" "-z" ;;
         "--no-nvim")   set -- "$@" "-m" ;;
         "--no-nvim-plugins")   set -- "$@" "-M" ;;
-        "--no-tmux")   set -- "$@" "-t" ;;
-        "--minimal")   set -- "$@" "-a" "-l" "-n" "-r" "-z" "-m" "-M" "-t";;
+        "--no-tmux")   set -- "$@" "-t" ;;    # Note this option is ignored.
+        "--minimal")   set -- "$@" "-a" "-l" "-n" "-r" "-z" "-m" "-M";;
         "--help")      set -- "$@" "-h" ;;
         *)             set -- "$@" $arg ;;
     esac
@@ -199,7 +198,7 @@ while getopts "fyedalnrzmMth" opt; do
             opt_nvim_plugins=0
             ;;
         t)
-            opt_tmux=0
+            echo "WARNING: The --no-tmux (or -t) option has been removed"
             ;;
         h|\?)
             set +x
@@ -215,8 +214,7 @@ while getopts "fyedalnrzmMth" opt; do
             echo "    --no-fzf        Do not install or upgrade fzf"
             echo "    --no-nvim       Do not run install Nvim"
             echo "    --no-nvim-plugins Do not run install Nvim plugins"
-            echo "    --no-tmux       Do not run install tmux plugins"
-            echo "    --minimal       Equiv. to  --no-apt --no-locale --no-nodejs --no-rust --no-fzf --no-nvim --no-nvim-plugins --no-tmux"
+            echo "    --minimal       Equiv. to  --no-apt --no-locale --no-nodejs --no-rust --no-fzf --no-nvim --no-nvim-plugins"
             echo "    -h, --help      Print this message"
             exit 1
     esac
@@ -267,6 +265,32 @@ install_packages() {
     [[ -n ${opt_eatmydata} ]] && sync
 }
 
+setup_tmux() {
+    # Upgrade path from old versions of hcc-dotfiles, which made ~/.tmux be a symlink into
+    # this repo. Now we make it be a real dir, and symlink the individual files therein.
+    # This is done so that the stuff that tpm plugin manager downloads won't be inside
+    # this repo's workspace.
+    if [[ -L ~/.tmux ]]; then
+        rm ~/.tmux
+    fi
+    mkdir -p ~/.tmux
+    local f
+    for f in config/.tmux/* ; do
+        mklink $f ~/.tmux/${f#config/.tmux/}
+    done
+    mklink config/.tmux.conf ~/.tmux.conf
+
+    # Install or upgrade TPM (tmux plugin manager) and install configured plugins headlessly
+    local tpm_revision=v3.1.0
+    mkdir -p ~/.tmux/plugins
+    if [[ -e ~/tmux/plugins/tpm/.git ]]; then
+        ( cd ~/.tmux/plugins/tpm; git fetch; git checkout ${tpm_revision} )
+    else
+        git clone -b ${tpm_revision} https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    fi
+    TMUX= ~/.tmux/plugins/tpm/bin/install_plugins
+}
+
 cd "${scriptdir}"
 [[ $opt_apt -eq 1 ]] && install_packages
 
@@ -285,11 +309,12 @@ mklink config/.vimrc              ~/.vimrc
 mklink config/.vim                ~/.vim
 mklink config/.vim                ~/.config/nvim  # Neovim will share .vim config
 mklink config/.tmux.conf          ~/.tmux.conf
-mklink config/.tmux               ~/.tmux
 mklink .fonts                     ~/.fonts
 mklink config/.terminfo           ~/.terminfo
 mklink config/.gitconfig          ~/.gitconfig
 echo
+
+setup_tmux
 
 fixup_htoprc
 
@@ -364,11 +389,6 @@ if [[ $ubuntu_ver == "xenial" ]]; then
     if is_yes || promptyn "Do you want to upgrade pip (recommended for Ubuntu 16.04 xenial)?" Y; then
         upgrade_pip
     fi
-fi
-
-if [[ $opt_tmux == 1 ]] && (is_yes || promptyn "Do you want to install tmux plugins?" Y); then
-    # Clear $TMUX in case we're running nested. We want our own instance for plugin install.
-    TMUX= ~/.tmux/plugins/tpm/bin/install_plugins
 fi
 
 if [[ $opt_nodejs == 1 ]] && (is_yes || promptyn 'Do you want to install node.js in ~/.local (Needed by various Neovim plugins)' Y); then

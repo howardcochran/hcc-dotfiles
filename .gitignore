@@ -1,6 +1,5 @@
 *~
 *.swp
-config/.tmux/plugins
 config/.vim/.netrwhist
 
 # nvim's Lazy plugin creates and frequently modifies this file:
