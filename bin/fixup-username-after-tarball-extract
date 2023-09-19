@@ -1,0 +1,49 @@
+#!/bin/bash
+# A few of the files in the tarballs created by `create-release-tarballs`
+# contain full paths that include the username that was used within the docker
+# container: (e.g. /home/dotbuilder/). This script will replace those instances
+# with the name of the current user. Run this script after extracting release
+# tarballs in a home account.
+#
+# Limitation: Currently, a couple of compiled language servers written in Rust,
+# jq-lsp, and neocmakelsp, contain the username `dotbuilder` inside the
+# executable. We don't have a feasible way to fix that up here. It is not
+# currently known whether this keeps them from working. If needed, user can
+# manually fix this up by removing and re-adding these language servers using
+# :Mason in nvim.
+
+die() {
+    printf >&2 "\n\n%s\n" "FATAL: $@"
+    exit 1
+}
+
+fixup_username_in_file() {
+    local username="$1"
+    local filename="$2"
+    sed -i "s/dotbuilder/${username}/g" ${filename}
+}
+
+do_fixups() {
+    local username="$1"
+    local files=(
+        .fzf.bash
+        .fzf.zsh
+        ./.local/share/nvim/mason/packages/lua-language-server/lua-language-server
+    )
+    for filename in "${files[@]}"; do
+        fixup_username_in_file "${username}" "${filename}"
+    done
+}
+
+main() {
+    PS4='+${BASH_SOURCE}: ${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): } '
+    set -x
+
+    cd
+    local username="$1"
+    [[ -z "${username}" ]] && local username="$(whoami)"
+    [[ -z "${username}" ]] && die "Cannot determine current username"
+    do_fixups "${username}"
+}
+
+main "$@"

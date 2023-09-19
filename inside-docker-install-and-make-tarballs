@@ -96,6 +96,8 @@ tar -I zstd -cf ${output_dir}/20-hcc-dotfiles-bin.tar.zst --exclude-from=- .loca
 .local/bin/nvim*
 .cargo/registry
 .rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc
+__pycache__
+*.pyc
 END_EXCLUDE
 
 [[ $? -eq 0 ]] || die "Failed to create output tarball: 20-hcc-dotfiles-bin.tar.zst"
