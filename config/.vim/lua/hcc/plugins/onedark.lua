@@ -92,6 +92,8 @@ onedarkpro.setup({
     rubyGlobalVariable = { fg = c.blue },
     rubyInterpolationDelimiter = { fg = c.blue },
 
+    markdownItalic = { style = "italic" }, -- Make *italicized markdown* actually italicized!
+
   },
   options = {
     cursorline = true,
