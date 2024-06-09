@@ -30,7 +30,7 @@ vim.o.relativenumber = true
 vim.o.cursorcolumn = true
 vim.o.cursorline = true
 vim.o.mouse = 'a'
-vim.cmd('behave xterm')     -- Mouse drag enters Visual mode instead of Select mode.
+vim.o.mousemodel = 'extend' -- Mouse drag enters Visual mode instead of Select mode.
                             -- behave sets several options. See help
 vim.o.startofline = false   -- Don't gatuitously move cursor to 1st column
 vim.o.path = vim.o.path .. '**' -- File operations recurse directories
