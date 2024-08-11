@@ -38,11 +38,11 @@ GIT_PS1_SHOWCOLORHINTS=1
 
 function hccprompt {
     # Colors: Main one bright makes cmd boundaries easy to find in scrollback
-    local maincolor="%F{yellow}"
+    local maincolor="%F{magenta}"
     local dockercolor="%F{blue}"
     local ptagcolor="%F{cyan}"
-    local hostcolor="%F{69}"       # A bright blue
-    local bgjobscolor="%F{128}"    # purple
+    local hostcolor="%F{blue}"
+    local bgjobscolor="%F{red}"
     local sudocolor="%F{red}"
     local usercolor=$hostcolor
 
