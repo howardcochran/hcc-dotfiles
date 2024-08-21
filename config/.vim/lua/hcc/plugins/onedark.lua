@@ -93,6 +93,19 @@ onedarkpro.setup({
     rubyInterpolationDelimiter = { fg = c.blue },
 
     markdownItalic = { style = "italic" }, -- Make *italicized markdown* actually italicized!
+    Title = {}, -- Allow editing of markdownH* fg fields
+    markdownH1 = { fg = c.purple, bold = true },
+    markdownH2 = { fg = c.blue, bold = true },
+    markdownH3 = { fg = c.green, bold = true },
+    markdownH4 = { fg = c.orange, bold = true },
+    markdownH5 = { fg = c.red, bold = true },
+    -- markdownH6 will automatically match markdownH1
+    markdownH1Delimiter = { fg = c.gray },
+    markdownH2Delimiter = { fg = c.gray },
+    markdownH3Delimiter = { fg = c.gray },
+    markdownH4Delimiter = { fg = c.gray },
+    markdownH5Delimiter = { fg = c.gray },
+    markdownH6Delimiter = { fg = c.gray },
 
   },
   options = {
