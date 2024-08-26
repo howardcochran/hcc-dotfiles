@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cat <<EOF
 This script disables gnome "tracker" because it can be a resource hog,

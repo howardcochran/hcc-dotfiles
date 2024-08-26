@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # Script to keep local Xpra and main X server's clipboards in sync.
 # Inspired by:
 # http://askubuntu.com/questions/352632/how-can-i-share-my-clipboard-between-two-x-servers

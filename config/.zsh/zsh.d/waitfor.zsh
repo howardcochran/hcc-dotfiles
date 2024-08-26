@@ -1,5 +1,3 @@
-#!/bin/zsh
-
 function waitfor {
     if [ $# -ne 1 ] ; then print "Usage: waitfor identifier" ; return 1 ; fi
     mkdir -p /tmp/$USER-waitfor

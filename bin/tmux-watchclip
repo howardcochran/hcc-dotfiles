@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Create 4 new panes in the current tmux window, each of which watches
 # the contents of the X primary & clipboard selections, plus

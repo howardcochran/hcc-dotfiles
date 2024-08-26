@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Tmux startup script for session management. Modified from:
 #     http://forums.gentoo.org/viewtopic-t-836006-start-0.html

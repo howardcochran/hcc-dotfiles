@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Copy all of stdin to stdout, except:
 # If stdin consists of only a single line of input, strip the newline
 # Otherwise, copy it all verbatim.

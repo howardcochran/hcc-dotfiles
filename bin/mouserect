@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Let the user specify the size and position of a rectangle using two mouse clicks
 # (sorry, no click & drag, and no helpful box drawn!)
 # The result is output on stdout in a form suitable to pass to avconv

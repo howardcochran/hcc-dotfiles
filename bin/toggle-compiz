@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # If not associated with an X server, apply to the console one, so can
 # use this command from an ssh login

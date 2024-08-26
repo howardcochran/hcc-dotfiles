@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Return the size and position of the next window the user clicks on
 # in a form appropriate for passing as arguments to tosrec script.
 

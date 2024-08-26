@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Wrapper script for ssh to foward an arbitrary port to the remote Xpra
 # server's attach port and to "xpra attach" to it. It's a bit cumbersome
 # because an "xpra attach" cannot succeed until ssh is connected and listening

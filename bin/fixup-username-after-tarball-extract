@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # A few of the files in the tarballs created by `create-release-tarballs`
 # contain full paths that include the username that was used within the docker
 # container: (e.g. /home/dotbuilder/). This script will replace those instances

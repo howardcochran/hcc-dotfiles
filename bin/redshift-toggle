@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # There doesn't seem to be a flavor of redshift that queries its state,
 # so we'll use a flag file instead.

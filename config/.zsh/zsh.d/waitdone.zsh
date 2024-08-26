@@ -1,5 +1,3 @@
-#!/bin/zsh
-
 function waitdone {
     local wait_result=$?
     if [ $# -ne 1 ] ; then print "Usage: waitdone identifier" ; return 1 ; fi

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Calculate the DISPLAY and XAUTHORITY values to use for tmux clipboard
 # integration. For my environment, I prefer tmux talk with the Xpra server,
 # if possible, so that it is talking with the same X server that I use with

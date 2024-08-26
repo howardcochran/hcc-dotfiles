@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 #
 # Lists all bind mounts on the machine and what they are binded with.
 # Note that it arbitrarily assumes that the shortest path is the "original"

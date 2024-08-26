@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # Wrapper script for tmx (tmux launcher script) which first starts an Xpra
 # server and a local attach to it
 

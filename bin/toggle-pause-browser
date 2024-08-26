@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Suggestion: In gnome settings/Keyboard icon/Shortcuts tab, create custom
 # Alt+Super+F:  toggle-pause-browser firefox
 # Alt+Super+C:  toggle-pause-browser chrome

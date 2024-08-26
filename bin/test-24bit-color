@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo 'This gradient should be very smooth if 24bit-color is working:'
 awk 'BEGIN{
 s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;

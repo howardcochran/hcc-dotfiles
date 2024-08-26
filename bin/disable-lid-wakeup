@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 RETVAL=0
 
 # Find out if wakup-on-lid-switch is currently enabled. May toggle it.

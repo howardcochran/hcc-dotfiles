@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 inst_dir=~/.local/bin
 tmp_nvim="${inst_dir}/new-nvim.appimage"

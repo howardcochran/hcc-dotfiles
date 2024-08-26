@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Install the language servers used by my NeoVim config
 
 function run_verbosely() {

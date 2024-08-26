@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Usage: $0 options output.mp4
 # Record the screen and accompanying sound, then make a copy of just the sound
 # as an mp3 file in the same directory as the video.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Quick & dirty script to monitor connectivity to a host by pinging.
 # It is noisy when server is not responding but quiet when it is answering
 # normally, except that it outputs one message on transition from

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 [ $# -eq 1 ] || ( echo Required filename missing ; exit 1 )
 

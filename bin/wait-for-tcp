@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Simple script that tries to make a TCP connection to the given host & port
 # repeatedly until successful or a timeout has elapsed, then closes the
 # connection. There is no printed output. Success/failure is reported

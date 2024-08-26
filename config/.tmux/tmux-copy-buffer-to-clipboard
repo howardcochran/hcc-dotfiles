@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Copy buffer #N (given as sole command line arg) to
 # X selection and clipboard. If this argument is - , will read from stdin
 # rather than a tmux buffer. Designed to be run from within tmux

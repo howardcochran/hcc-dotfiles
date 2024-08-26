@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Make a bunch of key mappings to help implement something like Vim's
 # "registers" using tmux buffers. These are populated in the custom
 # buffer-reg key table, which some other binding will switch us to.

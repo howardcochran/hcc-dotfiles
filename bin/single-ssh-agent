@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # Wrapper for ssh-agent. If the agent is already running, find
 # the env vars for it and output it.
 # If not, start the agent with a consistent socket name, so that

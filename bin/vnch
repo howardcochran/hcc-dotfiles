@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 vncviewer -AutoSelect=1 -FullColour -PreferredEncoding=ZRLE $* 2>/dev/null >/dev/null &
 
