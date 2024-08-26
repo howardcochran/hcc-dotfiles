@@ -242,7 +242,10 @@ export HISTFILE=$HOME/.zsh_history
 # when you are just piping something into its stdin :(
 # As far as I know, I have no recourse but to lose "recursive by default"
 alias grep='grep --color=auto'
+# Between grep ver 3.7 & 3.11, GREP_COLOR was deprecated & replaced with GREP_COLORS
+# with slightly different syntax. Set them both so we work either way.
 export GREP_COLOR='1;32'
+export GREP_COLORS='mt=1;32'
 
 # Default options for /bin/less:
 # -R is needed to get color output to look correct
