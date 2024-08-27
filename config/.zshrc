@@ -6,7 +6,11 @@ if [[ ! "$SHELL" =~ ".*/zsh" ]]; then
 fi
 
 # Do this early as some setup files use whence to test for the existance
+# Set PATH early, as some setup files use whence to test for the existance
 # of things normally in ~/.local/bin
+# If user has rust/cargo as normal user, let it prepend its dir to the $PATH.
+# Do it first so that the stuff I prepend will come before it.
+[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 export PATH=~/bin:~/.local/usr/local/bin:~/.local/usr/bin:~/.local/bin:~/.local/share/umake/bin:/snap/bin:$PATH
 
 # Turn off Xon/Xoff in this termal so that can use <CTRL-Q> in progs like vim

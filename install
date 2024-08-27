@@ -302,6 +302,7 @@ setup_locale() {
 
 git submodule update --init --recursive
 mklink config/.zsh                ~/.zsh
+mklink config/.zshenv             ~/.zshenv
 mklink config/.zshrc              ~/.zshrc
 mklink bin                        ~/bin
 mklink config/.gvimrc             ~/.gvimrc
