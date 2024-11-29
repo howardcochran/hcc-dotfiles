@@ -10,7 +10,7 @@ local M = {
   dependencies = {
     'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
-    'tami5/lspsaga.nvim',
+    'nvimdev/lspsaga.nvim',
     'onsails/lspkind-nvim',
   },
 }

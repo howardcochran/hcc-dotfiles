@@ -1,5 +1,5 @@
 local M = {
-  'tami5/lspsaga.nvim',
+  'nvimdev/lspsaga.nvim',
   opts = {
     max_preview_lines = 40,  -- Default is a laughable 10!
     finder_action_keys = {
